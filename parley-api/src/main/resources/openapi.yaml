@@ -4,12 +4,12 @@ info:
     This is the backend APIs for a chat application.
   version: "1.0.0"
   title: Parley
-  termsOfService: 'http://swagger.io/terms/'
+  termsOfService: 'https://swagger.io/terms/'
   contact:
     email: jrackliff@gmail.com
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
   - url: http://localhost:8080/parley-api
     description: Local server
@@ -309,8 +309,6 @@ components:
         - name
       properties:
         name:
-          type: string
-        tag:
           type: string
     ChatMessage:
       type: object
