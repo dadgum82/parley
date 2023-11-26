@@ -1,0 +1,316 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.sidequest</groupId>
+        <artifactId>parley</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <groupId>org.sidequest</groupId>
+    <artifactId>parley-api</artifactId>
+    <name>parley-api</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version> <!-- Replace with the latest version -->
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version> <!-- Replace with the latest version -->
+        </dependency>
+        <dependency>
+            <groupId>com.github.jknack</groupId>
+            <artifactId>handlebars</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-multipart -->
+        <!--        chatGPT said to remove this dependency 11/24/2023-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-web</artifactId>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>6.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.9</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.21</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-yaml-provider</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-xml-provider</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-codegen</artifactId>
+            <version>${swagger.codegen.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2</artifactId>
+            <version>${swagger-core-version}</version>
+        </dependency>
+        <!-- inflector library -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-inflector</artifactId>
+            <version>${swagger-inflector-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser</artifactId>
+            <version>${swagger-parser-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>${maven.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-compat</artifactId>
+            <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>${maven.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.joschi.jackson/jackson-datatype-threetenbp -->
+        <dependency>
+            <groupId>com.github.joschi.jackson</groupId>
+            <artifactId>jackson-datatype-threetenbp</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jackson-databind-nullable}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <!--                <plugin>-->
+            <!--                    <groupId>org.springframework.boot</groupId>-->
+            <!--                    <artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--                </plugin>-->
+
+            <!--            <plugin>-->
+            <!--                <groupId>io.swagger.codegen.v3</groupId>-->
+            <!--                <artifactId>swagger-codegen-maven-plugin</artifactId>-->
+            <!--                <version>${swagger.codegen.plugin.version}</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>generate</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>-->
+            <!--                            <language>spring</language>-->
+            <!--&lt;!&ndash;                            <packageName>${client.base.package.name}</packageName>&ndash;&gt;-->
+            <!--                            <modelPackage>${client.base.package.name}.model</modelPackage>-->
+            <!--                            <apiPackage>${client.base.package.name}.api</apiPackage>-->
+            <!--&lt;!&ndash;                            <invokerPackage>${client.base.package.name}.invoker</invokerPackage>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <output>${project.basedir}/src/gen</output>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <output>${project.build.directory}/generated-sources/</output>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <generateSupportingFiles>false</generateSupportingFiles>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <apiPackage>com.sidequest.api</apiPackage>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <modelPackage>com.sidequest.models</modelPackage>&ndash;&gt;-->
+            <!--                            <configOptions>-->
+            <!--                                <interfaceOnly>true</interfaceOnly>-->
+            <!--&lt;!&ndash;                                <sourceFolder>src/gen/java/main</sourceFolder>&ndash;&gt;-->
+            <!--                                <groupId>${project.groupId}</groupId>-->
+            <!--                                <artifactId>${project.artifactId}</artifactId>-->
+            <!--                                <artifactVersion>${project.version}</artifactVersion>-->
+            <!--&lt;!&ndash;                                <library>resttemplate</library>&ndash;&gt;-->
+            <!--                                <java8>true</java8>-->
+            <!--                                <dateLibrary>java8</dateLibrary>-->
+            <!--                                <licenseName>Apache 2.0</licenseName>-->
+            <!--                                <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>-->
+            <!--                            </configOptions>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>4.2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/openapi.yaml
+                            </inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>${client.base.package.name}.api</apiPackage>
+                            <modelPackage>${client.base.package.name}.model</modelPackage>
+                            <supportingFilesToGenerate>
+                                ApiUtil.java
+                            </supportingFilesToGenerate>
+                            <configOptions>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <proc>none</proc>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <properties>
+        <maven-plugin-version>1.0.0</maven-plugin-version>
+        <swagger-parser-version>2.1.16</swagger-parser-version>
+        <swagger-core-version>2.2.16</swagger-core-version>
+        <swagger.annotations.version>2.2.16</swagger.annotations.version>
+        <swagger-inflector-version>2.0.5</swagger-inflector-version>
+        <swagger.codegen.version>2.4.36</swagger.codegen.version>
+        <swagger.codegen.plugin.version>3.0.50</swagger.codegen.plugin.version>
+        <swagger.yaml.file>${project.basedir}/src/main/resources/openapi.yaml</swagger.yaml.file>
+
+
+        <jackson-version>2.15.1</jackson-version>
+
+        <jetty-version>9.4.9.v20180320</jetty-version>
+        <logback-version>1.0.1</logback-version>
+        <junit-version>4.8.2</junit-version>
+        <slf4j-version>1.6.3</slf4j-version>
+        <java.version>17</java.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <client.base.package.name>org.sidequest.parley</client.base.package.name>
+
+        <spring.version>3.1.5</spring.version>
+        <maven.version>3.9.5</maven.version>
+        <jersey-version>2.29.1</jersey-version>
+        <migbase64-version>2.2</migbase64-version>
+        <jackson-databind-nullable>0.2.1</jackson-databind-nullable>
+        <threetenbp-version>2.15.2</threetenbp-version>
+    </properties>
+
+</project>
