@@ -1,0 +1,7 @@
+/parley-api/target/
+/parley-service/target/
+/.idea/compiler.xml
+/.idea/dataSources.xml
+/.idea/encodings.xml
+/.idea/jarRepositories.xml
+/.idea/
