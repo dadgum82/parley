@@ -13,13 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class is the implementation of the ChatMessageDao interface.
- * It is responsible for handling the database interactions for the ChatMessage model.
- *
- * @see com.sidequest.parley.model.ChatMessage
- * @see com.sidequest.parley.dao.ChatMessageDao
- */
+
 public class DbChatMessageDaoImpl implements ChatMessageDao {
     // private SQLiteConnection dbConnection;
     String dbEnv;

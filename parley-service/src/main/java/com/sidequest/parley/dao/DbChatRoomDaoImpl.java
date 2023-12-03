@@ -171,6 +171,22 @@ public class DbChatRoomDaoImpl implements ChatRoomDao {
      */
     @Override
     public void updateChatRoom(ChatRoom chatRoom) {
+        SQLiteConnection dbConnection = new SQLiteConnection(dbEnv);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SchemaChatRoomSql.UPDATE_CHAT_ROOM)) {
+            statement.setString(1, chatRoom.getName());
+            statement.setInt(2, chatRoom.getModeratorId());
+            statement.setBytes(3, chatRoom.getIcon());
+            statement.setInt(4, chatRoom.getChatRoomId());
+            statement.executeUpdate();
+            System.out.println("UPDATE_CHAT_ROOM is done...");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
+        } finally {
+            dbConnection.closeConnection();
+        }
 
     }
 
@@ -181,24 +197,27 @@ public class DbChatRoomDaoImpl implements ChatRoomDao {
      */
     @Override
     public void deleteChatRoom(ChatRoom chatRoom) {
-        // this method should delete a chat room from the database
-        // it should delete the chat room from the chat room table
+        // it should delete the any chat room users from the chat room users table
         // it should delete the chat messages from the chat message table
+        // this method should delete a chat room from the database
         SQLiteConnection dbConnection = new SQLiteConnection(dbEnv);
         try (Connection connection = dbConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SchemaChatRoomSql.DELETE_CHAT_ROOM)) {
+             PreparedStatement statement = connection.prepareStatement(SchemaChatRoomUsersSql.DELETE_CHAT_ROOM_BY_CHAT_ROOM_ID)) {
             statement.setInt(1, chatRoom.getChatRoomId());
             statement.executeUpdate();
-            System.out.println("DELETE_CHAT_ROOM is done...");
+            System.out.println("DELETE_CHAT_ROOM_USERS is done...");
 
         } catch (SQLException e) {
             e.printStackTrace();
             // Handle database access error
+        } finally {
+            dbConnection.closeConnection();
         }
+
 
         //it should delete messages with the chat room id from the chat message table
         try (Connection connection = dbConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SchemaChatMessageSql.DELETE_CHAT_MESSAGE)) {
+             PreparedStatement statement = connection.prepareStatement(SchemaChatMessageSql.DELETE_CHAT_MESSAGE_BY_CHAT_ROOM_ID)) {
             statement.setInt(1, chatRoom.getChatRoomId());
             statement.executeUpdate();
             System.out.println("DELETE_CHAT_MESSAGE is done...");
@@ -208,6 +227,17 @@ public class DbChatRoomDaoImpl implements ChatRoomDao {
             // Handle database access error
         } finally {
             dbConnection.closeConnection();
+        }
+
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SchemaChatRoomSql.DELETE_CHAT_ROOM)) {
+            statement.setInt(1, chatRoom.getChatRoomId());
+            statement.executeUpdate();
+            System.out.println("DELETE_CHAT_ROOM is done...");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database access error
         }
 
     }

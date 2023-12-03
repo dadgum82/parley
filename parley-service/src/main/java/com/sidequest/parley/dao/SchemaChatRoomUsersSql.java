@@ -13,6 +13,7 @@ public class SchemaChatRoomUsersSql {
     private SchemaChatRoomUsersSql() {
     }
 
+    public static final String DELETE_CHAT_ROOM_BY_CHAT_ROOM_ID = "DELETE FROM chat_room_users WHERE chatRoomId = ?";
     public static final String INSERT_CHAT_ROOM_USERS = "INSERT INTO chat_room_users (chatRoomId, userId) VALUES (?, ?)";
     public static final String SELECT_USER_IN_CHAT_ROOM = "SELECT * FROM chat_room_users WHERE userId = ? AND chatRoomId = ?";
 

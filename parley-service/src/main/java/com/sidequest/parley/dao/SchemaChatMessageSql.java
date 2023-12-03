@@ -18,6 +18,8 @@ public class SchemaChatMessageSql {
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS chat_message";
     public static final String DELETE_CHAT_MESSAGE = "DELETE FROM chat_message WHERE id = ?";
 
+    public static final String DELETE_CHAT_MESSAGE_BY_CHAT_ROOM_ID = "DELETE FROM chat_message WHERE chatRoomId = ?";
+
     // --Commented out by Inspection (11/26/2023 8:06 AM):public static final String DELETE_CHAT_MESSAGE_BY_CHAT_ROOM_ID = "DELETE FROM chat_message WHERE chatRoomId = ?";
     public static final String SELECT_ALL_CHAT_MESSAGES_BY_CHAT_ROOM_ID = "SELECT * FROM chat_message WHERE chatRoomId = ? ORDER BY id ASC";
     public static final String UPDATE_CHAT_MESSAGE = "UPDATE chat_message SET content = ? WHERE id = ?";

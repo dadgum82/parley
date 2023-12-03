@@ -87,10 +87,7 @@ paths:
       tags:
         - ChatRoom
       summary: Gets a list of all chat rooms in JSON format
-      description: >
-        A detailed description of the operation.
-        Use markdown for rich text representation,
-        such as **bold**, *italic*, and [links](https://swagger.io).
+      description:
       operationId: getChatRooms
       responses:
         '200':
@@ -113,7 +110,27 @@ paths:
       summary: Add a new chat room to the database
       operationId: createChatRoom
       requestBody:
-        $ref: '#/components/requestBodies/NewChatRoom'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/NewChatRoom'
+              examples:
+                chatRoom1:
+                  value:
+                  chatRoomId: 1
+                  userIds: [ 1, 2 ]
+                  name: "Dog Poker Night"
+                  moderatorId: 1
+                chatRoom2:
+                  value:
+                  chatRoomId: 2
+                  userIds: [ 1, 3 ]
+                  name: "Barking Outside"
+                  moderatorId: 1
+                  icon: "icon2"
+          application/xml:
+            schema:
+              $ref: '#/components/requestBodies/NewChatRoom'
       responses:
         '200':
           description: Created
@@ -177,6 +194,12 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/ChatRoom'
       responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRoom'
         '405':
           description: Invalid input
         default:
@@ -185,6 +208,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
     delete:
       tags:
         - ChatRoom
@@ -375,6 +399,22 @@ components:
         - moderatorId
       xml:
         name: ChatRoom
+    NewChatRoomNoIcon:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: integer
+        name:
+          type: string
+        moderatorId:
+          type: integer
+      required:
+        - name
+        - moderatorId
+      xml:
+        name: NewChatRoomNoIcon
       #ChatRoomInput(ArrayList<Integer> userIds, String name, int moderatorId, byte[] icon) {
       #crs.createChatRoom(chatRoomInput.getName(), chatRoomInput.getModeratorId(), chatRoomInput.getUserIds(), chatRoomInput.getIcon());
     NewChatRoom:
@@ -462,7 +502,25 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/NewChatRoom'
+            oneOf:
+              - $ref: '#/components/schemas/NewChatRoomNoIcon'
+              - $ref: '#/components/schemas/NewChatRoom'
+            discriminator:
+              propertyName: icon
+          examples:
+            chatRoom1:
+              value:
+                chatRoomId: 1
+                userIds: [ 1, 2 ]
+                name: "Dog Poker Night"
+                moderatorId: 1
+                icon: "icon1"
+            chatRoom2:
+              value:
+                chatRoomId: 2
+                userIds: [ 1, 3 ]
+                name: "Barking Outside"
+                moderatorId: 1
         application/xml:
           schema:
             $ref: '#/components/schemas/NewChatRoom'

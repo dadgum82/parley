@@ -4,6 +4,8 @@ package com.sidequest.parley.controller;
 import com.sidequest.parley.service.ChatRoomService;
 import org.sidequest.parley.api.ChatroomsApi;
 import org.sidequest.parley.model.ChatRoom;
+import org.sidequest.parley.model.Error;
+import org.sidequest.parley.model.NewChatRoom;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +26,49 @@ public class ChatRoomController implements ChatroomsApi {
         }
     }
 
+    @Override
+    public ResponseEntity<ChatRoom> getChatRoomById(Integer id) {
+        try {
+            ChatRoomService crs = new ChatRoomService();
+            ChatRoom chatRoom = crs.getChatRoom(id);
+            return ResponseEntity.ok(chatRoom);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<ChatRoom> createChatRoom(NewChatRoom NewChatRoom) {
+        try {
+            ChatRoomService crs = new ChatRoomService();
+            ChatRoom newChatRoom = crs.createChatRoom(NewChatRoom.getName(), NewChatRoom.getModeratorId(), NewChatRoom.getUserIds(), NewChatRoom.getIcon());
+            return ResponseEntity.ok(newChatRoom);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<Error> deleteChatRoom(Integer id) {
+        try {
+            ChatRoomService crs = new ChatRoomService();
+            crs.deleteChatRoom(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<ChatRoom> updateChatRoom(Integer id, ChatRoom chatRoom) {
+        try {
+            ChatRoomService crs = new ChatRoomService();
+            ChatRoom updatedChatRoom = crs.updateChatRoom(id, chatRoom.getName(), chatRoom.getModeratorId(), chatRoom.getIcon());
+            return ResponseEntity.ok(updatedChatRoom);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
 

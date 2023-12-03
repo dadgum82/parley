@@ -18,6 +18,8 @@ public class SchemaChatRoomSql {
     private SchemaChatRoomSql() {
     }
 
+    public static final String UPDATE_CHAT_ROOM = "UPDATE chat_room SET name = ?, moderatorId = ?, icon = ? WHERE chatRoomId = ?";
+
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS chat_room (chatRoomId INTEGER PRIMARY KEY, name TEXT NOT NULL, moderatorId INTEGER NOT NULL, icon BLOB, FOREIGN KEY (moderatorId) REFERENCES user(userId))";
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS chat_room";
 

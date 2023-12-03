@@ -168,14 +168,15 @@ public class ChatRoomService {
     /**
      * Update a chat room by id
      *
-     * @param chatId
+     * @param chatRoomId
      * @param name
      * @param icon
      * @return ChatRoom if chat room was updated
      */
-    public ChatRoom updateChatRoom(int chatId, String name, int moderatorId, byte[] icon) {
-        ChatRoom chatRoom = this.getChatRoom(chatId);
+    public ChatRoom updateChatRoom(int chatRoomId, String name, int moderatorId, byte[] icon) {
+        ChatRoom chatRoom = this.getChatRoom(chatRoomId);
         if (chatRoom != null) {
+            chatRoom.setChatRoomId(chatRoomId);
             chatRoom.setName(name);
             chatRoom.setModeratorId(moderatorId);
             chatRoom.setIcon(icon);
