@@ -284,7 +284,9 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>6.6.0</version> <!-- Replace with the latest version !!!!!!!!!!!!!!!!!!-->
+                <!--                If I change the version I had to run a "mvn clean compile" to get it to work-->
+                <!--                https://openapi-generator.tech/docs/plugins/-->
+                <version>6.6.0</version>
                 <executions>
                     <execution>
                         <goals>

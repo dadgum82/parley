@@ -6,3 +6,4 @@
 /.idea/jarRepositories.xml
 /.idea/
 !/qodana.yaml
+/parley-api/parley-api.iml
