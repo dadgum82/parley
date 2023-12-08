@@ -11,8 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller class for managing chat rooms.
+ */
 @RestController
+
 public class ChatRoomController implements ChatroomsApi {
+
 
     @Override
     public ResponseEntity<List<ChatRoom>> getChatRooms() {
@@ -38,11 +43,11 @@ public class ChatRoomController implements ChatroomsApi {
     }
 
     @Override
-    public ResponseEntity<ChatRoom> createChatRoom(NewChatRoom NewChatRoom) {
+    public ResponseEntity<ChatRoom> createChatRoom(NewChatRoom newChatRoom) {
         try {
             ChatRoomService crs = new ChatRoomService();
-            ChatRoom newChatRoom = crs.createChatRoom(NewChatRoom.getName(), NewChatRoom.getModeratorId(), NewChatRoom.getUserIds(), NewChatRoom.getIcon());
-            return ResponseEntity.ok(newChatRoom);
+            ChatRoom resultingChatRoom = crs.createChatRoom(newChatRoom.getName(), newChatRoom.getModeratorId(), newChatRoom.getUserIds(), newChatRoom.getIcon());
+            return ResponseEntity.ok(resultingChatRoom);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

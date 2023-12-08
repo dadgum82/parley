@@ -52,16 +52,16 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.springfox.version}</version> <!-- Replace with the latest version -->
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.springfox.version}</version> <!-- Replace with the latest version -->
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>io.springfox</groupId>-->
+        <!--            <artifactId>springfox-swagger2</artifactId>-->
+        <!--            <version>${swagger.springfox.version}</version> &lt;!&ndash; Replace with the latest version &ndash;&gt;-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>io.springfox</groupId>-->
+        <!--            <artifactId>springfox-swagger-ui</artifactId>-->
+        <!--            <version>${swagger.springfox.version}</version> &lt;!&ndash; Replace with the latest version &ndash;&gt;-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
@@ -284,7 +284,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>4.2.3</version> <!-- Replace with the latest version !!!!!!!!!!!!!!!!!!-->
+                <version>6.6.0</version> <!-- Replace with the latest version !!!!!!!!!!!!!!!!!!-->
                 <executions>
                     <execution>
                         <goals>
@@ -301,7 +301,11 @@
                                 ApiUtil.java
                             </supportingFilesToGenerate>
                             <configOptions>
-                                <delegatePattern>true</delegatePattern>
+                                <sourceFolder>src/gen/java/main</sourceFolder>
+
+                                <interfaceOnly>true</interfaceOnly>
+                                <!--                                <delegatePattern>true</delegatePattern>-->
+                                <interfaceOnly>true</interfaceOnly>
                             </configOptions>
                         </configuration>
                     </execution>

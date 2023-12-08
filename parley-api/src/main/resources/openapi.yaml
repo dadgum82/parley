@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   description: |
     This is the backend APIs for a chat application.
@@ -32,7 +32,13 @@ paths:
       summary: Add a new chat message to the database
       operationId: createChatMessage
       requestBody:
-        $ref: '#/components/requestBodies/NewChatMessage'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChatMessage'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewChatMessage'
       responses:
         '200':
           description: Created
@@ -87,7 +93,8 @@ paths:
       tags:
         - ChatRoom
       summary: Gets a list of all chat rooms in JSON format
-      description:
+      description: >
+        Gets a list of all chat rooms in JSON format
       operationId: getChatRooms
       responses:
         '200':
@@ -97,7 +104,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/requestBodies/ChatRoom'
+                  $ref: '#/components/schemas/ChatRoom'
         default:
           description: unexpected error
           content:
@@ -113,24 +120,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/requestBodies/NewChatRoom'
-              examples:
-                chatRoom1:
-                  value:
-                  chatRoomId: 1
-                  userIds: [ 1, 2 ]
-                  name: "Dog Poker Night"
-                  moderatorId: 1
-                chatRoom2:
-                  value:
-                  chatRoomId: 2
-                  userIds: [ 1, 3 ]
-                  name: "Barking Outside"
-                  moderatorId: 1
-                  icon: "icon2"
+              $ref: '#/components/schemas/NewChatRoom'
           application/xml:
             schema:
-              $ref: '#/components/requestBodies/NewChatRoom'
+              $ref: '#/components/schemas/NewChatRoom'
       responses:
         '200':
           description: Created
@@ -192,7 +185,10 @@ paths:
             type: integer
             format: int32
       requestBody:
-        $ref: '#/components/requestBodies/ChatRoom'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRoom'
       responses:
         '200':
           description: Updated
@@ -236,7 +232,7 @@ paths:
   /users:
     get:
       tags:
-        - Users
+        - User
       summary: Gets a list of all users in JSON format
       description: >
         A detailed description of the operation.
@@ -251,7 +247,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/requestBodies/User'
+                  $ref: '#/components/schemas/User'
         default:
           description: unexpected error
           content:
@@ -264,7 +260,10 @@ paths:
       summary: Add a new user to the database
       operationId: createUser
       requestBody:
-        $ref: '#/components/requestBodies/NewUser'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
       responses:
         '200':
           description: Created
@@ -284,7 +283,7 @@ paths:
   /users/{id}:
     get:
       tags:
-        - Users
+        - User
       summary: Gets a user by ID.
       description: >
         A detailed description of the operation.
@@ -358,7 +357,6 @@ components:
         - user
       xml:
         name: ChatMessage
-    #public ChatMessageInput(int chatRoomId, int userId, String content) {
     NewChatMessage:
       type: object
       properties:
@@ -415,8 +413,6 @@ components:
         - moderatorId
       xml:
         name: NewChatRoomNoIcon
-      #ChatRoomInput(ArrayList<Integer> userIds, String name, int moderatorId, byte[] icon) {
-      #crs.createChatRoom(chatRoomInput.getName(), chatRoomInput.getModeratorId(), chatRoomInput.getUserIds(), chatRoomInput.getIcon());
     NewChatRoom:
       type: object
       properties:
@@ -446,6 +442,8 @@ components:
           type: integer
           format: int32
         message:
+          type: string
+        fields:
           type: string
   requestBodies:
     User:
@@ -514,13 +512,13 @@ components:
                 userIds: [ 1, 2 ]
                 name: "Dog Poker Night"
                 moderatorId: 1
-                icon: "icon1"
             chatRoom2:
               value:
                 chatRoomId: 2
                 userIds: [ 1, 3 ]
                 name: "Barking Outside"
                 moderatorId: 1
+                icon: "icon2"
         application/xml:
           schema:
             $ref: '#/components/schemas/NewChatRoom'
