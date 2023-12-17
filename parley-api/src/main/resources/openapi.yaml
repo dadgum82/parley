@@ -315,10 +315,12 @@ components:
   schemas:
     User:
       type: object
+      x-class-extra-annotation: "@jakarta.persistence.Entity"
       properties:
         id:
           type: integer
           format: int32
+          x-field-extra-annotation: "@jakarta.persistence.Id"
         name:
           type: string
       required:

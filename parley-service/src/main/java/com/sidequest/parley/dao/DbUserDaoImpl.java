@@ -5,11 +5,14 @@ import org.sidequest.parley.model.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * This class is used to access the User table in the database.
  */
 public class DbUserDaoImpl implements UserDao {
+    Logger logger = Logger.getLogger(DbUserDaoImpl.class.getName());
+
     //private SQLiteConnection dbConnection;
     private final String dbEnv;
 
@@ -31,6 +34,7 @@ public class DbUserDaoImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
+        logger.info("-!-!-!-!-!- getAllUsers starting");
         SQLiteConnection dbConnection = new SQLiteConnection(dbEnv);
         try (Connection connection = dbConnection.getConnection();
              Statement statement = connection.createStatement();
