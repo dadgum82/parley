@@ -1,14 +1,16 @@
 package org.sidequest.parley.repository;
 
-import org.sidequest.parley.model.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository // This is an addition to try the mapper
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-
-public interface UserRepository extends CrudRepository<User, Long> {
-
-    List<User> findByLastName(String lastName);
-
-    User findById(long id);
 }
+
+//public interface UserRepository extends CrudRepository<UserEntity, Long> {
+//
+//    List<User> findByLastName(String lastName);
+//
+//    User  findById(long id);
+//}

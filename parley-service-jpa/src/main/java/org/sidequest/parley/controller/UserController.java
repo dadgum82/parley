@@ -1,8 +1,12 @@
 package org.sidequest.parley.controller;
 
 import org.sidequest.parley.api.UsersApi;
+import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
+import org.sidequest.parley.repository.UserRepository;
 import org.sidequest.parley.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +18,10 @@ import java.util.List;
 //@Service
 @RestController
 public class UserController implements UsersApi {
+
+    @Autowired
+    UserRepository userRepository;
+
     /**
      * Retrieves a list of all users in JSON format.
      *
@@ -23,9 +31,34 @@ public class UserController implements UsersApi {
 //    public ResponseEntity<List<org.sidequest.parley.model.User>> getUsers() {
     public ResponseEntity<List<User>> getUsers() {
         try {
-            UserService us = new UserService();
+            UserService us = new UserService(userRepository);
             List<User> users = us.getUsers();
             return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<User> getUserById(Integer id) {
+        try {
+            UserService us = new UserService(userRepository);
+            User user = us.getUser(id);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<User> createUser(NewUser newUser) {
+        try {
+            UserService us = new UserService(userRepository);
+            User user = us.createUser(newUser.getName());
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
