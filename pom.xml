@@ -38,6 +38,7 @@
 
         <mapstruct-version>1.5.5.Final</mapstruct-version>
         <postgresql-version>42.3.1</postgresql-version>
+        <mysql-connector-java-version>8.0.33</mysql-connector-java-version>
     </properties>
 
     <dependencyManagement>
@@ -53,6 +54,12 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java-version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
