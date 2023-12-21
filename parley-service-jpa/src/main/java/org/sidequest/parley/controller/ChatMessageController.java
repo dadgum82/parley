@@ -37,7 +37,6 @@ public class ChatMessageController implements ChatsApi {
     @Override
     public ResponseEntity<List<ChatMessage>> getChatMessagesById(Integer id) {
         try {
-            chatMessageService.initalizeChat(id);
             List<ChatMessage> cm = chatMessageService.getChatMessages();
             return ResponseEntity.ok(cm);
         } catch (Exception e) {
@@ -48,7 +47,6 @@ public class ChatMessageController implements ChatsApi {
     @Override
     public ResponseEntity<ChatMessage> createChatMessage(NewChatMessage newChatMessage) {
         try {
-            chatMessageService.initalizeChat(newChatMessage.getChatRoomId());
             chatMessageService.createChatMessage(newChatMessage);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
