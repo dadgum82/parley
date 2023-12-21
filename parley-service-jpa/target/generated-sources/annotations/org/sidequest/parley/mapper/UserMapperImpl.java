@@ -7,7 +7,7 @@ import org.sidequest.parley.repository.UserEntity;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-19T13:06:02-0500",
+    date = "2023-12-21T16:26:10-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class UserMapperImpl implements UserMapper {
@@ -20,7 +20,9 @@ public class UserMapperImpl implements UserMapper {
 
         UserEntity userEntity = new UserEntity();
 
-        userEntity.setId( user.getId() );
+        if ( user.getId() != null ) {
+            userEntity.setId( user.getId() );
+        }
         userEntity.setName( user.getName() );
 
         return userEntity;

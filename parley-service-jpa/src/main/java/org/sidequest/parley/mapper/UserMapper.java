@@ -2,8 +2,6 @@ package org.sidequest.parley.mapper;
 
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserEntity;
@@ -15,10 +13,10 @@ public interface UserMapper {
 
     public static UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mappings({
-            @Mapping(target = "id", source = "id"),
-            @Mapping(target = "name", source = "name"),
-    })
+    //    @Mappings({
+//            @Mapping(target = "id", source = "id"),
+//            @Mapping(target = "name", source = "name")
+//    })
     UserEntity mapTo(User user);
 
     @InheritInverseConfiguration

@@ -6,10 +6,17 @@ import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserRepository;
 import org.sidequest.parley.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 /**
@@ -22,6 +29,9 @@ public class UserController implements UsersApi {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserService userService;
+
     /**
      * Retrieves a list of all users in JSON format.
      *
@@ -31,8 +41,7 @@ public class UserController implements UsersApi {
 //    public ResponseEntity<List<org.sidequest.parley.model.User>> getUsers() {
     public ResponseEntity<List<User>> getUsers() {
         try {
-            UserService us = new UserService(userRepository);
-            List<User> users = us.getUsers();
+            List<User> users = userService.getUsers();
             return ResponseEntity.ok(users);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -42,8 +51,7 @@ public class UserController implements UsersApi {
     @Override
     public ResponseEntity<User> getUserById(Integer id) {
         try {
-            UserService us = new UserService(userRepository);
-            User user = us.getUser(id);
+            User user = userService.getUser(id);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -53,8 +61,8 @@ public class UserController implements UsersApi {
     @Override
     public ResponseEntity<User> createUser(NewUser newUser) {
         try {
-            UserService us = new UserService(userRepository);
-            User user = us.createUser(newUser.getName());
+
+            User user = userService.createUser(newUser.getName());
             if (user == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -64,66 +72,31 @@ public class UserController implements UsersApi {
         }
     }
 
+    @Override
+    public ResponseEntity<Void> setUserAvatar(Integer id, MultipartFile file) {
+        try {
+            userService.setUserAvatar(id, file);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
+    @Override
+    public ResponseEntity<Resource> getUserAvatar(Integer id) {
+        try {
+            String avatarPath = userService.getUserAvatar(id);
+            File file = new File(avatarPath);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + file.getName());
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(file.length())
+                    .contentType(MediaType.IMAGE_PNG) // or MediaType.IMAGE_PNG if it's a PNG image MediaType.IMAGE_JPEG
+                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
-
-
-//@Path("/users")
-//public class UserController implements UsersApi {
-////	/**
-////	 * Retrieves a list of all users in JSON format.
-////	 *
-////	 * @return A JSON-formatted string containing an array of users.
-////	 */
-////	@GET
-////	@Produces(MediaType.APPLICATION_JSON)
-////	public ResponseEntity<org.sidequest.parley.model.User> getUsers() throws IOException {
-////		UserService us = new UserService();
-////		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-////		for (User u : us.getUsers()) {
-////			JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-////			objectBuilder.add("id", u.getId());
-////			objectBuilder.add("name", u.getName());
-////			arrayBuilder.add(objectBuilder.build());
-////		}
-////		return Json.createObjectBuilder().add("users", arrayBuilder.build()).build().toString();
-////	}
-//
-//
-//	/**
-//	 * Retrieves a user by their ID.
-//	 *
-//	 * @param id The ID of the user to retrieve.
-//	 * @return A User object representing the found user.
-//	 * @throws FileNotFoundException If the file is not found.
-//	 * @throws IOException           If an I/O error occurs.
-//	 */
-//	@GET
-//	@Path("/{id}")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public User getUserById(@PathParam("id") int id) throws FileNotFoundException, IOException {
-//		UserService us = new UserService();
-//		User user = us.getUser(id);
-//		if (user != null) {
-//			return user;
-//		} else {
-//			// Return a 404 response if the user isn't found
-//			throw new NotFoundException();
-//		}
-//	}
-//
-//	/**
-//	 * Creates a new user using the provided input data.
-//	 *
-//	 * @param userInput A UserInput object containing the data for the new user.
-//	 * @return A User object representing the created user.
-//	 * @throws IOException If an I/O error occurs.
-//	 */
-//	@POST
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public User createUser(UserInput userInput) throws IOException {
-//		UserService us = new UserService();
-//		return us.createUser(userInput.getName());
-//	}
-//}

@@ -14,15 +14,27 @@ import jakarta.persistence.*;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+    private int id;
     private String name;
 
-    public Long getId() {
+    private String avatarPath;
+
+    // getters and setters
+
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -33,6 +45,4 @@ public class UserEntity {
     public void setName(String name) {
         this.name = name;
     }
-
-
 }

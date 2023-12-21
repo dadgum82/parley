@@ -1,44 +1,44 @@
 package org.sidequest.parley.service;
 
+import jakarta.annotation.PostConstruct;
 import org.sidequest.parley.mapper.UserMapper;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserEntity;
 import org.sidequest.parley.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
+@Service
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    private final List<User> users;
+    private List<User> users;
+
+    @Autowired
+    UserRepository userRepository;
     private int USERS_COUNT;
 
+    @Value("${user.avatar.directory}")
+    private String uploadDir;
+    // private final String uploadDir = "C:\\Users\\jrack\\OneDrive\\Documents\\parley\\images\\users\\";
 
-    UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-        users = new ArrayList<>();
-        this.initalizeUsers();
+    public UserService() {
     }
 
-    public UserService() throws IOException {
-        this("prod");
-
-    }
-
-    public UserService(String dbEnv) throws IOException {
-        users = new ArrayList<>();
-        this.initalizeUsers();
-    }
-
+    @PostConstruct
     private void initalizeUsers() {
-
+        this.users = new ArrayList<>();
         userRepository.findAll().forEach(userEntity -> {
             User user = UserMapper.INSTANCE.mapTo(userEntity);
             this.users.add(user);
@@ -86,7 +86,7 @@ public class UserService {
         userCount++; //new user increment count
         //User user = new User(userCount, name); // This is the original code. It is commented out because it is not compatible with the new User class.
         User user = new User();
-        user.setId((long) userCount);
+        user.setId(userCount);
         user.setName(name);
         try {
             UserEntity userEntity = UserMapper.INSTANCE.mapTo(user);
@@ -107,7 +107,7 @@ public class UserService {
     public void updateUser(String name, int id) {
         // User user = new User(id, name); // This is the original code. It is commented out because it is not compatible with the new User class.
         User user = new User();
-        user.setId((long) id);
+        user.setId(id);
         user.setName(name);
 
         try {
@@ -118,4 +118,26 @@ public class UserService {
             System.out.println("User not updated");
         }
     }
+
+    public void setUserAvatar(int userId, MultipartFile file) throws Exception {
+        UserEntity user = userRepository.findById((long) userId).orElseThrow(() -> new Exception("User not found"));
+
+        if (!file.isEmpty()) {
+            byte[] bytes = file.getBytes();
+            String fileName = user.getId() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(uploadDir + fileName);
+            Files.write(path, bytes);
+
+            user.setAvatarPath(path.toString());
+            userRepository.save(user);
+        } else {
+            throw new Exception("Empty file!");
+        }
+    }
+
+    public String getUserAvatar(int userId) throws Exception {
+        UserEntity user = userRepository.findById((long) userId).orElseThrow(() -> new Exception("User not found"));
+        return user.getAvatarPath();
+    }
+
 }
