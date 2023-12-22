@@ -496,10 +496,10 @@ components:
         chatRoomId:
           type: integer
           format: int32
-        userIds:
+        users:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/User'
         name:
           type: string
         moderatorId:
@@ -513,36 +513,17 @@ components:
         - moderatorId
       xml:
         name: ChatRoom
-    NewChatRoomNoIcon:
-      type: object
-      properties:
-        userIds:
-          type: array
-          items:
-            type: integer
-        name:
-          type: string
-        moderatorId:
-          type: integer
-      required:
-        - name
-        - moderatorId
-      xml:
-        name: NewChatRoomNoIcon
     NewChatRoom:
       type: object
       properties:
-        userIds:
+        users:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/User'
         name:
           type: string
         moderatorId:
           type: integer
-      #        icon:
-      #          type: string
-      #          format: byte
       required:
         - name
         - moderatorId
@@ -616,11 +597,7 @@ components:
       content:
         application/json:
           schema:
-            oneOf:
-              - $ref: '#/components/schemas/NewChatRoomNoIcon'
-              - $ref: '#/components/schemas/NewChatRoom'
-            discriminator:
-              propertyName: icon
+            $ref: '#/components/schemas/NewChatRoom'
           examples:
             chatRoom1:
               value:
@@ -628,13 +605,6 @@ components:
                 userIds: [ 1, 2 ]
                 name: "Dog Poker Night"
                 moderatorId: 1
-            chatRoom2:
-              value:
-                chatRoomId: 2
-                userIds: [ 1, 3 ]
-                name: "Barking Outside"
-                moderatorId: 1
-        #                icon: "icon2"
         application/xml:
           schema:
             $ref: '#/components/schemas/NewChatRoom'

@@ -56,6 +56,7 @@ public class ChatRoomController implements ChatroomsApi {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.setName(newChatRoom.getName());
             chatRoom.setModeratorId(newChatRoom.getModeratorId());
+            chatRoom.setUsers(newChatRoom.getUsers());
 
             ChatRoom resultingChatRoom = chatRoomService.createChatRoom(chatRoom);
             return ResponseEntity.ok(resultingChatRoom);

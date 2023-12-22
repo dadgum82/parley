@@ -11,8 +11,8 @@ public class ChatRoomEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @OneToMany(mappedBy = "chatRoom")
-    private List<ChatRoomUsersEntity> userIds;
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserEntity> users; // Changed from List<ChatRoomUsersEntity> userIds
 
     private int moderatorId;
 
@@ -22,15 +22,6 @@ public class ChatRoomEntity {
 
     // getters and setters
 
-
-    public String getIconPath() {
-        return iconPath;
-    }
-
-    public void setIconPath(String iconPath) {
-        this.iconPath = iconPath;
-    }
-
     public int getId() {
         return id;
     }
@@ -39,12 +30,12 @@ public class ChatRoomEntity {
         this.id = id;
     }
 
-    public List<ChatRoomUsersEntity> getUserIds() {
-        return userIds;
+    public List<UserEntity> getUsers() {
+        return users;
     }
 
-    public void setUserIds(List<ChatRoomUsersEntity> userIds) {
-        this.userIds = userIds;
+    public void setUsers(List<UserEntity> users) {
+        this.users = users;
     }
 
     public int getModeratorId() {
@@ -61,5 +52,13 @@ public class ChatRoomEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIconPath() {
+        return iconPath;
+    }
+
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
     }
 }

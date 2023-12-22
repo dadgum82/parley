@@ -19,8 +19,20 @@ public class UserEntity {
 
     private String avatarPath;
 
+    @ManyToOne
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoomEntity chatRoom;
+
     // getters and setters
 
+
+    public ChatRoomEntity getChatRoom() {
+        return chatRoom;
+    }
+
+    public void setChatRoom(ChatRoomEntity chatRoom) {
+        this.chatRoom = chatRoom;
+    }
 
     public String getAvatarPath() {
         return avatarPath;

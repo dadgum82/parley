@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.sidequest.parley.model.ChatRoom;
+import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomEntity;
-import org.sidequest.parley.repository.ChatRoomUsersEntity;
+import org.sidequest.parley.repository.UserEntity;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-21T16:41:46-0500",
+    date = "2023-12-22T09:13:39-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class ChatRoomMapperImpl implements ChatRoomMapper {
@@ -25,7 +26,7 @@ public class ChatRoomMapperImpl implements ChatRoomMapper {
         if ( chatRoom.getChatRoomId() != null ) {
             chatRoomEntity.setId( chatRoom.getChatRoomId() );
         }
-        chatRoomEntity.setUserIds( integerListToChatRoomUsersEntityList( chatRoom.getUserIds() ) );
+        chatRoomEntity.setUsers( userListToUserEntityList( chatRoom.getUsers() ) );
         if ( chatRoom.getModeratorId() != null ) {
             chatRoomEntity.setModeratorId( chatRoom.getModeratorId() );
         }
@@ -43,34 +44,34 @@ public class ChatRoomMapperImpl implements ChatRoomMapper {
         ChatRoom chatRoom = new ChatRoom();
 
         chatRoom.setChatRoomId( chatRoomEntity.getId() );
-        chatRoom.setUserIds( chatRoomUsersEntityListToIntegerList( chatRoomEntity.getUserIds() ) );
+        chatRoom.setUsers( userEntityListToUserList( chatRoomEntity.getUsers() ) );
         chatRoom.setName( chatRoomEntity.getName() );
         chatRoom.setModeratorId( chatRoomEntity.getModeratorId() );
 
         return chatRoom;
     }
 
-    protected List<ChatRoomUsersEntity> integerListToChatRoomUsersEntityList(List<Integer> list) {
+    protected List<UserEntity> userListToUserEntityList(List<User> list) {
         if ( list == null ) {
             return null;
         }
 
-        List<ChatRoomUsersEntity> list1 = new ArrayList<ChatRoomUsersEntity>( list.size() );
-        for ( Integer integer : list ) {
-            list1.add( map( integer ) );
+        List<UserEntity> list1 = new ArrayList<UserEntity>( list.size() );
+        for ( User user : list ) {
+            list1.add( map( user ) );
         }
 
         return list1;
     }
 
-    protected List<Integer> chatRoomUsersEntityListToIntegerList(List<ChatRoomUsersEntity> list) {
+    protected List<User> userEntityListToUserList(List<UserEntity> list) {
         if ( list == null ) {
             return null;
         }
 
-        List<Integer> list1 = new ArrayList<Integer>( list.size() );
-        for ( ChatRoomUsersEntity chatRoomUsersEntity : list ) {
-            list1.add( map( chatRoomUsersEntity ) );
+        List<User> list1 = new ArrayList<User>( list.size() );
+        for ( UserEntity userEntity : list ) {
+            list1.add( map( userEntity ) );
         }
 
         return list1;
