@@ -2,6 +2,8 @@ package org.sidequest.parley.repository;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 //import lombok.Getter;
 //import lombok.Setter;
 //import lombok.experimental.Accessors;
@@ -19,19 +21,18 @@ public class UserEntity {
 
     private String avatarPath;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_room_id")
-    private ChatRoomEntity chatRoom;
+    @OneToMany(mappedBy = "user")
+    private List<ChatRoomUsersEntity> chatRoomUsers;
 
     // getters and setters
 
 
-    public ChatRoomEntity getChatRoom() {
-        return chatRoom;
+    public List<ChatRoomUsersEntity> getChatRoomUsers() {
+        return chatRoomUsers;
     }
 
-    public void setChatRoom(ChatRoomEntity chatRoom) {
-        this.chatRoom = chatRoom;
+    public void setChatRoomUsers(List<ChatRoomUsersEntity> chatRoomUsers) {
+        this.chatRoomUsers = chatRoomUsers;
     }
 
     public String getAvatarPath() {

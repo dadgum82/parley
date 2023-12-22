@@ -11,14 +11,15 @@ public class ChatRoomUsersEntity {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "chat_room_id")
+    @JoinColumn(name = "chat_room_id", referencedColumnName = "id")
     private ChatRoomEntity chatRoom;
 
     // getters and setters
+
 
     public int getId() {
         return id;

@@ -417,15 +417,16 @@ components:
     ChatRoomUsers:
       type: object
       properties:
-        chatRoomId:
+        id:
           type: integer
           format: int32
-        userIds:
-          type: array
-          items:
-            type: integer
+        userId:
+          $ref: '#/components/schemas/User'
+        chatRoomId:
+          $ref: '#/components/schemas/ChatRoom'
       required:
-        - chatRoomId
+        - id
+        - chatRoomIds
         - userIds
       xml:
         name: ChatRoomUsers

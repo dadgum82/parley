@@ -11,10 +11,11 @@ public class ChatRoomEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserEntity> users; // Changed from List<ChatRoomUsersEntity> userIds
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.EAGER)
+    private List<ChatRoomUsersEntity> chatRoomUsers;
 
     private int moderatorId;
+
 
     private String name;
 
@@ -30,12 +31,13 @@ public class ChatRoomEntity {
         this.id = id;
     }
 
-    public List<UserEntity> getUsers() {
-        return users;
+
+    public List<ChatRoomUsersEntity> getChatRoomUsers() {
+        return chatRoomUsers;
     }
 
-    public void setUsers(List<UserEntity> users) {
-        this.users = users;
+    public void setChatRoomUsers(List<ChatRoomUsersEntity> chatRoomUsers) {
+        this.chatRoomUsers = chatRoomUsers;
     }
 
     public int getModeratorId() {

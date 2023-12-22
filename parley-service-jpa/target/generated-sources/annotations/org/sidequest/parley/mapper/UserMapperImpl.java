@@ -1,13 +1,12 @@
 package org.sidequest.parley.mapper;
 
-import java.util.Optional;
 import javax.annotation.processing.Generated;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserEntity;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-22T09:13:39-0500",
+    date = "2023-12-22T14:01:47-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class UserMapperImpl implements UserMapper {
@@ -38,17 +37,6 @@ public class UserMapperImpl implements UserMapper {
 
         user.setId( userEntity.getId() );
         user.setName( userEntity.getName() );
-
-        return user;
-    }
-
-    @Override
-    public User mapTo(Optional<UserEntity> userEntity) {
-        if ( userEntity == null ) {
-            return null;
-        }
-
-        User user = new User();
 
         return user;
     }

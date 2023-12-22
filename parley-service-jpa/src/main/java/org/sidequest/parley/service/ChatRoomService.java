@@ -4,10 +4,7 @@ package org.sidequest.parley.service;
 
 import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.model.ChatRoom;
-import org.sidequest.parley.repository.ChatRoomEntity;
-import org.sidequest.parley.repository.ChatRoomRepository;
-import org.sidequest.parley.repository.UserEntity;
-import org.sidequest.parley.repository.UserRepository;
+import org.sidequest.parley.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChatRoomService {
+    @Autowired
+    ChatRoomUsersRepository chatRoomUsersRepository;
 
     @Autowired
     ChatRoomRepository chatRoomRepository;
@@ -50,12 +49,20 @@ public class ChatRoomService {
         ChatRoomEntity chatRoomEntity = ChatRoomMapper.INSTANCE.mapTo(chatRoom);
 
         // Handle the users field
-        List<UserEntity> userEntities = chatRoom.getUsers().stream()
-                .map(user -> userRepository.findById((long) user.getId())
-                        .orElseThrow(() -> new RuntimeException("User not found")))
+        ChatRoomEntity finalChatRoomEntity = chatRoomEntity;
+        List<ChatRoomUsersEntity> chatRoomUsers = chatRoom.getUsers().stream()
+                .map(user -> {
+                    UserEntity userEntity = userRepository.findById((long) user.getId())
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+                    ChatRoomUsersEntity chatRoomUser = new ChatRoomUsersEntity();
+                    chatRoomUser.setUser(userEntity);
+                    chatRoomUser.setChatRoom(finalChatRoomEntity);
+                    chatRoomUsersRepository.save(chatRoomUser);
+                    return chatRoomUser;
+                })
                 .collect(Collectors.toList());
 
-        chatRoomEntity.setUsers(userEntities);
+        chatRoomEntity.setChatRoomUsers(chatRoomUsers);
 
         chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
         return ChatRoomMapper.INSTANCE.mapTo(chatRoomEntity);
@@ -68,12 +75,20 @@ public class ChatRoomService {
         chatRoomEntity.setName(chatRoom.getName());
 
         // Handle the users field
-        List<UserEntity> userEntities = chatRoom.getUsers().stream()
-                .map(user -> userRepository.findById((long) user.getId())
-                        .orElseThrow(() -> new RuntimeException("User not found")))
+        ChatRoomEntity finalChatRoomEntity = chatRoomEntity;
+        List<ChatRoomUsersEntity> chatRoomUsers = chatRoom.getUsers().stream()
+                .map(user -> {
+                    UserEntity userEntity = userRepository.findById((long) user.getId())
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+                    ChatRoomUsersEntity chatRoomUser = new ChatRoomUsersEntity();
+                    chatRoomUser.setUser(userEntity);
+                    chatRoomUser.setChatRoom(finalChatRoomEntity);
+                    chatRoomUsersRepository.save(chatRoomUser);
+                    return chatRoomUser;
+                })
                 .collect(Collectors.toList());
 
-        chatRoomEntity.setUsers(userEntities);
+        chatRoomEntity.setChatRoomUsers(chatRoomUsers);
 
         chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
         return ChatRoomMapper.INSTANCE.mapTo(chatRoomEntity);
