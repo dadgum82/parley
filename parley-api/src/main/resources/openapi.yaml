@@ -72,7 +72,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -157,7 +157,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -183,7 +183,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       requestBody:
         content:
           application/json:
@@ -216,7 +216,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       responses:
         '400':
           description: Invalid ID supplied
@@ -241,7 +241,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       responses:
         '200':
           description: Icon retrieved successfully
@@ -264,7 +264,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       requestBody:
         content:
           multipart/form-data:
@@ -347,7 +347,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -374,7 +374,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       responses:
         '200':
           description: Avatar retrieved successfully
@@ -397,7 +397,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int32
+            format: int64
       requestBody:
         content:
           multipart/form-data:
@@ -419,7 +419,7 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
         userId:
           $ref: '#/components/schemas/User'
         chatRoomId:
@@ -435,7 +435,7 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
         name:
           type: string
       required:
@@ -455,10 +455,10 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
         chatRoomId:
           type: integer
-          format: int32
+          format: int64
         content:
           type: string
         timestamp:
@@ -479,10 +479,10 @@ components:
       properties:
         chatRoomId:
           type: integer
-          format: int32
+          format: int64
         userId:
           type: integer
-          format: int32
+          format: int64
         content:
           type: string
       required:
@@ -496,22 +496,19 @@ components:
       properties:
         chatRoomId:
           type: integer
-          format: int32
+          format: int64
         users:
           type: array
           items:
             $ref: '#/components/schemas/User'
         name:
           type: string
-        moderatorId:
-          type: integer
-      #        icon:
-      #          type: string
-      #          format: byte
+        moderator:
+          $ref: '#/components/schemas/User'
       required:
         - chatRoomId
         - name
-        - moderatorId
+        - moderator
       xml:
         name: ChatRoom
     NewChatRoom:
@@ -523,11 +520,11 @@ components:
             $ref: '#/components/schemas/User'
         name:
           type: string
-        moderatorId:
-          type: integer
+        moderator:
+          $ref: '#/components/schemas/User'
       required:
         - name
-        - moderatorId
+        - moderator
       xml:
         name: NewChatRoom
     Error:
@@ -538,7 +535,7 @@ components:
       properties:
         code:
           type: integer
-          format: int32
+        #    format: int32
         message:
           type: string
         fields:
@@ -605,7 +602,7 @@ components:
                 chatRoomId: 1
                 userIds: [ 1, 2 ]
                 name: "Dog Poker Night"
-                moderatorId: 1
+                moderator: { id: 1, name: "Spike" }
         application/xml:
           schema:
             $ref: '#/components/schemas/NewChatRoom'

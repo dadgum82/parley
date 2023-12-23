@@ -49,7 +49,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> getUserById(Integer id) {
+    public ResponseEntity<User> getUserById(Long id) {
         try {
             User user = userService.getUser(id);
             return ResponseEntity.ok(user);
@@ -73,7 +73,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Void> setUserAvatar(Integer id, MultipartFile file) {
+    public ResponseEntity<Void> setUserAvatar(Long id, MultipartFile file) {
         try {
             userService.setUserAvatar(id, file);
             return ResponseEntity.ok().build();
@@ -83,7 +83,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Resource> getUserAvatar(Integer id) {
+    public ResponseEntity<Resource> getUserAvatar(Long id) {
         try {
             String avatarPath = userService.getUserAvatar(id);
             File file = new File(avatarPath);

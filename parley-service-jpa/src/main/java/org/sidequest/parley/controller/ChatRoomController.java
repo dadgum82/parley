@@ -41,7 +41,7 @@ public class ChatRoomController implements ChatroomsApi {
     }
 
     @Override
-    public ResponseEntity<ChatRoom> getChatRoomById(Integer id) {
+    public ResponseEntity<ChatRoom> getChatRoomById(Long id) {
         try {
             ChatRoom chatRoom = chatRoomService.getChatRoom(id);
             return ResponseEntity.ok(chatRoom);
@@ -55,7 +55,7 @@ public class ChatRoomController implements ChatroomsApi {
         try {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.setName(newChatRoom.getName());
-            chatRoom.setModeratorId(newChatRoom.getModeratorId());
+            chatRoom.setModerator(newChatRoom.getModerator());
             chatRoom.setUsers(newChatRoom.getUsers());
 
             ChatRoom resultingChatRoom = chatRoomService.createChatRoom(chatRoom);
@@ -66,7 +66,7 @@ public class ChatRoomController implements ChatroomsApi {
     }
 
     @Override
-    public ResponseEntity<Error> deleteChatRoom(Integer id) {
+    public ResponseEntity<Error> deleteChatRoom(Long id) {
         try {
             chatRoomService.deleteChatRoom(id);
             return ResponseEntity.ok().build();
@@ -76,7 +76,7 @@ public class ChatRoomController implements ChatroomsApi {
     }
 
     @Override
-    public ResponseEntity<ChatRoom> updateChatRoom(Integer id, ChatRoom chatRoom) {
+    public ResponseEntity<ChatRoom> updateChatRoom(Long id, ChatRoom chatRoom) {
         try {
             ChatRoom updatedChatRoom = chatRoomService.updateChatRoom(chatRoom);
             return ResponseEntity.ok(updatedChatRoom);
@@ -86,7 +86,7 @@ public class ChatRoomController implements ChatroomsApi {
     }
 
     @Override
-    public ResponseEntity<Void> setChatRoomIcon(Integer id, MultipartFile file) {
+    public ResponseEntity<Void> setChatRoomIcon(Long id, MultipartFile file) {
         try {
             chatRoomService.setChatRoomIcon(id, file);
             return ResponseEntity.ok().build();
@@ -96,7 +96,7 @@ public class ChatRoomController implements ChatroomsApi {
     }
 
     @Override
-    public ResponseEntity<Resource> getChatRoomIcon(Integer id) {
+    public ResponseEntity<Resource> getChatRoomIcon(Long id) {
         try {
             String iconPath = chatRoomService.getChatRoomIcon(id);
             File file = new File(iconPath);

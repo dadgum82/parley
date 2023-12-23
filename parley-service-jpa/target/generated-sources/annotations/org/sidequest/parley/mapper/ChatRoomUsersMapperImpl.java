@@ -1,16 +1,16 @@
 package org.sidequest.parley.mapper;
 
 import javax.annotation.processing.Generated;
+import org.sidequest.parley.entity.ChatRoomEntity;
+import org.sidequest.parley.entity.ChatRoomUsersEntity;
+import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.ChatRoomUsers;
 import org.sidequest.parley.model.User;
-import org.sidequest.parley.repository.ChatRoomEntity;
-import org.sidequest.parley.repository.ChatRoomUsersEntity;
-import org.sidequest.parley.repository.UserEntity;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-22T14:01:47-0500",
+    date = "2023-12-23T14:57:05-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
@@ -23,11 +23,11 @@ public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
 
         ChatRoomUsersEntity chatRoomUsersEntity = new ChatRoomUsersEntity();
 
-        if ( chatRoomUsers.getId() != null ) {
-            chatRoomUsersEntity.setId( chatRoomUsers.getId() );
-        }
         chatRoomUsersEntity.setUser( userToUserEntity( chatRoomUsers.getUserId() ) );
         chatRoomUsersEntity.setChatRoom( chatRoomToChatRoomEntity( chatRoomUsers.getChatRoomId() ) );
+        if ( chatRoomUsers.getId() != null ) {
+            chatRoomUsersEntity.setId( chatRoomUsers.getId().intValue() );
+        }
 
         return chatRoomUsersEntity;
     }
@@ -40,9 +40,9 @@ public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
 
         ChatRoomUsers chatRoomUsers = new ChatRoomUsers();
 
-        chatRoomUsers.setId( chatRoomUsersEntity.getId() );
         chatRoomUsers.setUserId( userEntityToUser( chatRoomUsersEntity.getUser() ) );
         chatRoomUsers.setChatRoomId( chatRoomEntityToChatRoom( chatRoomUsersEntity.getChatRoom() ) );
+        chatRoomUsers.setId( (long) chatRoomUsersEntity.getId() );
 
         return chatRoomUsers;
     }
@@ -54,9 +54,7 @@ public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
 
         UserEntity userEntity = new UserEntity();
 
-        if ( user.getId() != null ) {
-            userEntity.setId( user.getId() );
-        }
+        userEntity.setId( user.getId() );
         userEntity.setName( user.getName() );
 
         return userEntity;
@@ -69,9 +67,7 @@ public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
 
         ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
 
-        if ( chatRoom.getModeratorId() != null ) {
-            chatRoomEntity.setModeratorId( chatRoom.getModeratorId() );
-        }
+        chatRoomEntity.setModerator( userToUserEntity( chatRoom.getModerator() ) );
         chatRoomEntity.setName( chatRoom.getName() );
 
         return chatRoomEntity;
@@ -98,7 +94,7 @@ public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
         ChatRoom chatRoom = new ChatRoom();
 
         chatRoom.setName( chatRoomEntity.getName() );
-        chatRoom.setModeratorId( chatRoomEntity.getModeratorId() );
+        chatRoom.setModerator( userEntityToUser( chatRoomEntity.getModerator() ) );
 
         return chatRoom;
     }

@@ -2,14 +2,14 @@ package org.sidequest.parley.mapper;
 
 import java.util.Optional;
 import javax.annotation.processing.Generated;
+import org.sidequest.parley.entity.ChatMessageEntity;
+import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.User;
-import org.sidequest.parley.repository.ChatMessageEntity;
-import org.sidequest.parley.repository.UserEntity;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-22T14:01:47-0500",
+    date = "2023-12-23T14:57:05-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class ChatMessageMapperImpl implements ChatMessageMapper {
@@ -23,10 +23,10 @@ public class ChatMessageMapperImpl implements ChatMessageMapper {
         ChatMessageEntity chatMessageEntity = new ChatMessageEntity();
 
         if ( chatMessage.getId() != null ) {
-            chatMessageEntity.setId( chatMessage.getId() );
+            chatMessageEntity.setId( chatMessage.getId().intValue() );
         }
         if ( chatMessage.getChatRoomId() != null ) {
-            chatMessageEntity.setChatRoomId( chatMessage.getChatRoomId() );
+            chatMessageEntity.setChatRoomId( chatMessage.getChatRoomId().intValue() );
         }
         chatMessageEntity.setContent( chatMessage.getContent() );
         chatMessageEntity.setTimestamp( chatMessage.getTimestamp() );
@@ -43,8 +43,8 @@ public class ChatMessageMapperImpl implements ChatMessageMapper {
 
         ChatMessage chatMessage = new ChatMessage();
 
-        chatMessage.setId( chatMessageEntity.getId() );
-        chatMessage.setChatRoomId( chatMessageEntity.getChatRoomId() );
+        chatMessage.setId( (long) chatMessageEntity.getId() );
+        chatMessage.setChatRoomId( (long) chatMessageEntity.getChatRoomId() );
         chatMessage.setContent( chatMessageEntity.getContent() );
         chatMessage.setTimestamp( chatMessageEntity.getTimestamp() );
         chatMessage.setUser( userEntityToUser( chatMessageEntity.getUser() ) );
@@ -70,9 +70,7 @@ public class ChatMessageMapperImpl implements ChatMessageMapper {
 
         UserEntity userEntity = new UserEntity();
 
-        if ( user.getId() != null ) {
-            userEntity.setId( user.getId() );
-        }
+        userEntity.setId( user.getId() );
         userEntity.setName( user.getName() );
 
         return userEntity;

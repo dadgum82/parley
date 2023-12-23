@@ -3,9 +3,9 @@ package org.sidequest.parley.mapper;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.sidequest.parley.entity.ChatMessageEntity;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.User;
-import org.sidequest.parley.repository.ChatMessageEntity;
 
 import java.util.Optional;
 

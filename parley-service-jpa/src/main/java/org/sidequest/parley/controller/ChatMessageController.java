@@ -35,7 +35,7 @@ public class ChatMessageController implements ChatsApi {
 
 
     @Override
-    public ResponseEntity<List<ChatMessage>> getChatMessagesById(Integer id) {
+    public ResponseEntity<List<ChatMessage>> getChatMessagesById(Long id) {
         try {
             List<ChatMessage> cm = chatMessageService.getChatMessages();
             return ResponseEntity.ok(cm);

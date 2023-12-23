@@ -1,11 +1,15 @@
 package org.sidequest.parley.service;
 
+import org.sidequest.parley.entity.ChatMessageEntity;
 import org.sidequest.parley.mapper.ChatMessageMapper;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewChatMessage;
 import org.sidequest.parley.model.User;
-import org.sidequest.parley.repository.*;
+import org.sidequest.parley.repository.ChatMessageRepository;
+import org.sidequest.parley.repository.ChatRoomRepository;
+import org.sidequest.parley.repository.ChatRoomUsersRepository;
+import org.sidequest.parley.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

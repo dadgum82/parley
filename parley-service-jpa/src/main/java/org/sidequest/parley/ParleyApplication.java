@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-@EntityScan(basePackages = {"org.sidequest.parley.repository"})
+@EntityScan(basePackages = {"org.sidequest.parley.entity"})
 public class ParleyApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

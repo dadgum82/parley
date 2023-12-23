@@ -13,7 +13,7 @@ public class ChatRoomUserService {
 
     }
 
-    public boolean isUserInChatRoom(int userId, int chatRoomId) {
+    public boolean isUserInChatRoom(Long userId, Long chatRoomId) {
         return repository.findByUserIdAndChatRoomId(userId, chatRoomId).isPresent();
     }
 }
