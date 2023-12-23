@@ -3,9 +3,7 @@ package org.sidequest.parley.service;
 import org.sidequest.parley.entity.ChatMessageEntity;
 import org.sidequest.parley.mapper.ChatMessageMapper;
 import org.sidequest.parley.model.ChatMessage;
-import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewChatMessage;
-import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatMessageRepository;
 import org.sidequest.parley.repository.ChatRoomRepository;
 import org.sidequest.parley.repository.ChatRoomUsersRepository;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,41 +46,24 @@ public class ChatMessageService {
 
     public List<ChatMessage> getChatMessages() {
         return chatMessageRepository.findAll().stream()
-                .map(ChatMessageMapper.INSTANCE::mapTo)
+                .map(ChatMessageMapper.INSTANCE::toModel)
                 .collect(Collectors.toList());
     }
 
     public List<ChatMessage> getChatMessages(int chatRoomId) {
         return chatMessageRepository.findByChatRoomId(chatRoomId).stream()
-                .map(ChatMessageMapper.INSTANCE::mapTo)
+                .map(ChatMessageMapper.INSTANCE::toModel)
                 .collect(Collectors.toList());
     }
 
     public void createChatMessage(NewChatMessage newChatMessage) throws SQLException {
-        User user = newChatMessage.getUserId() == null ? null : us.getUser(newChatMessage.getUserId());
-        ChatRoom chatRoom = crs.getChatRoom(newChatMessage.getChatRoomId());
-        if (chatRoom == null) {
-            throw new IllegalArgumentException("ChatRoom not found. Chat Message: " + newChatMessage);
-        }
-
-        if (user == null) {
-            throw new IllegalArgumentException("User not found. Chat Message: " + newChatMessage);
-        }
-
-        if (!crus.isUserInChatRoom(user.getId(), chatRoom.getChatRoomId())) {
-            throw new IllegalArgumentException("User is not in chat room. Username: " + user.getName() + " ChatRoom name: " + chatRoom.getName());
-        }
-
-        String content = newChatMessage.getContent();
-        LocalDateTime currentTime = LocalDateTime.now();
-
         ChatMessage cm = new ChatMessage();
-        cm.setChatRoomId(newChatMessage.getChatRoomId());
-        cm.setTimestamp(OffsetDateTime.from(currentTime));
-        cm.setUser(user);
-        cm.setContent(content);
+        cm.setChatRoom(newChatMessage.getChatRoom());
+        cm.setTimestamp(OffsetDateTime.now());
+        cm.setUser(newChatMessage.getUser());
+        cm.setContent(newChatMessage.getContent());
 
-        ChatMessageEntity chatMessageEntity = ChatMessageMapper.INSTANCE.mapTo(cm);
+        ChatMessageEntity chatMessageEntity = ChatMessageMapper.INSTANCE.toEntity(cm);
         chatMessageRepository.save(chatMessageEntity);
     }
 }

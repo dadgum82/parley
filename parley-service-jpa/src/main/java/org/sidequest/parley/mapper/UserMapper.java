@@ -9,28 +9,6 @@ import org.sidequest.parley.model.User;
 @Mapper
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-//
-//    @Mapping(target = "id", source = "id")
-//    @Mapping(target = "name", source = "name")
-//    UserEntity mapTo(User user);
-//
-//    @Mapping(target = "id", source = "id")
-//    @Mapping(target = "name", source = "name")
-//    User mapTo(UserEntity userEntity);
-//
-//    default UserEntity map(User user) {
-//        UserEntity userEntity = new UserEntity();
-//        userEntity.setId(user.getId());
-//        userEntity.setName(user.getName());
-//        return userEntity;
-//    }
-//
-//    default User map(UserEntity userEntity) {
-//        User user = new User();
-//        user.setId(userEntity.getId());
-//        user.setName(userEntity.getName());
-//        return user;
-//    }
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")

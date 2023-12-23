@@ -7,13 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
 
-//import lombok.Getter;
-//import lombok.Setter;
-//import lombok.experimental.Accessors;
-//
-//@Getter
-//@Setter
-//@Accessors(chain = true)
 @Entity
 @Getter
 @Setter
@@ -23,8 +16,8 @@ public class ChatMessageEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-
-    private int chatRoomId;
+    @OneToOne
+    private ChatRoomEntity chatRoom;
     private String content;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

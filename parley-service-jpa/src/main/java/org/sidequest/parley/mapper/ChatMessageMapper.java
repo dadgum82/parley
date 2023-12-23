@@ -1,31 +1,27 @@
 package org.sidequest.parley.mapper;
 
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.sidequest.parley.entity.ChatMessageEntity;
 import org.sidequest.parley.model.ChatMessage;
-import org.sidequest.parley.model.User;
 
-import java.util.Optional;
-
-@Mapper
+@Mapper(uses = UserMapper.class)
 public interface ChatMessageMapper {
 
-    public static ChatMessageMapper INSTANCE = Mappers.getMapper(ChatMessageMapper.class);
+    ChatMessageMapper INSTANCE = Mappers.getMapper(ChatMessageMapper.class);
 
-    //    @Mappings({
-//            @Mapping(target = "id", source = "id"),
-//            @Mapping(target = "chatRoomId", source = "chatRoomId"),
-//            @Mapping(target = "content", source = "content"),
-//            @Mapping(target = "timestamp", source = "timestamp"),
-//            @Mapping(target = "user", source = "user")
-//    })
-    ChatMessageEntity mapTo(ChatMessage chatMessage);
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "chatRoom", source = "chatRoom")
+    @Mapping(target = "content", source = "content")
+    @Mapping(target = "timestamp", source = "timestamp")
+    @Mapping(target = "user", source = "user")
+    ChatMessageEntity toEntity(ChatMessage chatMessage);
 
-    @InheritInverseConfiguration
-    ChatMessage mapTo(ChatMessageEntity chatMessageEntity);
-
-    @InheritInverseConfiguration
-    User mapTo(Optional<ChatMessageEntity> chatMessageEntity);
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "chatRoom", source = "chatRoom")
+    @Mapping(target = "content", source = "content")
+    @Mapping(target = "timestamp", source = "timestamp")
+    @Mapping(target = "user", source = "user")
+    ChatMessage toModel(ChatMessageEntity chatMessageEntity);
 }

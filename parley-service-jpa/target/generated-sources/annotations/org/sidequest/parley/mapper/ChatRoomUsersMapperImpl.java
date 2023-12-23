@@ -10,7 +10,7 @@ import org.sidequest.parley.model.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-23T14:57:05-0500",
+    date = "2023-12-23T15:30:26-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {

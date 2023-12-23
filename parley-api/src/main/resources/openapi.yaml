@@ -54,7 +54,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
   /chats/{id}:
     get:
       tags:
@@ -76,6 +75,75 @@ paths:
       responses:
         '200':
           description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessage'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /chatrooms/{chatRoomId}/chats/{chatId}:
+    get:
+      tags:
+        - ChatMessage
+      summary: Gets a chat message by ID.
+      description: >
+        A detailed description of the operation.
+        Use markdown for rich text representation,
+        such as **bold**, *italic*, and [links](https://swagger.io).
+      operationId: getChatMessagesBychatRoomIdAndChatId
+      parameters:
+        - name: chatRoomId
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: chatId
+          in: path
+          description: Chat message ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /chatrooms/{chatRoomId}/chats:
+    get:
+      tags:
+        - ChatMessage
+      summary: Gets a list of all chat messages in a chat room in JSON format
+      description: >
+        Gets a list of all chat messages in a chat room in JSON format
+      operationId: getChatroomChatsByChatRoomId
+      parameters:
+        - name: chatRoomId
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: A JSON array of chat messages
           content:
             application/json:
               schema:
@@ -456,9 +524,8 @@ components:
         id:
           type: integer
           format: int64
-        chatRoomId:
-          type: integer
-          format: int64
+        chatRoom:
+          $ref: '#/components/schemas/ChatRoom'
         content:
           type: string
         timestamp:
@@ -477,12 +544,10 @@ components:
     NewChatMessage:
       type: object
       properties:
-        chatRoomId:
-          type: integer
-          format: int64
-        userId:
-          type: integer
-          format: int64
+        chatRoom:
+          $ref: '#/components/schemas/ChatRoom'
+        user:
+          $ref: '#/components/schemas/User'
         content:
           type: string
       required:

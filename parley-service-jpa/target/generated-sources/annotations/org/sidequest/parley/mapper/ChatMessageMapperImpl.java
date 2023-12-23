@@ -1,21 +1,22 @@
 package org.sidequest.parley.mapper;
 
-import java.util.Optional;
 import javax.annotation.processing.Generated;
 import org.sidequest.parley.entity.ChatMessageEntity;
-import org.sidequest.parley.entity.UserEntity;
+import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.model.ChatMessage;
-import org.sidequest.parley.model.User;
+import org.sidequest.parley.model.ChatRoom;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-23T14:57:05-0500",
+    date = "2023-12-23T15:30:26-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class ChatMessageMapperImpl implements ChatMessageMapper {
 
+    private final UserMapper userMapper = UserMapper.INSTANCE;
+
     @Override
-    public ChatMessageEntity mapTo(ChatMessage chatMessage) {
+    public ChatMessageEntity toEntity(ChatMessage chatMessage) {
         if ( chatMessage == null ) {
             return null;
         }
@@ -25,18 +26,16 @@ public class ChatMessageMapperImpl implements ChatMessageMapper {
         if ( chatMessage.getId() != null ) {
             chatMessageEntity.setId( chatMessage.getId().intValue() );
         }
-        if ( chatMessage.getChatRoomId() != null ) {
-            chatMessageEntity.setChatRoomId( chatMessage.getChatRoomId().intValue() );
-        }
+        chatMessageEntity.setChatRoom( chatRoomToChatRoomEntity( chatMessage.getChatRoom() ) );
         chatMessageEntity.setContent( chatMessage.getContent() );
         chatMessageEntity.setTimestamp( chatMessage.getTimestamp() );
-        chatMessageEntity.setUser( userToUserEntity( chatMessage.getUser() ) );
+        chatMessageEntity.setUser( userMapper.toEntity( chatMessage.getUser() ) );
 
         return chatMessageEntity;
     }
 
     @Override
-    public ChatMessage mapTo(ChatMessageEntity chatMessageEntity) {
+    public ChatMessage toModel(ChatMessageEntity chatMessageEntity) {
         if ( chatMessageEntity == null ) {
             return null;
         }
@@ -44,48 +43,37 @@ public class ChatMessageMapperImpl implements ChatMessageMapper {
         ChatMessage chatMessage = new ChatMessage();
 
         chatMessage.setId( (long) chatMessageEntity.getId() );
-        chatMessage.setChatRoomId( (long) chatMessageEntity.getChatRoomId() );
+        chatMessage.setChatRoom( chatRoomEntityToChatRoom( chatMessageEntity.getChatRoom() ) );
         chatMessage.setContent( chatMessageEntity.getContent() );
         chatMessage.setTimestamp( chatMessageEntity.getTimestamp() );
-        chatMessage.setUser( userEntityToUser( chatMessageEntity.getUser() ) );
+        chatMessage.setUser( userMapper.toModel( chatMessageEntity.getUser() ) );
 
         return chatMessage;
     }
 
-    @Override
-    public User mapTo(Optional<ChatMessageEntity> chatMessageEntity) {
-        if ( chatMessageEntity == null ) {
+    protected ChatRoomEntity chatRoomToChatRoomEntity(ChatRoom chatRoom) {
+        if ( chatRoom == null ) {
             return null;
         }
 
-        User user = new User();
+        ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
 
-        return user;
+        chatRoomEntity.setModerator( userMapper.toEntity( chatRoom.getModerator() ) );
+        chatRoomEntity.setName( chatRoom.getName() );
+
+        return chatRoomEntity;
     }
 
-    protected UserEntity userToUserEntity(User user) {
-        if ( user == null ) {
+    protected ChatRoom chatRoomEntityToChatRoom(ChatRoomEntity chatRoomEntity) {
+        if ( chatRoomEntity == null ) {
             return null;
         }
 
-        UserEntity userEntity = new UserEntity();
+        ChatRoom chatRoom = new ChatRoom();
 
-        userEntity.setId( user.getId() );
-        userEntity.setName( user.getName() );
+        chatRoom.setName( chatRoomEntity.getName() );
+        chatRoom.setModerator( userMapper.toModel( chatRoomEntity.getModerator() ) );
 
-        return userEntity;
-    }
-
-    protected User userEntityToUser(UserEntity userEntity) {
-        if ( userEntity == null ) {
-            return null;
-        }
-
-        User user = new User();
-
-        user.setId( userEntity.getId() );
-        user.setName( userEntity.getName() );
-
-        return user;
+        return chatRoom;
     }
 }
