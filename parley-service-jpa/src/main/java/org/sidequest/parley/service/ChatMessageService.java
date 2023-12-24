@@ -76,7 +76,6 @@ public class ChatMessageService {
             goodChatRoomUsers.add(new User().id(userEntity.getId()).name(userEntity.getName()));
         }
         chatMessage.getChatRoom().setUsers(goodChatRoomUsers);
-
         return chatMessage;
     }
 
