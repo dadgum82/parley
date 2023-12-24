@@ -10,7 +10,7 @@ import org.sidequest.parley.model.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-23T15:30:26-0500",
+    date = "2023-12-24T10:43:10-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
@@ -25,9 +25,7 @@ public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
 
         chatRoomUsersEntity.setUser( userToUserEntity( chatRoomUsers.getUserId() ) );
         chatRoomUsersEntity.setChatRoom( chatRoomToChatRoomEntity( chatRoomUsers.getChatRoomId() ) );
-        if ( chatRoomUsers.getId() != null ) {
-            chatRoomUsersEntity.setId( chatRoomUsers.getId().intValue() );
-        }
+        chatRoomUsersEntity.setId( chatRoomUsers.getId() );
 
         return chatRoomUsersEntity;
     }
@@ -42,7 +40,7 @@ public class ChatRoomUsersMapperImpl implements ChatRoomUsersMapper {
 
         chatRoomUsers.setUserId( userEntityToUser( chatRoomUsersEntity.getUser() ) );
         chatRoomUsers.setChatRoomId( chatRoomEntityToChatRoom( chatRoomUsersEntity.getChatRoom() ) );
-        chatRoomUsers.setId( (long) chatRoomUsersEntity.getId() );
+        chatRoomUsers.setId( chatRoomUsersEntity.getId() );
 
         return chatRoomUsers;
     }

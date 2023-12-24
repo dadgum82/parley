@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.sidequest.parley.entity.ChatMessageEntity;
 import org.sidequest.parley.model.ChatMessage;
 
-@Mapper(uses = UserMapper.class)
+@Mapper(uses = {UserMapper.class, ChatRoomMapper.class})
 public interface ChatMessageMapper {
 
     ChatMessageMapper INSTANCE = Mappers.getMapper(ChatMessageMapper.class);

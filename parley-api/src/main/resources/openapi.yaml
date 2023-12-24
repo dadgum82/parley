@@ -58,12 +58,11 @@ paths:
     get:
       tags:
         - ChatMessage
-      summary: Gets a chat message by ID.
+      summary: Gets a chat message by chat Id.
       description: >
-        A detailed description of the operation.
-        Use markdown for rich text representation,
-        such as **bold**, *italic*, and [links](https://swagger.io).
-      operationId: getChatMessagesById
+        This method has **changed** from the previous version of the API. It now retrieves 1 chat message instead of a list of chat messages. Only the chat message with the specified ID is returned.
+        User the *ChatRoom* API to get a list of all chat messages in a chat room.
+      operationId: getChatMessageById
       parameters:
         - name: id
           in: path
@@ -78,9 +77,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ChatMessage'
+                $ref: '#/components/schemas/ChatMessage'
         default:
           description: unexpected error
           content:
@@ -91,11 +88,10 @@ paths:
     get:
       tags:
         - ChatMessage
+        - ChatRoom
       summary: Gets a chat message by ID.
       description: >
-        A detailed description of the operation.
-        Use markdown for rich text representation,
-        such as **bold**, *italic*, and [links](https://swagger.io).
+        Gets a chat message by ID from a specific chat room.
       operationId: getChatMessagesBychatRoomIdAndChatId
       parameters:
         - name: chatRoomId
@@ -129,6 +125,7 @@ paths:
     get:
       tags:
         - ChatMessage
+        - ChatRoom
       summary: Gets a list of all chat messages in a chat room in JSON format
       description: >
         Gets a list of all chat messages in a chat room in JSON format

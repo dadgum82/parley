@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 public class ChatMessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @OneToOne
     private ChatRoomEntity chatRoom;

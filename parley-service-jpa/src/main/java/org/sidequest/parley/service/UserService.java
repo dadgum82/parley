@@ -34,7 +34,7 @@ public class UserService {
     }
 
     public User getUser(Long userId) {
-        return userRepository.findById((long) userId)
+        return userRepository.findById(userId)
                 .map(UserMapper.INSTANCE::toModel)
                 .orElse(null);
     }
