@@ -2,9 +2,11 @@ package org.sidequest.parley.controller;
 
 
 import org.sidequest.parley.api.ChatroomsApi;
+import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.Error;
 import org.sidequest.parley.model.NewChatRoom;
+import org.sidequest.parley.service.ChatMessageService;
 import org.sidequest.parley.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -28,6 +30,9 @@ public class ChatRoomController implements ChatroomsApi {
 
     @Autowired
     ChatRoomService chatRoomService;
+
+    @Autowired
+    ChatMessageService chatMessageService;
 
     @Override
     public ResponseEntity<List<ChatRoom>> getChatRooms() {
@@ -110,6 +115,16 @@ public class ChatRoomController implements ChatroomsApi {
                     .body(resource);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<ChatMessage>> getChatroomChatsByChatRoomId(Long chatRoomId) {
+        try {
+            List<ChatMessage> chatMessages = chatMessageService.getChatMessagesByChatRoomId(chatRoomId);
+            return ResponseEntity.ok(chatMessages);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
