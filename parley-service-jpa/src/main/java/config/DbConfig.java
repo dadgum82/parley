@@ -24,16 +24,4 @@ public class DbConfig {
         dataSource.setPassword(env.getProperty("password"));
         return dataSource;
     }
-
-//    @Bean
-//    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-//        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-//        em.setDataSource(dataSource());
-//        em.setPackagesToScan(new String[] { "package_to_scan" });
-//        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-//        em.setJpaVendorAdapter(vendorAdapter);
-//        em.setJpaProperties(hibernateProperties());
-//        return em;
-//    }
-
 }

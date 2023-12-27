@@ -25,38 +25,4 @@ public class StreamsController implements StreamsApi {
         return new ResponseEntity<>(emitter, HttpStatus.CREATED);
 
     }
-
-
-//    @Override
-//    public ResponseEntity<StreamUsersEvents200Response> streamUsersEvents() {
-//                SseEmitter emitter = new SseEmitter();
-//        try {
-//            emitter.send("Hello World!");
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//       return new ResponseEntity<>(emitter, HttpStatus.CREATED);
-//
-//    }
-
-//   @Override
-//    public ResponseEntity<Object> createStream( URI callbackUrl) {
-//        SseEmitter emitter = new SseEmitter();
-//        try {
-//            emitter.send("Hello World!");
-//            // Pause the current thread for 10 seconds
-//            Thread.sleep(10000);
-//
-//            // Send the second event
-//            emitter.send("Hello Moon!");
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//       return new ResponseEntity<>(emitter, HttpStatus.CREATED);
-//
-//    }
 }

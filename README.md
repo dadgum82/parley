@@ -69,7 +69,7 @@ GlobalNamingResources section of the server.xml file. This is used to set the da
 
 ### context.xml
 
-Resource Link to use the JNDI configuration in our application, best way to add it in the server context.xml file.
+Resource Link to use the JNDI configuration in our application, the best way to add it in the server context.xml file.
 Notice that ResourceLink name should be matching with the JNDI context name we are using in our application. Also make
 sure MySQL jar is present in the tomcat lib directory, otherwise tomcat will not be able to create the MySQL database
 connection pool

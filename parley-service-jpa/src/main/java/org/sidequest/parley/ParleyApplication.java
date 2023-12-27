@@ -17,10 +17,4 @@ public class ParleyApplication extends SpringBootServletInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(ParleyApplication.class);
 
-    //    https://www.java4s.com/spring-boot-tutorials/spring-boot-configure-datasource-using-jndi-with-example/
-//    @Override
-//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-//        return application.sources(ParleyApplication.class);
-//    }
-
 }

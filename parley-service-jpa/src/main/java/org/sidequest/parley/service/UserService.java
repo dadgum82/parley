@@ -48,14 +48,14 @@ public class UserService {
     }
 
     public void updateUser(String name, Long id) {
-        UserEntity userEntity = userRepository.findById((long) id)
+        UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userEntity.setName(name);
         userRepository.save(userEntity);
     }
 
     public void setUserAvatar(Long userId, MultipartFile file) throws Exception {
-        UserEntity user = userRepository.findById((long) userId).orElseThrow(() -> new Exception("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found"));
 
         if (!file.isEmpty()) {
             byte[] bytes = file.getBytes();
@@ -71,7 +71,7 @@ public class UserService {
     }
 
     public String getUserAvatar(Long userId) throws Exception {
-        UserEntity user = userRepository.findById((long) userId).orElseThrow(() -> new Exception("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found"));
         return user.getAvatarPath();
     }
 }
