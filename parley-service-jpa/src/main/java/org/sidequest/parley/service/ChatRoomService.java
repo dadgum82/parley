@@ -3,6 +3,7 @@ package org.sidequest.parley.service;
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.mapper.ChatRoomMapper;
+import org.sidequest.parley.mapper.UserMapper;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
@@ -18,8 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ChatRoomService {
@@ -31,6 +32,9 @@ public class ChatRoomService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserService userService;
+
     @Value("${chatroom.icon.directory}")
     private String uploadDir;
 
@@ -38,16 +42,19 @@ public class ChatRoomService {
     }
 
     public List<ChatRoom> getChatRooms() {
-        List<ChatRoom> chatRooms = chatRoomRepository.findAll().stream()
-                .map(ChatRoomMapper.INSTANCE::toModel)
-                .collect(Collectors.toList());
-
-        for (ChatRoom chatRoom : chatRooms) {
-            for (User user : chatRoom.getUsers()) {
-                UserEntity goodUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-                user.setName(goodUser.getName());
+        List<ChatRoom> chatRooms = new ArrayList<>();
+        List<ChatRoomEntity> chatRoomEntities = chatRoomRepository.findAll();
+        for (ChatRoomEntity chatRoomEntity : chatRoomEntities) {
+            log.info("chatRoom: " + chatRoomEntity.getName() + " (" + chatRoomEntity.getId() + ")");
+            ChatRoom chatRoom = ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
+            chatRoom.setUsers(new ArrayList<>());
+            for (UserEntity user : chatRoomEntity.getUsers()) {
+                User u = UserMapper.INSTANCE.toModel(user);
+                chatRoom.addUsersItem(u);
             }
+            chatRooms.add(chatRoom);
         }
+        log.info("chatRooms: " + chatRooms.size());
         return chatRooms;
     }
 

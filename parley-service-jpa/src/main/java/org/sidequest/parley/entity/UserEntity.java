@@ -29,5 +29,4 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<ChatRoomsUsersEntity> chatRoomUsers;
-
 }

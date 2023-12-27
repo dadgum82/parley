@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,5 +26,11 @@ public class ChatRoomEntity {
 
     private String iconPath;
 
-    // getters and setters
+    public List<UserEntity> getUsers() {
+        List<UserEntity> users = new ArrayList<>();
+        for (ChatRoomsUsersEntity chatRoomUser : chatRoomUsers) {
+            users.add(chatRoomUser.getUser());
+        }
+        return users;
+    }
 }
