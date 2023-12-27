@@ -1,13 +1,13 @@
 package org.sidequest.parley.service;
 
-import org.sidequest.parley.repository.ChatRoomUsersRepository;
+import org.sidequest.parley.repository.ChatRoomsUsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ChatRoomUserService {
     @Autowired
-    private ChatRoomUsersRepository repository;
+    private ChatRoomsUsersRepository repository;
 
     public ChatRoomUserService() {
 

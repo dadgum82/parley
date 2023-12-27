@@ -28,6 +28,6 @@ public class UserEntity {
     private String avatarPath;
 
     @OneToMany(mappedBy = "user")
-    private List<ChatRoomUsersEntity> chatRoomUsers;
+    private List<ChatRoomsUsersEntity> chatRoomUsers;
 
 }

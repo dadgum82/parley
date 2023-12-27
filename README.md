@@ -1,6 +1,43 @@
 # parley
 
-Parley is a simple chat server written in Java. It is using openapi, spring boot, and websockets.
+## General
+
+Parley is a simple chat server written in Java. It is using `openapi codegen`, `mapstruct`, `lombok`, `spring boot`,
+and `websockets` aka Server Side Events (sse) with the goal of being utilizing code generation over manual
+implementation.
+Since we are using code generation for the API, the project meets and is validated against the OpenAPI 3.0
+Specification (OAS).
+
+## Implemented Features
+
+* User avatar
+* User chat
+* Chat history
+* Chat message
+* Chat room
+* Emoji
+* Chat Room creation
+* Chat Room deletion
+* Chat Room join
+* Chat Room icon
+
+## Potential Features
+
+* User status
+* User friends
+* User friend requests
+* User login
+* User logout
+* User registration
+* User profile
+* chat room leave
+
+## Swagger
+
+Swagger is used to document the API. The swagger-ui is available at
+`http://<localhost>/<context-path>/<servlet-path>/swagger-ui/index.html`
+For example, if you are running on localhost:8080, the swagger-ui is available at
+`http://localhost/parley/api/swagger-ui/index.html`
 
 ## Tomcat Settings
 

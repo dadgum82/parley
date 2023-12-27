@@ -22,15 +22,15 @@ VALUES (1, null, 1, 'Poker Night');
 
 
 # Add Users to Chat Rooms
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (1, 1);
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (1, 2);
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (1, 3);
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (1, 4);
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (1, 5);
 
 # Add Messages to Chat Rooms
@@ -171,11 +171,11 @@ INSERT INTO chat_rooms (id, icon_path, moderator_id, name)
 VALUES (2, null, 6, 'Guardians'' of the Good Dogs');
 
 -- Add Owners to the Chat Room
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (2, 6); -- Jesse
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (2, 7); -- Bryan
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (2, 8);
 -- Jason
 
@@ -222,21 +222,21 @@ INSERT INTO chat_rooms (id, icon_path, moderator_id, name)
 VALUES (3, null, 6, 'Dudes and Dogs');
 
 -- Add Users to the Chat Room
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 1); -- Waffles
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 2); -- Luna
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 3); -- Spike
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 4); -- Koshka
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 5); -- Muffins
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 6); -- Jesse
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 7); -- Bryan
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (3, 8);
 -- Jason
 
@@ -310,21 +310,21 @@ INSERT INTO chat_rooms (id, icon_path, moderator_id, name)
 VALUES (4, null, 1, 'Emoji Testing');
 
 -- Add Users to the Chat Room
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 1); -- Waffles
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 2); -- Luna
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 3); -- Spike
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 4); -- Koshka
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 5); -- Muffins
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 6); -- Jesse
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 7); -- Bryan
-INSERT INTO chat_room_users (chat_room_id, user_id)
+INSERT INTO chat_rooms_users (chat_room_id, user_id)
 VALUES (4, 8);
 -- Jason
 

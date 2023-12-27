@@ -9,7 +9,6 @@ import org.sidequest.parley.model.NewChatMessage;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatMessageRepository;
 import org.sidequest.parley.repository.ChatRoomRepository;
-import org.sidequest.parley.repository.ChatRoomUsersRepository;
 import org.sidequest.parley.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,17 +31,12 @@ public class ChatMessageService {
     UserRepository userRepository;
     @Autowired
     ChatRoomRepository chatRoomRepository;
-    @Autowired
-    ChatRoomUsersRepository chatRoomUsersRepository;
 
     @Autowired
     UserService us;
 
     @Autowired
     ChatRoomService crs;
-
-    @Autowired
-    ChatRoomUserService crus;
 
     @Value("${user.avatar.directory}")
     private String uploadDir;

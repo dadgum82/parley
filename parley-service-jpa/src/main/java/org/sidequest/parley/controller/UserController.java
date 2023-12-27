@@ -3,7 +3,6 @@ package org.sidequest.parley.controller;
 import org.sidequest.parley.api.UsersApi;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
-import org.sidequest.parley.repository.UserRepository;
 import org.sidequest.parley.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -25,9 +24,6 @@ import java.util.List;
 //@Service
 @RestController
 public class UserController implements UsersApi {
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     UserService userService;

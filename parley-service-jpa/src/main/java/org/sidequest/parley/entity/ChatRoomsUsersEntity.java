@@ -7,8 +7,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "chat_room_users")
-public class ChatRoomUsersEntity {
+@Table(name = "chat_rooms_users")
+public class ChatRoomsUsersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

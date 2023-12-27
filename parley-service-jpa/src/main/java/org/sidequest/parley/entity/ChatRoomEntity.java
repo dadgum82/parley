@@ -16,7 +16,7 @@ public class ChatRoomEntity {
     private Long id;
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.EAGER)
-    private List<ChatRoomUsersEntity> chatRoomUsers;
+    private List<ChatRoomsUsersEntity> chatRoomUsers;
 
     @OneToOne
     private UserEntity moderator;
