@@ -655,11 +655,17 @@ components:
     NewChatMessage:
       type: object
       properties:
-        chatRoom:
-          $ref: '#/components/schemas/ChatRoom'
-        user:
-          $ref: '#/components/schemas/User'
+        chatRoomId:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
         content:
+          type: string
+        screenEffect:
+          type: string
+        textEffect:
           type: string
       required:
         - chatRoomId

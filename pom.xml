@@ -18,6 +18,7 @@
         <!--        <module>parley-service</module>-->
         <module>parley-api</module>
         <module>parley-service-jpa</module>
+        <module>parley-scripts</module>
     </modules>
 
     <properties>

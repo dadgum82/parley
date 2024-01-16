@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "chat_rooms")
 public class ChatRoomEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.EAGER)

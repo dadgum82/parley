@@ -32,8 +32,11 @@ public class ChatMessageController implements ChatsApi {
     @Override
     public ResponseEntity<ChatMessage> createChatMessage(NewChatMessage newChatMessage) {
         try {
-            chatMessageService.createChatMessage(newChatMessage);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            ChatMessage chatMessage = chatMessageService.createChatMessage(newChatMessage);
+            if (chatMessage == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return new ResponseEntity<>(chatMessage, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

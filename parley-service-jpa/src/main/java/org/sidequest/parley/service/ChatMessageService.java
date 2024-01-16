@@ -45,14 +45,11 @@ public class ChatMessageService {
     }
 
     public List<ChatMessage> getChatMessages() {
-        return chatMessageRepository.findAll().stream()
-                .map(ChatMessageMapper.INSTANCE::toModel)
-                .collect(Collectors.toList());
+        return chatMessageRepository.findAll().stream().map(ChatMessageMapper.INSTANCE::toModel).collect(Collectors.toList());
     }
 
     public ChatMessage getChatMessage(Long id) {
-        ChatMessage chatMessage = chatMessageRepository.findById(id)
-                .map(ChatMessageMapper.INSTANCE::toModel).orElse(null);
+        ChatMessage chatMessage = chatMessageRepository.findById(id).map(ChatMessageMapper.INSTANCE::toModel).orElse(null);
         log.debug("getChatMessage: {}", chatMessage);
 
         assert chatMessage != null;
@@ -73,22 +70,33 @@ public class ChatMessageService {
         return chatMessage;
     }
 
-    public void createChatMessage(NewChatMessage newChatMessage) throws SQLException {
+//    public User createUser(String name) {
+//        User user = new User();
+//        user.setName(name);
+//        UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
+//        userEntity = userRepository.save(userEntity);
+//        return UserMapper.INSTANCE.toModel(userEntity);
+//    }
+
+    public ChatMessage createChatMessage(NewChatMessage newChatMessage) throws SQLException {
         ChatMessage cm = new ChatMessage();
-        cm.setChatRoom(newChatMessage.getChatRoom());
+
+        Long chatRoomId = newChatMessage.getChatRoomId();
+        Long userId = newChatMessage.getUserId();
+
         cm.setTimestamp(OffsetDateTime.now());
-        cm.setUser(newChatMessage.getUser());
+        cm.setChatRoom(crs.getChatRoom(chatRoomId));
+        cm.setUser(us.getUser(userId));
         cm.setContent(newChatMessage.getContent());
 
         ChatMessageEntity chatMessageEntity = ChatMessageMapper.INSTANCE.toEntity(cm);
-        chatMessageRepository.save(chatMessageEntity);
+        chatMessageEntity = chatMessageRepository.save(chatMessageEntity);
+        return ChatMessageMapper.INSTANCE.toModel(chatMessageEntity);
     }
 
     public List<ChatMessage> getChatMessagesByChatRoomId(Long chatRoomId) {
         List<ChatMessageEntity> chatMessageEntities = chatMessageRepository.findByChatRoomId(chatRoomId);
-        List<ChatMessage> chatMessages = chatMessageEntities.stream()
-                .map(ChatMessageMapper.INSTANCE::toModel)
-                .collect(Collectors.toList());
+        List<ChatMessage> chatMessages = chatMessageEntities.stream().map(ChatMessageMapper.INSTANCE::toModel).collect(Collectors.toList());
         for (ChatMessage chatMessage : chatMessages) {
             chatMessage.setChatRoom(null);
         }

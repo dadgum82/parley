@@ -13,12 +13,14 @@ import java.time.OffsetDateTime;
 @Table(name = "chat_messages")
 public class ChatMessageEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
     private ChatRoomEntity chatRoom;
     private String content;
+    private String screenEffect;
+    private String textEffect;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime timestamp;
