@@ -63,6 +63,8 @@ public class UserController implements UsersApi {
                 return ResponseEntity.notFound().build();
             }
             return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

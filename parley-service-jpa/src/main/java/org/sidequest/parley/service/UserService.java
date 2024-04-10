@@ -40,6 +40,10 @@ public class UserService {
     }
 
     public User createUser(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("User name cannot be null or empty");
+        }
+
         User user = new User();
         user.setName(name);
         UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
