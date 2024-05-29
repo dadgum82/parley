@@ -503,9 +503,9 @@ paths:
         '400':
           description: The name is null or empty
           content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Error'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '405':
           description: Invalid input
           content:
@@ -627,6 +627,11 @@ components:
           format: int64
         name:
           type: string
+        timezone:
+          type: string
+        lastPostedMessageDateTime:
+          type: string
+          format: date-time
       required:
         - id
         - name

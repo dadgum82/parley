@@ -12,9 +12,11 @@ public interface UserMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
+    @Mapping(source = "lastPostedMessageDateTime", target = "lastPostedMessageDateTime")
     UserEntity toEntity(User user);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
+    @Mapping(source = "lastPostedMessageDateTime", target = "lastPostedMessageDateTime")
     User toModel(UserEntity userEntity);
 }

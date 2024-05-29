@@ -80,18 +80,28 @@ public class ChatMessageService {
 
     public ChatMessage createChatMessage(NewChatMessage newChatMessage) throws SQLException {
         ChatMessage cm = new ChatMessage();
-
+        OffsetDateTime odt = OffsetDateTime.now();
         Long chatRoomId = newChatMessage.getChatRoomId();
         Long userId = newChatMessage.getUserId();
 
-        cm.setTimestamp(OffsetDateTime.now());
+        cm.setTimestamp(odt);
         cm.setChatRoom(crs.getChatRoom(chatRoomId));
         cm.setUser(us.getUser(userId));
         cm.setContent(newChatMessage.getContent());
 
         ChatMessageEntity chatMessageEntity = ChatMessageMapper.INSTANCE.toEntity(cm);
         chatMessageEntity = chatMessageRepository.save(chatMessageEntity);
+
+        this.updateLastPostedMessageDateTime(userId, odt);
+
         return ChatMessageMapper.INSTANCE.toModel(chatMessageEntity);
+    }
+
+    private void updateLastPostedMessageDateTime(Long userId, OffsetDateTime odt) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userEntity.setLastPostedMessageDateTime(odt);
+        userRepository.save(userEntity);
     }
 
     public List<ChatMessage> getChatMessagesByChatRoomId(Long chatRoomId) {

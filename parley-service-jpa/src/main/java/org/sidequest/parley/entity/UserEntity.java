@@ -3,7 +3,9 @@ package org.sidequest.parley.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 //import lombok.Getter;
@@ -29,4 +31,9 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<ChatRoomsUsersEntity> chatRoomUsers;
+
+    @Setter
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private OffsetDateTime lastPostedMessageDateTime;
+
 }
