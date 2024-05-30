@@ -38,6 +38,9 @@ public class ChatMessageService {
     @Autowired
     ChatRoomService crs;
 
+    @Autowired
+    ChatRoomUserService crus;
+
     @Value("${user.avatar.directory}")
     private String uploadDir;
 
@@ -79,10 +82,18 @@ public class ChatMessageService {
 //    }
 
     public ChatMessage createChatMessage(NewChatMessage newChatMessage) throws SQLException {
+        log.debug("createChatMessage: {}", newChatMessage);
         ChatMessage cm = new ChatMessage();
         OffsetDateTime odt = OffsetDateTime.now();
         Long chatRoomId = newChatMessage.getChatRoomId();
         Long userId = newChatMessage.getUserId();
+
+
+        // Check if the user is a member of the chat room
+        if (!crus.isUserInChatRoom(userId, chatRoomId)) {
+            throw new RuntimeException("Access denied: User is not a member of the chat room");
+        }
+        log.debug("User is a member of the chat room");
 
         cm.setTimestamp(odt);
         cm.setChatRoom(crs.getChatRoom(chatRoomId));

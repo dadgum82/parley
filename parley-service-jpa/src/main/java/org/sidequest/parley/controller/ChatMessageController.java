@@ -38,6 +38,7 @@ public class ChatMessageController implements ChatsApi {
             }
             return new ResponseEntity<>(chatMessage, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error("Error creating chat message", e);
             return ResponseEntity.notFound().build();
         }
     }

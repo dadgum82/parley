@@ -25,6 +25,7 @@ import java.util.List;
 @RestController
 public class UserController implements UsersApi {
 
+
     @Autowired
     UserService userService;
 
@@ -58,7 +59,7 @@ public class UserController implements UsersApi {
     public ResponseEntity<User> createUser(NewUser newUser) {
         try {
 
-            User user = userService.createUser(newUser.getName());
+            User user = userService.createUser(newUser.getName(), newUser.getTimezone());
             if (user == null) {
                 return ResponseEntity.notFound().build();
             }

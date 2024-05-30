@@ -29,11 +29,15 @@ public class UserEntity {
 
     private String avatarPath;
 
-    @OneToMany(mappedBy = "user")
-    private List<ChatRoomsUsersEntity> chatRoomUsers;
+    @Column(name = "timezone", columnDefinition = "VARCHAR(255)")
+    private String timezone;
 
     @Setter
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Column(name = "lastPostedMessageDateTime")
     private OffsetDateTime lastPostedMessageDateTime;
+
+    @OneToMany(mappedBy = "user")
+    private List<ChatRoomsUsersEntity> chatRoomUsers;
 
 }

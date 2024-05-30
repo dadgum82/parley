@@ -644,6 +644,8 @@ components:
       properties:
         name:
           type: string
+        timezone:
+          type: string
     ChatMessage:
       type: object
       properties:
