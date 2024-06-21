@@ -98,4 +98,14 @@ public class UserController implements UsersApi {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @Override
+    public ResponseEntity<User> updateUser(Long id, User user) {
+        try {
+            userService.updateUser(id, user);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

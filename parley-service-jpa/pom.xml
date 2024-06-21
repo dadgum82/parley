@@ -140,6 +140,11 @@
             <version>2.3.3</version> <!--<<< HARD CODED SPRINGDOC NEEDED THIS VERSION-->
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

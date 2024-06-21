@@ -12,6 +12,17 @@ import java.util.List;
 @Setter
 @Table(name = "chat_rooms")
 public class ChatRoomEntity {
+    public ChatRoomEntity() {
+    }
+
+    public ChatRoomEntity(Long id, List<ChatRoomsUsersEntity> chatRoomUsers, UserEntity moderator, String name, String iconPath) {
+        this.id = id;
+        this.chatRoomUsers = chatRoomUsers;
+        this.moderator = moderator;
+        this.name = name;
+        this.iconPath = iconPath;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

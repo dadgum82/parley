@@ -32,38 +32,43 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return userRepository.findAll().stream()
-                .map(UserMapper.INSTANCE::toModel)
-                .collect(Collectors.toList());
+        return userRepository.findAll().stream().map(UserMapper.INSTANCE::toModel).collect(Collectors.toList());
     }
 
     public User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .map(UserMapper.INSTANCE::toModel)
-                .orElse(null);
+        return userRepository.findById(userId).map(UserMapper.INSTANCE::toModel).orElse(null);
     }
 
     public User createUser(String name, String timeZone) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("User name cannot be null or empty");
         }
-        if (timeZone == null || timeZone.trim().isEmpty()) {
-            ZoneId estZoneId = ZoneId.of("America/New_York");
-            timeZone = estZoneId.toString();
-        } else if (!isTimezon(timeZone)) {
-            ZoneId estZoneId = ZoneId.of("America/New_York");
-            timeZone = estZoneId.toString();
-        }
+        String timezone = getZoneId(timeZone);
 
         User user = new User();
         user.setName(name);
-        user.setTimezone(timeZone);
+        user.setTimezone(timezone);
         UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
         userEntity = userRepository.save(userEntity);
         return UserMapper.INSTANCE.toModel(userEntity);
     }
 
-    private boolean isTimezon(String timezone) {
+    private String getZoneId(String timezone) {
+        try {
+            if (timezone == null || timezone.trim().isEmpty()) {
+                ZoneId estZoneId = ZoneId.of("America/New_York");
+                timezone = estZoneId.toString();
+            } else if (!isTimezone(timezone)) {
+                ZoneId estZoneId = ZoneId.of("America/New_York");
+                timezone = estZoneId.toString();
+            }
+            return timezone;
+        } catch (ZoneRulesException e) {
+            return ZoneId.of("America/New_York").toString();
+        }
+    }
+
+    private boolean isTimezone(String timezone) {
         try {
             ZoneId.of(timezone);
             return true;
@@ -72,10 +77,20 @@ public class UserService {
         }
     }
 
-    public void updateUser(String name, Long id) {
-        UserEntity userEntity = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        userEntity.setName(name);
+    public void updateUser(Long id, User user) {
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getName() != null && !user.getName().isEmpty()) {
+            userEntity.setName(user.getName());
+        }
+        if (user.getTimezone() != null && !user.getTimezone().isEmpty()) {
+            String timezone = getZoneId(user.getTimezone());
+            userEntity.setTimezone(timezone);
+        }
+        if (user.getLastPostedMessageDateTime() != null) {
+            userEntity.setLastPostedMessageDateTime(user.getLastPostedMessageDateTime());
+        }
+
         userRepository.save(userEntity);
     }
 

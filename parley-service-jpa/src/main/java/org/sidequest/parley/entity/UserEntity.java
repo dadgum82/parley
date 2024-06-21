@@ -20,6 +20,19 @@ import java.util.List;
 @Setter
 @Table(name = "users")
 public class UserEntity {
+    public UserEntity() {
+    }
+
+    public UserEntity(Long id, String name, String avatarPath, String timezone, OffsetDateTime lastPostedMessageDateTime, List<ChatRoomsUsersEntity> chatRoomUsers) {
+        this.id = id;
+        this.name = name;
+        this.avatarPath = avatarPath;
+        this.timezone = timezone;
+        this.lastPostedMessageDateTime = lastPostedMessageDateTime;
+        this.chatRoomUsers = chatRoomUsers;
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
