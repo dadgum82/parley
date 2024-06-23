@@ -2,6 +2,7 @@ package org.sidequest.parley.service;
 
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.mapper.UserMapper;
+import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserRepository;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public class UserService {
         }
     }
 
-    public void updateUser(Long id, User user) {
+    public User updateUserById(Long id, NewUser user) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user.getName() != null && !user.getName().isEmpty()) {
@@ -87,11 +88,9 @@ public class UserService {
             String timezone = getZoneId(user.getTimezone());
             userEntity.setTimezone(timezone);
         }
-        if (user.getLastPostedMessageDateTime() != null) {
-            userEntity.setLastPostedMessageDateTime(user.getLastPostedMessageDateTime());
-        }
 
-        userRepository.save(userEntity);
+        userEntity = userRepository.save(userEntity);
+        return UserMapper.INSTANCE.toModel(userEntity);
     }
 
     public void setUserAvatar(Long userId, MultipartFile file) throws Exception {

@@ -3,6 +3,7 @@ package org.sidequest.parley.service;
 import org.sidequest.parley.entity.ChatMessageEntity;
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
+import org.sidequest.parley.helpers.TimeHelper;
 import org.sidequest.parley.mapper.ChatMessageMapper;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.NewChatMessage;
@@ -13,11 +14,13 @@ import org.sidequest.parley.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +44,8 @@ public class ChatMessageService {
     @Autowired
     ChatRoomUserService crus;
 
-    @Value("${user.avatar.directory}")
-    private String uploadDir;
+//    @Value("${user.avatar.directory}")
+//    private String uploadDir;
 
     public ChatMessageService() {
     }
@@ -73,18 +76,9 @@ public class ChatMessageService {
         return chatMessage;
     }
 
-//    public User createUser(String name) {
-//        User user = new User();
-//        user.setName(name);
-//        UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
-//        userEntity = userRepository.save(userEntity);
-//        return UserMapper.INSTANCE.toModel(userEntity);
-//    }
-
     public ChatMessage createChatMessage(NewChatMessage newChatMessage) throws SQLException {
         log.debug("createChatMessage: {}", newChatMessage);
         ChatMessage cm = new ChatMessage();
-        OffsetDateTime odt = OffsetDateTime.now();
         Long chatRoomId = newChatMessage.getChatRoomId();
         Long userId = newChatMessage.getUserId();
 
@@ -94,6 +88,12 @@ public class ChatMessageService {
             throw new RuntimeException("Access denied: User is not a member of the chat room");
         }
         log.debug("User is a member of the chat room");
+
+        // Retrieve the user's timezone
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        ZoneId userZoneId = ZoneId.of(userEntity.getTimezone());
+        OffsetDateTime odt = TimeHelper.getOffsetDateTimeForUserInUtcTime(userZoneId);
 
         cm.setTimestamp(odt);
         cm.setChatRoom(crs.getChatRoom(chatRoomId));
@@ -106,6 +106,10 @@ public class ChatMessageService {
         this.updateLastPostedMessageDateTime(userId, odt);
 
         return ChatMessageMapper.INSTANCE.toModel(chatMessageEntity);
+    }
+
+    private Instant toUtc(ZonedDateTime localDateTime) {
+        return localDateTime.toInstant();
     }
 
     private void updateLastPostedMessageDateTime(Long userId, OffsetDateTime odt) {
@@ -124,5 +128,4 @@ public class ChatMessageService {
 
         return chatMessages;
     }
-
 }

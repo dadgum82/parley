@@ -554,7 +554,7 @@ paths:
       tags:
         - User
       summary: Update an existing user
-      operationId: updateUser
+      operationId: updateUserById
       parameters:
         - name: id
           in: path
@@ -567,7 +567,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/NewUser'
       responses:
         '200':
           description: Updated
@@ -669,6 +669,7 @@ components:
         lastPostedMessageDateTime:
           type: string
           format: date-time
+          description: The last posted message date time is stored in UTC in the database but adjusted to the user's timezone for display.
       required:
         - id
         - name
@@ -683,6 +684,7 @@ components:
           type: string
         timezone:
           type: string
+          description: The timezone of the user.  This is a string in the format of "America/New_York". The timezone is stored in UTC in the database but adjusted to the user's timezone for display.
     ChatMessage:
       type: object
       properties:
@@ -696,6 +698,7 @@ components:
         timestamp:
           type: string
           format: date-time
+          description: The timestamp is stored in UTC in the database but adjusted to the user's timezone for display.
         user:
           $ref: '#/components/schemas/User'
       required:

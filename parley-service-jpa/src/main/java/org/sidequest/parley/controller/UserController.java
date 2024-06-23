@@ -100,10 +100,11 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> updateUser(Long id, User user) {
+    public ResponseEntity<User> updateUserById(Long id, NewUser newUser) {
         try {
-            userService.updateUser(id, user);
-            return ResponseEntity.ok().build();
+            User user = userService.updateUserById(id, newUser);
+            //return ResponseEntity.ok().build();
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
