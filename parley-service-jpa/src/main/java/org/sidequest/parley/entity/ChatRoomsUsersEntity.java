@@ -24,5 +24,4 @@ public class ChatRoomsUsersEntity {
 
     @OneToOne
     private UserEntity moderator;
-
 }

@@ -35,6 +35,10 @@ public class ChatRoomService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    ChatRoomUserService chatRoomUserService;
+
+
     @Value("${chatroom.icon.directory}")
     private String uploadDir;
 
@@ -70,8 +74,22 @@ public class ChatRoomService {
 
     public ChatRoom createChatRoom(ChatRoom chatRoom) {
         ChatRoomEntity chatRoomEntity = ChatRoomMapper.INSTANCE.toEntity(chatRoom);
+        ChatRoomEntity temp = ChatRoomMapper.INSTANCE.toEntity(chatRoom);
+
+        chatRoomEntity.setName(temp.getName());
+        chatRoomEntity.setModerator(temp.getModerator());
+        chatRoomEntity.setChatRoomUsers(temp.getChatRoomUsers());
+
         chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
-        return ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
+        ChatRoom resultChatRoom = ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
+        log.info("ChatRoom created: " + resultChatRoom.getChatRoomId());
+        log.info("ChatRoom name: " + resultChatRoom.getName());
+        for (User user : chatRoom.getUsers()) {
+            log.info("Adding user: {} to chat room: {}", user.getId(), resultChatRoom.getChatRoomId());
+            chatRoomUserService.addUserToChatRoom(user.getId(), resultChatRoom.getChatRoomId());
+        }
+
+        return resultChatRoom;
     }
 
     public ChatRoom updateChatRoom(ChatRoom chatRoom) {
@@ -81,7 +99,10 @@ public class ChatRoomService {
         chatRoomEntity.setName(temp.getName());
         chatRoomEntity.setModerator(temp.getModerator());
         chatRoomEntity.setChatRoomUsers(temp.getChatRoomUsers());
+
         chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
+
+
         return ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
     }
 
