@@ -8,8 +8,6 @@ import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
 import org.sidequest.parley.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,10 +19,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class ChatRoomService {
-    private static final Logger log = LoggerFactory.getLogger(ChatRoomService.class);
+    private static final Logger log = Logger.getLogger(ChatRoomService.class.getName());
 
     @Autowired
     ChatRoomRepository chatRoomRepository;
@@ -63,12 +62,26 @@ public class ChatRoomService {
     }
 
     public ChatRoom getChatRoom(Long id) {
+        log.info("Attempting to retrieve chat room with id " + id);
         ChatRoom chatRoom = chatRoomRepository.findById(id)
                 .map(ChatRoomMapper.INSTANCE::toModel).orElse(null);
-        for (User user : chatRoom.getUsers()) {
-            UserEntity goodUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-            user.setName(goodUser.getName());
+
+        if (chatRoom == null) {
+            log.severe("Chat room with id " + id + " not found");
+            return null;
         }
+
+        List<User> tempUsers = new ArrayList<>();
+        for (User user : chatRoom.getUsers()) {
+            UserEntity goodUser = userRepository.findById(user.getId()).orElseThrow(() -> {
+                log.severe("User with id " + user.getId() + " not found");
+                return new RuntimeException("User not found");
+            });
+            tempUsers.add(UserMapper.INSTANCE.toModel(goodUser));
+        }
+
+        chatRoom.setUsers(tempUsers);
+        log.info("Successfully retrieved chat room with id " + id);
         return chatRoom;
     }
 
@@ -85,11 +98,13 @@ public class ChatRoomService {
         log.info("ChatRoom created: " + resultChatRoom.getChatRoomId());
         log.info("ChatRoom name: " + resultChatRoom.getName());
         for (User user : chatRoom.getUsers()) {
-            log.info("Adding user: {} to chat room: {}", user.getId(), resultChatRoom.getChatRoomId());
+            log.info("Adding user: " + user.getId() + " to chat room: " + resultChatRoom.getChatRoomId());
             chatRoomUserService.addUserToChatRoom(user.getId(), resultChatRoom.getChatRoomId());
         }
 
-        return resultChatRoom;
+        //TODO: The resultChatRoom object is not being returned with the correct user list
+        // This is a workaround to get the correct user list
+        return getChatRoom(resultChatRoom.getChatRoomId());
     }
 
     public ChatRoom updateChatRoom(ChatRoom chatRoom) {

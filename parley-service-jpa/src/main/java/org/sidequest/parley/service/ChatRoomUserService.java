@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 
 @Service
 public class ChatRoomUserService {
-    Logger log = Logger.getLogger(ChatRoomUserService.class.getName());
+    private static final Logger log = Logger.getLogger(ChatRoomUserService.class.getName());
+
     @Autowired
     private ChatRoomsUsersRepository chatRoomsUsersRepository;
 
@@ -51,13 +52,25 @@ public class ChatRoomUserService {
     }
 
     public void addUserToChatRoom(Long userId, Long chatRoomId) {
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+        log.info("Attempting to add user with id " + userId + " to chat room with id " + chatRoomId);
+
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> {
+            log.severe("User with id " + userId + " not found");
+            return new RuntimeException("User not found");
+        });
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> {
+            log.severe("ChatRoom with id " + chatRoomId + " not found");
+            return new RuntimeException("ChatRoom not found");
+        });
 
         ChatRoomsUsersEntity chatRoomsUsersEntity = new ChatRoomsUsersEntity();
         chatRoomsUsersEntity.setUser(userEntity);
         chatRoomsUsersEntity.setChatRoom(chatRoomEntity);
+
         chatRoomsUsersRepository.save(chatRoomsUsersEntity);
+
+        log.info("Successfully added user with id " + userId + " to chat room with id " + chatRoomId);
     }
 
     public void addUserToChatRoom(Long userId, Long chatRoomId, Long moderatorId) {

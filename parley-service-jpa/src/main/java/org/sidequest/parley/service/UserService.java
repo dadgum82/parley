@@ -5,8 +5,6 @@ import org.sidequest.parley.mapper.UserMapper;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,11 +16,12 @@ import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.zone.ZoneRulesException;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger log = Logger.getLogger(UserService.class.getName());
     @Autowired
     UserRepository userRepository;
 

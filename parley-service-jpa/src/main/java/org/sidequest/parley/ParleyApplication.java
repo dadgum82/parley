@@ -1,20 +1,36 @@
 package org.sidequest.parley;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+
+import java.util.logging.Logger;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"org.sidequest.parley.entity"})
 public class ParleyApplication extends SpringBootServletInitializer {
+    private static final Logger log = Logger.getLogger(ParleyApplication.class.getName());
 
     public static void main(String[] args) {
         SpringApplication.run(ParleyApplication.class, args);
     }
 
-    private static final Logger log = LoggerFactory.getLogger(ParleyApplication.class);
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        // Customize the application here if needed
+        return application.sources(ParleyApplication.class);
+    }
 
+    @Bean
+    public CommandLineRunner commandLineRunner() {
+        return args -> {
+            // This code will run on startup
+            log.info("Application has started.");
+        };
+    }
 }

@@ -11,8 +11,6 @@ import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatMessageRepository;
 import org.sidequest.parley.repository.ChatRoomRepository;
 import org.sidequest.parley.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +21,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 public class ChatMessageService {
-    private static final Logger log = LoggerFactory.getLogger(ChatMessageService.class);
+    private static final Logger log = Logger.getLogger(ChatMessageService.class.getName());
     @Autowired
     ChatMessageRepository chatMessageRepository;
     @Autowired
@@ -56,7 +55,7 @@ public class ChatMessageService {
 
     public ChatMessage getChatMessage(Long id) {
         ChatMessage chatMessage = chatMessageRepository.findById(id).map(ChatMessageMapper.INSTANCE::toModel).orElse(null);
-        log.debug("getChatMessage: {}", chatMessage);
+        log.fine("getChatMessage: " + chatMessage);
 
         assert chatMessage != null;
         User user = chatMessage.getUser();
@@ -77,7 +76,7 @@ public class ChatMessageService {
     }
 
     public ChatMessage createChatMessage(NewChatMessage newChatMessage) throws SQLException {
-        log.debug("createChatMessage: {}", newChatMessage);
+        log.fine("createChatMessage: " + newChatMessage);
         ChatMessage cm = new ChatMessage();
         Long chatRoomId = newChatMessage.getChatRoomId();
         Long userId = newChatMessage.getUserId();
@@ -87,7 +86,7 @@ public class ChatMessageService {
         if (!crus.isUserInChatRoom(userId, chatRoomId)) {
             throw new RuntimeException("Access denied: User is not a member of the chat room");
         }
-        log.debug("User is a member of the chat room");
+        log.fine("User is a member of the chat room");
 
         // Retrieve the user's timezone
         UserEntity userEntity = userRepository.findById(userId)

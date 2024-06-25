@@ -1,12 +1,13 @@
 package org.sidequest.parley.helpers;
 
 import java.time.*;
+import java.util.logging.Logger;
 
 /**
  * A utility class that provides helper methods for managing time-related operations.
  */
 public class TimeHelper {
-
+    private static final Logger log = Logger.getLogger(TimeHelper.class.getName());
     /**
      * Converts a ZonedDateTime to an Instant representing the same point on the timeline in UTC.
      *

@@ -8,8 +8,6 @@ import org.sidequest.parley.model.Error;
 import org.sidequest.parley.model.NewChatRoom;
 import org.sidequest.parley.service.ChatMessageService;
 import org.sidequest.parley.service.ChatRoomService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -22,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -29,7 +28,8 @@ import java.util.List;
  */
 @RestController
 public class ChatRoomController implements ChatroomsApi {
-    private static final Logger log = LoggerFactory.getLogger(ChatRoomController.class);
+    private static final Logger log = Logger.getLogger(ChatRoomController.class.getName());
+
     @Autowired
     ChatRoomService chatRoomService;
 
