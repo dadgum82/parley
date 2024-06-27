@@ -53,4 +53,15 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<ChatRoomsUsersEntity> chatRoomUsers;
 
+    @Override
+    public String toString() {
+        return "UserEntity {\n" +
+                "\tid=" + id +
+                ",\n\tname='" + name + "'" +
+                ",\n\tavatarPath='" + avatarPath + "'" +
+                ",\n\ttimezone='" + timezone + "'" +
+                ",\n\tlastPostedMessageDateTime=" + lastPostedMessageDateTime +
+                "\n}";
+    }
+
 }

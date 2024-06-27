@@ -1,5 +1,6 @@
 package org.sidequest.parley.service;
 
+import jakarta.transaction.Transactional;
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.mapper.ChatRoomMapper;
@@ -72,15 +73,19 @@ public class ChatRoomService {
         }
 
         List<User> tempUsers = new ArrayList<>();
+        log.info("Retrieving users to chat room: " + chatRoom.getName() + " (" + chatRoom.getChatRoomId() + ")");
         for (User user : chatRoom.getUsers()) {
-            UserEntity goodUser = userRepository.findById(user.getId()).orElseThrow(() -> {
-                log.severe("User with id " + user.getId() + " not found");
-                return new RuntimeException("User not found");
-            });
-            tempUsers.add(UserMapper.INSTANCE.toModel(goodUser));
+            log.info("\tchatRoom.getUsers(): " + user.toString());
+//            UserEntity goodUser = userRepository.findById(user.getId()).orElseThrow(() -> {
+//                log.severe("User with id " + user.getId() + " not found");
+//                return new RuntimeException("User not found");
+//            });
+//            //tempUsers.add(UserMapper.INSTANCE.toModel(goodUser));
+//            chatRoom.addUsersItem(UserMapper.INSTANCE.toModel(goodUser));
         }
 
-        chatRoom.setUsers(tempUsers);
+        log.info("Chat room: " + chatRoom.getName() + " (" + chatRoom.getChatRoomId() + ") has " + tempUsers.size() + " users");
+        //chatRoom.setUsers(tempUsers);
         log.info("Successfully retrieved chat room with id " + id);
         return chatRoom;
     }
@@ -98,7 +103,7 @@ public class ChatRoomService {
         log.info("ChatRoom created: " + resultChatRoom.getChatRoomId());
         log.info("ChatRoom name: " + resultChatRoom.getName());
         for (User user : chatRoom.getUsers()) {
-            log.info("Adding user: " + user.getId() + " to chat room: " + resultChatRoom.getChatRoomId());
+            log.info("\tAdding user: " + user.getId() + " to chat room: " + resultChatRoom.getChatRoomId());
             chatRoomUserService.addUserToChatRoom(user.getId(), resultChatRoom.getChatRoomId());
         }
 
@@ -107,18 +112,36 @@ public class ChatRoomService {
         return getChatRoom(resultChatRoom.getChatRoomId());
     }
 
+    @Transactional
     public ChatRoom updateChatRoom(ChatRoom chatRoom) {
-        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoom.getChatRoomId()).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
-        ChatRoomEntity temp = ChatRoomMapper.INSTANCE.toEntity(chatRoom);
+        try {
+            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoom.getChatRoomId()).orElseThrow(() ->
+                    new RuntimeException("ChatRoom not found"));
 
-        chatRoomEntity.setName(temp.getName());
-        chatRoomEntity.setModerator(temp.getModerator());
-        chatRoomEntity.setChatRoomUsers(temp.getChatRoomUsers());
+            ChatRoomEntity temp = ChatRoomMapper.INSTANCE.toEntity(chatRoom);
 
-        chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
+            log.info("Updating chat room: " + chatRoom.getChatRoomId());
+            log.info("Chat room name: " + chatRoom.getName());
+            log.info("Chat room moderator: " + chatRoom.getModerator().toString());
+            chatRoomEntity.setName(temp.getName());
+            chatRoomEntity.setModerator(temp.getModerator());
+            chatRoomEntity.setChatRoomUsers(null);
+            chatRoomUserService.removeAllUsersFromChatRoom(temp.getId());
 
+            chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
+            ChatRoom resultChatRoom = ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
+            for (User user : chatRoom.getUsers()) {
+                log.info("Adding user: " + user.getId() + " to chat room: " + resultChatRoom.getChatRoomId());
+                chatRoomUserService.addUserToChatRoom(user.getId(), resultChatRoom.getChatRoomId());
+            }
 
-        return ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
+            //TODO: The resultChatRoom object is not being returned with the correct user list
+            // This is a workaround to get the correct user list
+            return getChatRoom(resultChatRoom.getChatRoomId());
+        } catch (Exception e) {
+            log.severe("Error updating chat room: " + e.getMessage());
+            return null;
+        }
     }
 
     public void deleteChatRoom(Long chatRoomId) {

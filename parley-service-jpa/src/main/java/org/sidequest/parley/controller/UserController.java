@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * A RESTful web service controller for managing users.
@@ -24,7 +25,7 @@ import java.util.List;
 //@Service
 @RestController
 public class UserController implements UsersApi {
-
+    private static final Logger log = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     UserService userService;
@@ -58,15 +59,17 @@ public class UserController implements UsersApi {
     @Override
     public ResponseEntity<User> createUser(NewUser newUser) {
         try {
-
+            log.fine("createUser: " + newUser.getName() + " " + newUser.getTimezone());
             User user = userService.createUser(newUser.getName(), newUser.getTimezone());
             if (user == null) {
                 return ResponseEntity.notFound().build();
             }
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
+            log.severe("Error creating user:" + e);
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
+            log.severe("Error creating user:" + e);
             return ResponseEntity.notFound().build();
         }
     }

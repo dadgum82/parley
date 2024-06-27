@@ -3,7 +3,6 @@ package org.sidequest.parley.service;
 import org.sidequest.parley.entity.ChatMessageEntity;
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
-import org.sidequest.parley.helpers.TimeHelper;
 import org.sidequest.parley.mapper.ChatMessageMapper;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.NewChatMessage;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,8 +89,11 @@ public class ChatMessageService {
         // Retrieve the user's timezone
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        ZoneId userZoneId = ZoneId.of(userEntity.getTimezone());
-        OffsetDateTime odt = TimeHelper.getOffsetDateTimeForUserInUtcTime(userZoneId);
+
+        // We get the current time in OffsetDateTime format
+        // The mapper will convert it to UTC for storage in the database
+        // The mapper will convert it back to the user's timezone when the chat message is retrieved
+        OffsetDateTime odt = OffsetDateTime.now();
 
         cm.setTimestamp(odt);
         cm.setChatRoom(crs.getChatRoom(chatRoomId));

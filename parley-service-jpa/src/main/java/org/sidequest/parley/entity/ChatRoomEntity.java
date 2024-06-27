@@ -44,4 +44,12 @@ public class ChatRoomEntity {
         }
         return users;
     }
+
+    public void deleteChatRoomUsers() {
+        chatRoomUsers.clear();
+    }
+
+    public void deleteChatRoomUser(UserEntity user) {
+        chatRoomUsers.removeIf(chatRoomsUsersEntity -> chatRoomsUsersEntity.getUser().getId().equals(user.getId()));
+    }
 }

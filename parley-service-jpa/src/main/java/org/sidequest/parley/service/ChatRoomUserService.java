@@ -8,6 +8,7 @@ import org.sidequest.parley.repository.ChatRoomsUsersRepository;
 import org.sidequest.parley.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -51,6 +52,7 @@ public class ChatRoomUserService {
         return false;
     }
 
+    @Transactional
     public void addUserToChatRoom(Long userId, Long chatRoomId) {
         log.info("Attempting to add user with id " + userId + " to chat room with id " + chatRoomId);
 
@@ -85,6 +87,19 @@ public class ChatRoomUserService {
         chatRoomsUsersRepository.save(chatRoomsUsersEntity);
     }
 
+    @Transactional
+    public void removeAllUsersFromChatRoom(Long chatRoomId) {
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> {
+            log.severe("ChatRoom with id " + chatRoomId + " not found");
+            return new RuntimeException("ChatRoom not found");
+        });
+        chatRoomsUsersRepository.deleteAll(chatRoomEntity.getChatRoomUsers());
+
+
+        //chatRoomsUsersRepository.deleteAllByChatRoomId(chatRoomId);
+    }
+
+    @Transactional
     public void removeUserFromChatRoom(Long userId, Long chatRoomId) {
         Optional<ChatRoomsUsersEntity> chatRoomsUsersEntity = chatRoomsUsersRepository.findByUserIdAndChatRoomId(userId, chatRoomId);
         if (chatRoomsUsersEntity.isPresent()) {

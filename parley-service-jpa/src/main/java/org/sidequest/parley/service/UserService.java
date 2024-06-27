@@ -40,6 +40,7 @@ public class UserService {
     }
 
     public User createUser(String name, String timeZone) {
+        log.info("Creating user: " + name + " with timezone: " + timeZone);
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("User name cannot be null or empty");
         }
@@ -50,6 +51,7 @@ public class UserService {
         user.setTimezone(timezone);
         UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
         userEntity = userRepository.save(userEntity);
+        log.info("User created: " + userEntity.toString());
         return UserMapper.INSTANCE.toModel(userEntity);
     }
 
@@ -87,6 +89,7 @@ public class UserService {
             String timezone = getZoneId(user.getTimezone());
             userEntity.setTimezone(timezone);
         }
+
 
         userEntity = userRepository.save(userEntity);
         return UserMapper.INSTANCE.toModel(userEntity);
