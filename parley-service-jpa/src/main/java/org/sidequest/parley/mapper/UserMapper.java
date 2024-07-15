@@ -31,6 +31,8 @@ public interface UserMapper {
     //  @Mapping(source = "lastPostedMessageDateTime", target = "lastPostedMessageDateTime")
     @Mapping(target = "lastPostedMessageDateTime", expression = "java(convertToUtc(user.getLastPostedMessageDateTime()))")
     @Mapping(target = "timezone", source = "timezone")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     UserEntity toEntity(User user);
 
     /**

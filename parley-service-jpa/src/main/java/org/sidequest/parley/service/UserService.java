@@ -8,11 +8,13 @@ import org.sidequest.parley.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.zone.ZoneRulesException;
 import java.util.List;
@@ -22,14 +24,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private static final Logger log = Logger.getLogger(UserService.class.getName());
+
     @Autowired
     UserRepository userRepository;
 
     @Value("${user.avatar.directory}")
     private String uploadDir;
 
-    public UserService() {
-    }
 
     public List<User> getUsers() {
         return userRepository.findAll().stream().map(UserMapper.INSTANCE::toModel).collect(Collectors.toList());
@@ -39,11 +40,13 @@ public class UserService {
         return userRepository.findById(userId).map(UserMapper.INSTANCE::toModel).orElse(null);
     }
 
+    @Transactional
     public User createUser(String name, String timeZone) {
         log.info("Creating user: " + name + " with timezone: " + timeZone);
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("User name cannot be null or empty");
         }
+
         String timezone = getZoneId(timeZone);
 
         User user = new User();
@@ -79,6 +82,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public User updateUserById(Long id, NewUser user) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -95,6 +99,15 @@ public class UserService {
         return UserMapper.INSTANCE.toModel(userEntity);
     }
 
+    @Transactional
+    public void updateLastPostedMessageDateTime(Long userId, OffsetDateTime odt) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userEntity.setLastPostedMessageDateTime(odt);
+        userRepository.save(userEntity);
+    }
+
+    @Transactional
     public void setUserAvatar(Long userId, MultipartFile file) throws Exception {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found"));
 
@@ -114,5 +127,12 @@ public class UserService {
     public String getUserAvatar(Long userId) throws Exception {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found"));
         return user.getAvatarPath();
+    }
+
+    public String getUserTimezone(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        String strUserTimezone = userEntity.getTimezone();
+        return getZoneId(strUserTimezone);
     }
 }

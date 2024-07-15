@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"org.sidequest.parley.entity"})
+
 public class ParleyApplication extends SpringBootServletInitializer {
     private static final Logger log = Logger.getLogger(ParleyApplication.class.getName());
 

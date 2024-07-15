@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository // This is an addition to try the mapper
 public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> {
+
 }

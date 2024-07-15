@@ -4,31 +4,21 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Entity
+@Entity(name = "ChatRoomEntity")
 @Getter
 @Setter
-@Table(name = "chat_rooms")
+@Table(name = "chatrooms")
 public class ChatRoomEntity {
-    public ChatRoomEntity() {
-    }
-
-    public ChatRoomEntity(Long id, List<ChatRoomsUsersEntity> chatRoomUsers, UserEntity moderator, String name, String iconPath) {
-        this.id = id;
-        this.chatRoomUsers = chatRoomUsers;
-        this.moderator = moderator;
-        this.name = name;
-        this.iconPath = iconPath;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.EAGER)
-    private List<ChatRoomsUsersEntity> chatRoomUsers;
+    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EnrollmentEntity> enrollments = new HashSet<>();
 
     @OneToOne
     private UserEntity moderator;
@@ -37,19 +27,15 @@ public class ChatRoomEntity {
 
     private String iconPath;
 
-    public List<UserEntity> getUsers() {
-        List<UserEntity> users = new ArrayList<>();
-        for (ChatRoomsUsersEntity chatRoomUser : chatRoomUsers) {
-            users.add(chatRoomUser.getUser());
-        }
-        return users;
+    // Constructors, getters, setters, and toString method
+
+    @Override
+    public String toString() {
+        return "ChatRoomEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", iconPath='" + iconPath + '\'' +
+                '}';
     }
 
-    public void deleteChatRoomUsers() {
-        chatRoomUsers.clear();
-    }
-
-    public void deleteChatRoomUser(UserEntity user) {
-        chatRoomUsers.removeIf(chatRoomsUsersEntity -> chatRoomsUsersEntity.getUser().getId().equals(user.getId()));
-    }
 }

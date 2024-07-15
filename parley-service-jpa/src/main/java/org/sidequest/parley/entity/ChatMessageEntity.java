@@ -7,10 +7,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
 
-@Entity
+@Entity(name = "ChatMessageEntity")
 @Getter
 @Setter
-@Table(name = "chat_messages")
+@Table(name = "chatmessages")
 public class ChatMessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class ChatMessageEntity {
     private OffsetDateTime timestamp;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "chatusers_id")
     private UserEntity user;
 
 }

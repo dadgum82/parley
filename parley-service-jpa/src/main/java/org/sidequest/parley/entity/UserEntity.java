@@ -3,35 +3,19 @@ package org.sidequest.parley.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-//import lombok.Getter;
-//import lombok.Setter;
-//import lombok.experimental.Accessors;
-//
-//@Getter
-//@Setter
-//@Accessors(chain = true)
-@Entity
+@Entity(name = "UserEntity")
 @Getter
 @Setter
-@Table(name = "users")
+@Table(name = "chatusers")
 public class UserEntity {
-    public UserEntity() {
-    }
-
-    public UserEntity(Long id, String name, String avatarPath, String timezone, OffsetDateTime lastPostedMessageDateTime, List<ChatRoomsUsersEntity> chatRoomUsers) {
-        this.id = id;
-        this.name = name;
-        this.avatarPath = avatarPath;
-        this.timezone = timezone;
-        this.lastPostedMessageDateTime = lastPostedMessageDateTime;
-        this.chatRoomUsers = chatRoomUsers;
-    }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,23 +29,39 @@ public class UserEntity {
     @Column(name = "timezone", columnDefinition = "VARCHAR(255)")
     private String timezone;
 
+    @CreatedDate
+    @Column(name = "created", nullable = false, updatable = false)
+    private OffsetDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated")
+    private OffsetDateTime updatedAt;
+
     @Setter
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Column(name = "lastPostedMessageDateTime")
+    @Column(name = "last_posted_message_date_time")
     private OffsetDateTime lastPostedMessageDateTime;
 
-    @OneToMany(mappedBy = "user")
-    private List<ChatRoomsUsersEntity> chatRoomUsers;
+    // Define the relationship with EnrollmentEntity
+    @OneToMany(mappedBy = "chat_user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EnrollmentEntity> enrollments = new HashSet<>();
+
+    // Constructors, getters, setters, and toString method
 
     @Override
     public String toString() {
-        return "UserEntity {\n" +
-                "\tid=" + id +
-                ",\n\tname='" + name + "'" +
-                ",\n\tavatarPath='" + avatarPath + "'" +
-                ",\n\ttimezone='" + timezone + "'" +
-                ",\n\tlastPostedMessageDateTime=" + lastPostedMessageDateTime +
-                "\n}";
+        return "UserEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", avatarPath='" + avatarPath + '\'' +
+                ", timezone='" + timezone + '\'' +
+                ", lastPostedMessageDateTime=" + lastPostedMessageDateTime +
+                '}';
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = OffsetDateTime.now();
     }
 
 }

@@ -640,22 +640,26 @@ paths:
           description: Bad request
 components:
   schemas:
-    ChatRoomUsers:
+    Enrollment:
       type: object
       properties:
-        id:
+        userId:
           type: integer
           format: int64
-        userId:
-          $ref: '#/components/schemas/User'
+          description: Identifier of the user enrolled in the chat room
         chatRoomId:
-          $ref: '#/components/schemas/ChatRoom'
+          type: integer
+          format: int64
+          description: Identifier of the chat room where the user is enrolled
+        enrolledDate:
+          type: string
+          format: date-time
+          description: The date and time when the user was enrolled in the chat room
       required:
-        - id
-        - chatRoomIds
-        - userIds
+        - userId
+        - chatRoomId
       xml:
-        name: ChatRoomUsers
+        name: Enrollment
     User:
       type: object
       properties:
