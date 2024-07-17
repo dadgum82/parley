@@ -5,7 +5,6 @@ import org.sidequest.parley.mapper.UserMapper;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +24,15 @@ import java.util.stream.Collectors;
 public class UserService {
     private static final Logger log = Logger.getLogger(UserService.class.getName());
 
-    @Autowired
-    UserRepository userRepository;
 
+    private UserRepository userRepository;
     @Value("${user.avatar.directory}")
     private String uploadDir;
 
+    //   @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public List<User> getUsers() {
         return userRepository.findAll().stream().map(UserMapper.INSTANCE::toModel).collect(Collectors.toList());

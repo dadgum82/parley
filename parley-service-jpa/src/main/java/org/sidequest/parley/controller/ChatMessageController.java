@@ -27,7 +27,7 @@ public class ChatMessageController implements ChatsApi {
     public ResponseEntity<ChatMessage> getChatMessageById(Long id) {
         try {
             log.info("getChatMessageById: " + id);
-            // ChatMessageService chatMessageService = new ChatMessageService();
+            //   ChatMessageService chatMessageService = new ChatMessageService();
             ChatMessage cm = chatMessageService.getChatMessage(id);
             return ResponseEntity.ok(cm);
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class ChatMessageController implements ChatsApi {
     @Override
     public ResponseEntity<ChatMessage> createChatMessage(NewChatMessage newChatMessage) {
         try {
-            // ChatMessageService chatMessageService = new ChatMessageService();
+            //  ChatMessageService chatMessageService = new ChatMessageService();
             ChatMessage chatMessage = chatMessageService.createChatMessage(newChatMessage);
             if (chatMessage == null) {
                 return ResponseEntity.notFound().build();

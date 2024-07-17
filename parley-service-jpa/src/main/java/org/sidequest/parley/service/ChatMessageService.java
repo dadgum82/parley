@@ -5,7 +5,7 @@ import org.sidequest.parley.mapper.ChatMessageMapper;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.NewChatMessage;
 import org.sidequest.parley.repository.ChatMessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,16 +19,25 @@ import java.util.stream.Collectors;
 public class ChatMessageService {
     private static final Logger log = Logger.getLogger(ChatMessageService.class.getName());
 
-    private final ChatMessageRepository chatMessageRepository;
+    private ChatMessageRepository chatMessageRepository;
+    private UserService userService;
+    private ChatRoomService chatRoomService;
 
-    @Autowired
-    public ChatMessageService(ChatMessageRepository chatMessageRepository) {
+    //  @Autowired
+    public void setChatMessageRepository(ChatMessageRepository chatMessageRepository) {
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    public ChatMessageService(ChatRoomService chatRoomService, UserService userService, ChatMessageRepository chatMessageRepository) {
-        this.chatMessageRepository = chatMessageRepository;
+    //  @Autowired
+    public void setUserService(@Lazy UserService userService) {
+        this.userService = userService;
     }
+
+    // @Autowired
+    public void setChatRoomService(@Lazy ChatRoomService chatRoomService) {
+        this.chatRoomService = chatRoomService;
+    }
+
 
     public List<ChatMessage> getChatMessages() {
         return chatMessageRepository.findAll().stream().map(ChatMessageMapper.INSTANCE::toModel).collect(Collectors.toList());
@@ -72,8 +81,8 @@ public class ChatMessageService {
         // The mapper will convert it back to the user's timezone when the chat message is retrieved
         OffsetDateTime odt = OffsetDateTime.now();
 
-        ChatRoomService chatRoomService = new ChatRoomService();
-        UserService userService = new UserService();
+        //ChatRoomService chatRoomService = new ChatRoomService();
+        // UserService userService = new UserService();
         Long chatRoomId = newChatMessage.getChatRoomId();
         Long userId = newChatMessage.getUserId();
 

@@ -7,6 +7,7 @@ import org.sidequest.parley.model.NewChatRoom;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,16 +22,18 @@ import java.util.logging.Logger;
 public class ChatRoomController implements ChatroomsApi {
     private static final Logger log = Logger.getLogger(ChatRoomController.class.getName());
 
-    @Autowired
-    ChatRoomService chatRoomService;
+    private final ChatRoomService chatRoomService;
 
-//    @Autowired
-//    ChatMessageService chatMessageService;
+    @Autowired
+    public ChatRoomController(@Lazy ChatRoomService chatRoomService) {
+        this.chatRoomService = chatRoomService;
+    }
 
     @Override
     public ResponseEntity<List<ChatRoom>> getChatRooms() {
 
         try {
+
             List<ChatRoom> chatRooms = chatRoomService.getChatRooms();
             for (ChatRoom chatRoom : chatRooms) {
                 log.info("**** chatRoom: " + chatRoom.getName());
@@ -54,6 +57,7 @@ public class ChatRoomController implements ChatroomsApi {
     @Override
     public ResponseEntity<ChatRoom> createChatRoom(NewChatRoom newChatRoom) {
         try {
+
             ChatRoom chatRoom = new ChatRoom();
             String name = newChatRoom.getName() != null ? newChatRoom.getName() : "unknown";
             User moderator = newChatRoom.getModerator() != null ? newChatRoom.getModerator() : null;

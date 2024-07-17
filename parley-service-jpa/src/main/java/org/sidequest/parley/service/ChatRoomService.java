@@ -5,7 +5,7 @@ import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,26 +17,20 @@ import java.util.logging.Logger;
 public class ChatRoomService {
     private static final Logger log = Logger.getLogger(ChatRoomService.class.getName());
 
-    @Autowired
-    ChatRoomRepository chatRoomRepository;
 
-    @Autowired
-    EnrollmentService enrollmentService;
+    private ChatRoomRepository chatRoomRepository;
+    private EnrollmentService enrollmentService;
 
+    //@Autowired
+    public void setChatRoomRepository(ChatRoomRepository chatRoomRepository) {
+        this.chatRoomRepository = chatRoomRepository;
+    }
 
-    //
-////    @Autowired
-////    UserRepository userRepository;
-//
-//
-//    @Autowired
-//    @Lazy
-//    EnrollmentService enrollmentService;
-//
-//    @Value("${chatroom.icon.directory}")
-//    private String uploadDir;
-//
-//
+    // @Autowired
+    public void setEnrollmentService(@Lazy EnrollmentService enrollmentService) {
+        this.enrollmentService = enrollmentService;
+    }
+
     public List<ChatRoom> getChatRooms() {
         log.info("Attempting to retrieve all chat rooms");
         List<ChatRoom> chatRooms = new ArrayList<>();
@@ -138,6 +132,8 @@ public class ChatRoomService {
         log.info("User: " + userId + " is not in chat room: " + chatRoomId);
         return false;
     }
+
+
 //
 //    @Transactional
 //    public ChatRoom updateChatRoom(ChatRoom chatRoom) {

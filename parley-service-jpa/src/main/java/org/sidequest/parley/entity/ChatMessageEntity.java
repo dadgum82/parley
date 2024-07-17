@@ -16,17 +16,21 @@ public class ChatMessageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chatrooms_id", nullable = false)
     private ChatRoomEntity chatRoom;
+
     private String content;
+
     private String screenEffect;
+
     private String textEffect;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime timestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "chatusers_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chatusers_id", nullable = false)
     private UserEntity user;
 
 }

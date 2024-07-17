@@ -4,15 +4,13 @@ package org.sidequest.parley;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
 import java.util.logging.Logger;
 
 @SpringBootApplication
-@EntityScan(basePackages = {"org.sidequest.parley.entity"})
+//@EntityScan(basePackages = {"org.sidequest.parley.entity"})
 
 public class ParleyApplication extends SpringBootServletInitializer {
     private static final Logger log = Logger.getLogger(ParleyApplication.class.getName());
@@ -21,11 +19,11 @@ public class ParleyApplication extends SpringBootServletInitializer {
         SpringApplication.run(ParleyApplication.class, args);
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        // Customize the application here if needed
-        return application.sources(ParleyApplication.class);
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//        // Customize the application here if needed
+//        return application.sources(ParleyApplication.class);
+//    }
 
     @Bean
     public CommandLineRunner commandLineRunner() {

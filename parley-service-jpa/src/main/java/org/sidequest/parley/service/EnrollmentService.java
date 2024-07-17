@@ -6,7 +6,6 @@ import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.Enrollment;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.EnrollmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +16,12 @@ import java.util.logging.Logger;
 public class EnrollmentService {
     private static final Logger log = Logger.getLogger(EnrollmentService.class.getName());
 
-    @Autowired
-    EnrollmentRepository enrollmentRepository;
+    private EnrollmentRepository enrollmentRepository;
+
+    //  @Autowired
+    public void setEnrollmentRepository(EnrollmentRepository enrollmentRepository) {
+        this.enrollmentRepository = enrollmentRepository;
+    }
 
     public List<Enrollment> addUsersToChatRoom(List<User> users, ChatRoom chatRoom) {
         return users.stream().map(user -> addUserToChatRoom(user, chatRoom)).toList();
