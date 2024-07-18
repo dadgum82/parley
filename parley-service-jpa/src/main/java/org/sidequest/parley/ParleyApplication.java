@@ -20,12 +20,6 @@ public class ParleyApplication extends SpringBootServletInitializer {
         SpringApplication.run(ParleyApplication.class, args);
     }
 
-//    @Override
-//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-//        // Customize the application here if needed
-//        return application.sources(ParleyApplication.class);
-//    }
-
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
