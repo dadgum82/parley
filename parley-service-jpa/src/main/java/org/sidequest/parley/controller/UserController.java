@@ -5,7 +5,6 @@ import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -28,13 +27,8 @@ import java.util.logging.Logger;
 public class UserController implements UsersApi {
     private static final Logger log = Logger.getLogger(UserController.class.getName());
 
-
-    UserService userService;
-
     @Autowired
-    public UserController(@Lazy UserService userService) {
-        this.userService = userService;
-    }
+    UserService userService;
 
     /**
      * Retrieves a list of all users in JSON format.

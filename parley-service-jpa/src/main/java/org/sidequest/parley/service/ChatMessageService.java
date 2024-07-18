@@ -52,22 +52,6 @@ public class ChatMessageService {
         }
 
 
-        //
-//        assert chatMessage != null;
-//        User user = chatMessage.getUser();
-//        UserEntity goodUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-//        user.setName(goodUser.getName());
-//
-//        ChatRoomEntity chatRoom = chatRoomRepository.findById(chatMessage.getChatRoom().getChatRoomId()).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
-//        chatRoom.setName(chatRoom.getName());
-//
-//        // TODO: Fix the mapper so we don't have to do this manually rebuilt of the object
-//        ArrayList<User> goodChatRoomUsers = new ArrayList<>();
-//        for (User chatRoomUser : chatMessage.getChatRoom().getUsers()) {
-//            UserEntity userEntity = userRepository.findById(chatRoomUser.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-//            goodChatRoomUsers.add(new User().id(userEntity.getId()).name(userEntity.getName()));
-//        }
-//        chatMessage.getChatRoom().setUsers(goodChatRoomUsers);
         return chatMessage;
     }
 
@@ -81,8 +65,6 @@ public class ChatMessageService {
         // The mapper will convert it back to the user's timezone when the chat message is retrieved
         OffsetDateTime odt = OffsetDateTime.now();
 
-        //ChatRoomService chatRoomService = new ChatRoomService();
-        // UserService userService = new UserService();
         Long chatRoomId = newChatMessage.getChatRoomId();
         Long userId = newChatMessage.getUserId();
 
@@ -109,58 +91,6 @@ public class ChatMessageService {
         return ChatMessageMapper.INSTANCE.toModel(chatMessageEntity);
     }
 
-//    @Transactional
-//    public ChatMessage createChatMessage(NewChatMessage newChatMessage) throws SQLException {
-//        log.fine("createChatMessage: " + newChatMessage);
-//        ChatMessage cm = new ChatMessage();
-//        ChatRoomService chatRoomService = new ChatRoomService();
-//        UserService userService = new UserService();
-//        Long chatRoomId = newChatMessage.getChatRoomId();
-//        Long userId = newChatMessage.getUserId();
-//
-//
-//        // Check if the user is a member of the chat room
-//        // TODO: Fix this check
-////        if (!crs.isUserInChatRoom(userId, chatRoomId)) {
-////            throw new RuntimeException("Access denied: User is not a member of the chat room");
-////        }
-//        log.fine("User is a member of the chat room");
-//
-//        // Retrieve the user's timezone
-////        UserEntity userEntity = userRepository.findById(userId)
-////                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        // We get the current time in OffsetDateTime format
-//        // The mapper will convert it to UTC for storage in the database
-//        // The mapper will convert it back to the user's timezone when the chat message is retrieved
-//        OffsetDateTime odt = OffsetDateTime.now();
-//
-//        cm.setTimestamp(odt);
-//        cm.setChatRoom(this.getChatRoom(chatRoomId));
-//        cm.setUser(this.getUser(userId));
-//        cm.setContent(newChatMessage.getContent());
-//
-//        ChatMessageEntity chatMessageEntity = ChatMessageMapper.INSTANCE.toEntity(cm);
-//        chatMessageEntity = chatMessageRepository.save(chatMessageEntity);
-//
-//        this.updateLastPostedMessageDateTime(userId, odt);
-//        return ChatMessageMapper.INSTANCE.toModel(chatMessageEntity);
-//    }
-
-//    private ChatRoom getChatRoom(Long chatRoomId) {
-//        return chatRoomRepository.findById(chatRoomId).map(ChatRoomMapper.INSTANCE::toModel).orElse(null);
-//    }
-//
-//    private User getUser(Long userId) {
-//        return userRepository.findById(userId).map(UserMapper.INSTANCE::toModel).orElse(null);
-//    }
-//
-//    private void updateLastPostedMessageDateTime(Long userId, OffsetDateTime odt) {
-//        UserEntity userEntity = userRepository.findById(userId)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//        userEntity.setLastPostedMessageDateTime(odt);
-//        userRepository.save(userEntity);
-//    }
 
 
     public List<ChatMessage> getChatMessagesByChatRoomId(Long chatRoomId) {

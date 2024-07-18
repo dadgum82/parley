@@ -5,7 +5,6 @@ import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.NewChatMessage;
 import org.sidequest.parley.service.ChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,18 +15,14 @@ import java.util.logging.Logger;
 public class ChatMessageController implements ChatsApi {
     private static final Logger log = Logger.getLogger(ChatMessageController.class.getName());
 
-    private ChatMessageService chatMessageService;
-
     @Autowired
-    public ChatMessageController(@Lazy ChatMessageService chatMessageService) {
-        this.chatMessageService = chatMessageService;
-    }
+    ChatMessageService chatMessageService;
 
     @Override
     public ResponseEntity<ChatMessage> getChatMessageById(Long id) {
         try {
             log.info("getChatMessageById: " + id);
-            //   ChatMessageService chatMessageService = new ChatMessageService();
+
             ChatMessage cm = chatMessageService.getChatMessage(id);
             return ResponseEntity.ok(cm);
         } catch (Exception e) {
@@ -38,7 +33,7 @@ public class ChatMessageController implements ChatsApi {
     @Override
     public ResponseEntity<ChatMessage> createChatMessage(NewChatMessage newChatMessage) {
         try {
-            //  ChatMessageService chatMessageService = new ChatMessageService();
+
             ChatMessage chatMessage = chatMessageService.createChatMessage(newChatMessage);
             if (chatMessage == null) {
                 return ResponseEntity.notFound().build();

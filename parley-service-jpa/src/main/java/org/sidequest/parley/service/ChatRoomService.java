@@ -38,11 +38,7 @@ public class ChatRoomService {
         for (ChatRoomEntity chatRoomEntity : chatRoomEntities) {
             log.info("chatRoom: " + chatRoomEntity.getName() + " (" + chatRoomEntity.getId() + ")");
             ChatRoom chatRoom = ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
-//            chatRoom.setUsers(new ArrayList<>());
-//            for (UserEntity user : chatRoomEntity.getUsers()) {
-//                User u = UserMapper.INSTANCE.toModel(user);
-//                chatRoom.addUsersItem(u);
-//            }
+
             chatRooms.add(chatRoom);
         }
         log.info("Retrieved all chatrooms size: " + chatRooms.size());
@@ -63,12 +59,7 @@ public class ChatRoomService {
         log.info("Retrieving users to chat room: " + chatRoom.getName() + " (" + chatRoom.getChatRoomId() + ")");
         for (User user : chatRoom.getUsers()) {
             log.info("\tchatRoom.getUsers(): " + user.toString());
-//            UserEntity goodUser = userRepository.findById(user.getId()).orElseThrow(() -> {
-//                log.severe("User with id " + user.getId() + " not found");
-//                return new RuntimeException("User not found");
-//            });
-//            //tempUsers.add(UserMapper.INSTANCE.toModel(goodUser));
-//            chatRoom.addUsersItem(UserMapper.INSTANCE.toModel(goodUser));
+
         }
 
         log.info("Chat room: " + chatRoom.getName() + " (" + chatRoom.getChatRoomId() + ") has " + tempUsers.size() + " users");
@@ -77,21 +68,6 @@ public class ChatRoomService {
         return chatRoom;
     }
 
-    //
-////    private void addUserToChatRoom(ChatRoom chatRoom, ChatRoomEntity chatRoomEntity){
-////        // Add users to the chat room by creating EnrollmentEntities
-////        for (User user : chatRoom.getUsers()) {
-////            log.info("Adding user to chat room: " + user.getId());
-////            UserEntity userEntity = userRepository.findById(user.getId()).orElseThrow(() -> {
-////                log.severe("User with id " + user.getId() + " not found");
-////                return new RuntimeException("User not found");
-////            });
-////
-////            EnrollmentEntity enrollmentEntity = new EnrollmentEntity(chatRoomEntity, userEntity);
-////            enrollmentRepository.save(enrollmentEntity);
-////        }
-////    }
-//
     @Transactional
     public ChatRoom createChatRoom(ChatRoom chatRoom) {
         log.info("Attempting to create chat room: " + chatRoom.getName());
@@ -132,66 +108,6 @@ public class ChatRoomService {
         log.info("User: " + userId + " is not in chat room: " + chatRoomId);
         return false;
     }
-
-
-//
-//    @Transactional
-//    public ChatRoom updateChatRoom(ChatRoom chatRoom) {
-//        try {
-//            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoom.getChatRoomId()).orElseThrow(() ->
-//                    new RuntimeException("ChatRoom not found"));
-////
-////            ChatRoomEntity temp = ChatRoomMapper.INSTANCE.toEntity(chatRoom);
-////
-////            log.info("Updating chat room: " + chatRoom.getChatRoomId());
-////            log.info("Chat room name: " + chatRoom.getName());
-////            log.info("Chat room moderator: " + chatRoom.getModerator().toString());
-////            chatRoomEntity.setName(temp.getName());
-////            chatRoomEntity.setModerator(temp.getModerator());
-////            chatRoomEntity.setChatRoomUsers(null);
-////            chatRoomUserService.removeAllUsersFromChatRoom(temp.getId());
-////
-////            chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
-//            ChatRoom resultChatRoom = ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
-////            for (User user : chatRoom.getUsers()) {
-////                log.info("Adding user: " + user.getId() + " to chat room: " + resultChatRoom.getChatRoomId());
-////                chatRoomUserService.addUserToChatRoom(user.getId(), resultChatRoom.getChatRoomId());
-////            }
-//
-//            //TODO: The resultChatRoom object is not being returned with the correct user list
-//            // This is a workaround to get the correct user list
-//            return getChatRoom(resultChatRoom.getChatRoomId());
-//        } catch (Exception e) {
-//            log.severe("Error updating chat room: " + e.getMessage());
-//            return null;
-//        }
-//    }
-//
-//    public void deleteChatRoom(Long chatRoomId) {
-//        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
-//        chatRoomRepository.delete(chatRoomEntity);
-//    }
-//
-//    public void setChatRoomIcon(Long chatRoomId, MultipartFile file) throws IOException {
-//        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
-//
-//        if (!file.isEmpty()) {
-//            byte[] bytes = file.getBytes();
-//            String fileName = chatRoomEntity.getId() + "_" + file.getOriginalFilename();
-//            Path path = Paths.get(uploadDir + fileName); // replace with your path
-//            Files.write(path, bytes);
-//
-//            chatRoomEntity.setIconPath(path.toString());
-//            chatRoomRepository.save(chatRoomEntity);
-//        } else {
-//            throw new RuntimeException("Empty file!");
-//        }
-//    }
-//
-//    public String getChatRoomIcon(Long chatRoomId) {
-//        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
-//        return chatRoomEntity.getIconPath();
-//    }
 
 
 }
