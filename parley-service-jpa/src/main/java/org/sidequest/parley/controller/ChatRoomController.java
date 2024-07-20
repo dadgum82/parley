@@ -63,4 +63,19 @@ public class ChatRoomController implements ChatroomsApi {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @Override
+    public ResponseEntity<ChatRoom> updateChatRoom(Long id, ChatRoom chatRoom) {
+        try {
+            ChatRoom resultChatRoom = chatRoomService.updateChatRoom(id, chatRoom);
+            if (resultChatRoom != null) {
+                return new ResponseEntity<>(resultChatRoom, HttpStatus.CREATED);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            log.severe("Error creating chat room: " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

@@ -80,4 +80,9 @@ public class EnrollmentService {
                 .collect(Collectors.toSet());
 
     }
+
+    public void removeUsersFromChatRoom(Long chatRoomId) {
+        log.info("Removing users from chat room with ID " + chatRoomId);
+        enrollmentRepository.deleteByChatroomId(chatRoomId);
+    }
 }
