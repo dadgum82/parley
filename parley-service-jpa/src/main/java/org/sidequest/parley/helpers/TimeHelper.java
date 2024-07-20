@@ -1,5 +1,7 @@
 package org.sidequest.parley.helpers;
 
+import org.springframework.stereotype.Component;
+
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -8,6 +10,7 @@ import java.util.logging.Logger;
 /**
  * A utility class that provides helper methods for managing time-related operations.
  */
+@Component
 public class TimeHelper {
     private static final Logger log = Logger.getLogger(TimeHelper.class.getName());
 

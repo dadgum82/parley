@@ -5,6 +5,7 @@ import org.sidequest.parley.mapper.ChatMessageMapper;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.NewChatMessage;
 import org.sidequest.parley.repository.ChatMessageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class ChatMessageService {
     private UserService userService;
     private ChatRoomService chatRoomService;
 
-    //  @Autowired
+    @Autowired
     public void setChatMessageRepository(ChatMessageRepository chatMessageRepository) {
         this.chatMessageRepository = chatMessageRepository;
     }

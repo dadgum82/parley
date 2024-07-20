@@ -4,9 +4,9 @@ package org.sidequest.parley.controller;
 import org.sidequest.parley.api.ChatroomsApi;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewChatRoom;
-import org.sidequest.parley.model.User;
 import org.sidequest.parley.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,78 +52,15 @@ public class ChatRoomController implements ChatroomsApi {
     @Override
     public ResponseEntity<ChatRoom> createChatRoom(NewChatRoom newChatRoom) {
         try {
-
-            ChatRoom chatRoom = new ChatRoom();
-            String name = newChatRoom.getName() != null ? newChatRoom.getName() : "unknown";
-            User moderator = newChatRoom.getModerator() != null ? newChatRoom.getModerator() : null;
-            List<User> users = newChatRoom.getUsers() != null ? newChatRoom.getUsers() : null;
-
-            chatRoom.setName(name);
-            chatRoom.setModerator(moderator);
-            chatRoom.setUsers(users);
-
-            ChatRoom resultingChatRoom = chatRoomService.createChatRoom(chatRoom);
-            return ResponseEntity.ok(resultingChatRoom);
+            ChatRoom chatRoom = chatRoomService.createChatRoom(newChatRoom);
+            if (chatRoom != null) {
+                return new ResponseEntity<>(chatRoom, HttpStatus.CREATED);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            log.severe("Error creating chat room: " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-//
-//    @Override
-//    public ResponseEntity<Error> deleteChatRoom(Long id) {
-//        try {
-//            chatRoomService.deleteChatRoom(id);
-//            return ResponseEntity.ok().build();
-//        } catch (Exception e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    @Override
-//    public ResponseEntity<ChatRoom> updateChatRoom(Long id, ChatRoom chatRoom) {
-//        try {
-//            ChatRoom updatedChatRoom = chatRoomService.updateChatRoom(chatRoom);
-//            return ResponseEntity.ok(updatedChatRoom);
-//        } catch (Exception e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    @Override
-//    public ResponseEntity<Void> setChatRoomIcon(Long id, MultipartFile file) {
-//        try {
-//            chatRoomService.setChatRoomIcon(id, file);
-//            return ResponseEntity.ok().build();
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-//
-//    @Override
-//    public ResponseEntity<Resource> getChatRoomIcon(Long id) {
-//        try {
-//            String iconPath = chatRoomService.getChatRoomIcon(id);
-//            File file = new File(iconPath);
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + file.getName());
-//            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-//            return ResponseEntity.ok()
-//                    .headers(headers)
-//                    .contentLength(file.length())
-//                    .contentType(MediaType.IMAGE_PNG) // or MediaType.IMAGE_PNG if it's a PNG image MediaType.IMAGE_JPEG
-//                    .body(resource);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-
-//    @Override
-//    public ResponseEntity<List<ChatMessage>> getChatroomChatsByChatRoomId(Long chatRoomId) {
-//        try {
-//            List<ChatMessage> chatMessages = chatMessageService.getChatMessagesByChatRoomId(chatRoomId);
-//            return ResponseEntity.ok(chatMessages);
-//        } catch (Exception e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
 }

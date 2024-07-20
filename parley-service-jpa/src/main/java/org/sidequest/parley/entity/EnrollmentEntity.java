@@ -20,7 +20,7 @@ public class EnrollmentEntity {
 
     @ManyToOne
     @JoinColumn(name = "chatusers_id")
-    private UserEntity chat_user;
+    private UserEntity chatuser;
 
     // Constructors, getters, setters, and toString method
 
@@ -31,7 +31,7 @@ public class EnrollmentEntity {
     // Convenience constructor
     public EnrollmentEntity(ChatRoomEntity chatroom, UserEntity user) {
         this.chatroom = chatroom;
-        this.chat_user = user;
+        this.chatuser = user;
     }
 
     // toString method to help with debugging and logging
@@ -40,17 +40,17 @@ public class EnrollmentEntity {
         return "EnrollmentEntity{" +
                 "id=" + id +
                 ", chatroom=" + (chatroom != null ? chatroom.getName() : "null") + // Safely call getName if chatroom is not null
-                ", user=" + (chat_user != null ? chat_user.getName() : "null") + // Safely call getUsername if user is not null
+                ", user=" + (chatuser != null ? chatuser.getName() : "null") + // Safely call getUsername if user is not null
                 '}';
     }
 
     // The getUser method corrected to return the user properly
     public UserEntity getUser() {
-        return chat_user;
+        return chatuser;
     }
 
     // Setter method for user
     public void setUser(UserEntity user) {
-        this.chat_user = user;
+        this.chatuser = user;
     }
 }

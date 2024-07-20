@@ -1,18 +1,17 @@
 package org.sidequest.parley.service;
 
 import org.sidequest.parley.entity.UserEntity;
+import org.sidequest.parley.helpers.FileSystemHelper;
 import org.sidequest.parley.mapper.UserMapper;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.zone.ZoneRulesException;
@@ -27,12 +26,15 @@ public class UserService {
 
     private UserRepository userRepository;
     @Value("${user.avatar.directory}")
-    private String uploadDir;
+    private String userAvatarDirectory;
 
-    //   @Autowired
+    @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @Autowired
+    private FileSystemHelper fileSystemHelper;
 
     public List<User> getUsers() {
         return userRepository.findAll().stream().map(UserMapper.INSTANCE::toModel).collect(Collectors.toList());
@@ -110,18 +112,15 @@ public class UserService {
     }
 
     @Transactional
-    public void setUserAvatar(Long userId, MultipartFile file) throws Exception {
+    public void setUserAvatar(Long userId, MultipartFile avatarFile) throws Exception {
+        if (!avatarFile.isEmpty()) {
+            log.fine("Saving avatar for user: " + userId);
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found"));
-
-        if (!file.isEmpty()) {
-            byte[] bytes = file.getBytes();
-            String fileName = user.getId() + "_" + file.getOriginalFilename();
-            Path path = Paths.get(uploadDir + fileName);
-            Files.write(path, bytes);
-
-            user.setAvatarPath(path.toString());
+            String path = fileSystemHelper.saveFile(avatarFile, userAvatarDirectory);
+            user.setAvatarPath(path);
             userRepository.save(user);
         } else {
+            log.severe("Empty file!");
             throw new Exception("Empty file!");
         }
     }
@@ -136,5 +135,9 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         String strUserTimezone = userEntity.getTimezone();
         return getZoneId(strUserTimezone);
+    }
+
+    public UserEntity getUserEntity(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

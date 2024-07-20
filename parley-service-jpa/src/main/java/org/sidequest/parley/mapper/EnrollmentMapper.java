@@ -6,16 +6,18 @@ import org.mapstruct.factory.Mappers;
 import org.sidequest.parley.entity.EnrollmentEntity;
 import org.sidequest.parley.model.Enrollment;
 
-@Mapper(uses = {UserMapper.class, ChatRoomMapper.class})
+@Mapper
 public interface EnrollmentMapper {
 
     EnrollmentMapper INSTANCE = Mappers.getMapper(EnrollmentMapper.class);
 
-    @Mapping(source = "chat_user.id", target = "userId")
+    //This is the only mapping that is different from the default
+    @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "chatroom.id", target = "chatRoomId")
-    Enrollment toModel(EnrollmentEntity enrollmentEntity);
+    Enrollment toModel(EnrollmentEntity entity);
 
-    @Mapping(source = "userId", target = "chat_user.id")
+    //This is the only mapping that is different from the default
+    @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "chatRoomId", target = "chatroom.id")
-    EnrollmentEntity toEntity(Enrollment enrollment);
+    EnrollmentEntity toEntity(Enrollment model);
 }

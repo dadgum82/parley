@@ -1,16 +1,21 @@
 package org.sidequest.parley.service;
 
 import org.sidequest.parley.entity.ChatRoomEntity;
+import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.model.ChatRoom;
+import org.sidequest.parley.model.NewChatRoom;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
@@ -19,17 +24,17 @@ public class ChatRoomService {
 
 
     private ChatRoomRepository chatRoomRepository;
-    private EnrollmentService enrollmentService;
 
-    //@Autowired
+    @Autowired
+    private EnrollmentService enrollmentService;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     public void setChatRoomRepository(ChatRoomRepository chatRoomRepository) {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    // @Autowired
-    public void setEnrollmentService(@Lazy EnrollmentService enrollmentService) {
-        this.enrollmentService = enrollmentService;
-    }
 
     public List<ChatRoom> getChatRooms() {
         log.info("Attempting to retrieve all chat rooms");
@@ -55,39 +60,56 @@ public class ChatRoomService {
             return null;
         }
 
-        List<User> tempUsers = new ArrayList<>();
-        log.info("Retrieving users to chat room: " + chatRoom.getName() + " (" + chatRoom.getChatRoomId() + ")");
-        for (User user : chatRoom.getUsers()) {
-            log.info("\tchatRoom.getUsers(): " + user.toString());
+        // We need to get the enrolled users for the chat room
+        // Then we add the users to the chat room
+        enrollmentService.getChatRoomUserIds(id).forEach(userId -> {
+            chatRoom.addUsersItem(userService.getUser(userId));
+        });
 
-        }
-
-        log.info("Chat room: " + chatRoom.getName() + " (" + chatRoom.getChatRoomId() + ") has " + tempUsers.size() + " users");
-        //chatRoom.setUsers(tempUsers);
+        log.info("Chat room: " + chatRoom.getName() + " (" + chatRoom.getChatRoomId() + ") has " + chatRoom.getUsers().size() + " users");
         log.info("Successfully retrieved chat room with id " + id);
         return chatRoom;
     }
 
     @Transactional
-    public ChatRoom createChatRoom(ChatRoom chatRoom) {
-        log.info("Attempting to create chat room: " + chatRoom.getName());
+    public ChatRoom createChatRoom(NewChatRoom newChatRoom) {
+        try {
+            // Validate new chat room details
+            if (newChatRoom == null || newChatRoom.getName() == null || newChatRoom.getName().isEmpty()) {
+                log.warning("Invalid chat room details provided.");
+                throw new IllegalArgumentException("Chat room name cannot be null or empty.");
+            }
+            UserEntity moderator = userService.getUserEntity(newChatRoom.getModerator().getId());
 
-        // Convert ChatRoom model to entity
-        ChatRoomEntity chatRoomEntity = ChatRoomMapper.INSTANCE.toEntity(chatRoom);
+            // Create and save the new chat room entity
+            ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
+            chatRoomEntity.setName(newChatRoom.getName());
+            chatRoomEntity.setModerator(moderator);
 
-        // Save the ChatRoomEntity to get the generated ID
-        chatRoomEntity = chatRoomRepository.save(chatRoomEntity);
+            // Save and flush to get the id
+            // if you just save, the id will be null because the entity manager has not persisted the entity yet
+            // to the database. The flush method forces the entity manager to persist the entity to the database.
+            // This is useful when you need the id of the entity immediately after saving it.
+            // If you don't need the id immediately, you can just call save.
+            // https://www.baeldung.com/spring-data-jpa-save-saveandflush
+            ChatRoomEntity resultChatroomEntity = chatRoomRepository.saveAndFlush(chatRoomEntity);
 
-// Convert the saved ChatRoomEntity back to model
-        ChatRoom resultChatRoom = ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
+            log.info("Chat room entity created: " + resultChatroomEntity.getName() + " (" + resultChatroomEntity.getId() + ")");
 
+            ChatRoom resultChatroom = ChatRoomMapper.INSTANCE.toModel(resultChatroomEntity);
 
-        enrollmentService.addUsersToChatRoom(chatRoom.getUsers(), resultChatRoom);
+            // Add the users to the chatroom including the moderator
+            Set<User> users = new HashSet<>(newChatRoom.getUsers());
+            users.add(newChatRoom.getModerator());
+            enrollmentService.addUsersToChatRoom(newChatRoom.getUsers(), resultChatroom);
 
+            log.info("Chat room created successfully: " + resultChatroom.getName());
+            return getChatRoom(resultChatroom.getChatRoomId());
 
-        // TODO: The resultChatRoom object might not contain the user list correctly
-        // Fetch the chat room again to get the correct user list
-        return getChatRoom(resultChatRoom.getChatRoomId());
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Failed to create chat room: " + newChatRoom.getName(), e);
+            throw new RuntimeException("Failed to create chat room: " + newChatRoom.getName(), e);
+        }
     }
 
     public boolean isUserInChatRoom(Long userId, Long chatRoomId) {

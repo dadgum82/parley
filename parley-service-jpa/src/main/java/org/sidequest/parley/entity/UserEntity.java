@@ -43,7 +43,7 @@ public class UserEntity {
     private OffsetDateTime lastPostedMessageDateTime;
 
     // Define the relationship with EnrollmentEntity
-    @OneToMany(mappedBy = "chat_user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chatuser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EnrollmentEntity> enrollments = new HashSet<>();
 
     // Constructors, getters, setters, and toString method
