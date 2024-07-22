@@ -2,14 +2,17 @@ package org.sidequest.parley.service;
 
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
+import org.sidequest.parley.helpers.FileSystemHelper;
 import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewChatRoom;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,10 +28,16 @@ public class ChatRoomService {
 
     private ChatRoomRepository chatRoomRepository;
 
+    @Value("${chatroom.icon.directory}")
+    private String chatroomIconDirectory;
+
     @Autowired
     private EnrollmentService enrollmentService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileSystemHelper fileSystemHelper;
 
     @Autowired
     public void setChatRoomRepository(ChatRoomRepository chatRoomRepository) {
@@ -158,5 +167,30 @@ public class ChatRoomService {
 
         log.info("User: " + userId + " is not in chat room: " + chatRoomId);
         return false;
+    }
+
+    public String getChatRoomIcon(Long id) throws Exception {
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(id).orElseThrow(() -> new Exception("Chatroom not found"));
+        return chatRoomEntity.getIconPath();
+    }
+
+    @Transactional
+    public void setChatRoomIcon(Long chatroomId, MultipartFile iconFile) throws Exception {
+        if (!iconFile.isEmpty()) {
+            log.fine("Saving icon for chatroom: " + chatroomId);
+            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatroomId).orElseThrow(() -> new Exception("Chatroom not found"));
+            String path = fileSystemHelper.saveFile(iconFile, chatroomIconDirectory);
+            chatRoomEntity.setIconPath(path);
+            chatRoomRepository.save(chatRoomEntity);
+        } else {
+            log.severe("Empty file!");
+            throw new Exception("Empty file!");
+        }
+    }
+
+    public void deleteChatRoom(Long id) {
+        log.info("Attempting to delete chat room with id " + id);
+        chatRoomRepository.deleteById(id);
+        log.info("Successfully deleted chat room with id " + id);
     }
 }

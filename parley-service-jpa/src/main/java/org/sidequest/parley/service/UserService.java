@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 public class UserService {
     private static final Logger log = Logger.getLogger(UserService.class.getName());
 
-
     private UserRepository userRepository;
+
     @Value("${user.avatar.directory}")
     private String userAvatarDirectory;
 
