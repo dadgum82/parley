@@ -1,6 +1,7 @@
 package org.sidequest.parley.service;
 
 import org.sidequest.parley.entity.ChatMessageEntity;
+import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.mapper.ChatMessageMapper;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.NewChatMessage;
@@ -21,7 +22,11 @@ public class ChatMessageService {
     private static final Logger log = Logger.getLogger(ChatMessageService.class.getName());
 
     private ChatMessageRepository chatMessageRepository;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
     private ChatRoomService chatRoomService;
 
     @Autowired
@@ -58,8 +63,7 @@ public class ChatMessageService {
 
     @Transactional
     public ChatMessage createChatMessage(NewChatMessage newChatMessage) throws SQLException {
-        log.fine("createChatMessage: " + newChatMessage);
-        ChatMessage cm = new ChatMessage();
+        log.info("createChatMessage: " + newChatMessage.toString());
 
         // We get the current time in OffsetDateTime format
         // The mapper will convert it to UTC for storage in the database
@@ -71,22 +75,32 @@ public class ChatMessageService {
 
         // Check if the user is a member of the chat room
         if (chatRoomService.isUserInChatRoom(userId, chatRoomId)) {
-            log.fine("User is a member of the chat room");
+            log.info("User is a member of the chat room");
         } else {
             throw new RuntimeException("Access denied: User is not a member of the chat room");
         }
 
+        // Retrieve the managed ChatRoomEntity
+        ChatRoomEntity chatRoomEntity = chatRoomService.getChatRoomEntity(chatRoomId);
+        if (chatRoomEntity == null) {
+            throw new RuntimeException("Chat room not found");
+        }
         // Retrieve the user's timezone
-        String strUserTimezone = userService.getUserTimezone(userId);
-        log.fine("User timezone: " + strUserTimezone);
+        //  String strUserTimezone = userService.getUserTimezone(userId);
+        // log.fine("User timezone: " + strUserTimezone);
 
-        cm.setTimestamp(odt);
-        cm.setChatRoom(chatRoomService.getChatRoom(chatRoomId));
-        cm.setUser(userService.getUser(userId));
-        cm.setContent(newChatMessage.getContent());
+        // Create and set up the ChatMessageEntity
+        ChatMessageEntity chatMessageEntity = new ChatMessageEntity();
+        chatMessageEntity.setChatRoom(chatRoomEntity);
+        chatMessageEntity.setUser(userService.getUserEntity(userId));
+        chatMessageEntity.setContent(newChatMessage.getContent());
+        chatMessageEntity.setScreenEffect(newChatMessage.getScreenEffect());
+        chatMessageEntity.setTextEffect(newChatMessage.getTextEffect());
+        chatMessageEntity.setTimestamp(odt);
 
-        ChatMessageEntity chatMessageEntity = ChatMessageMapper.INSTANCE.toEntity(cm);
-        chatMessageEntity = chatMessageRepository.save(chatMessageEntity);
+        log.info("Saving chat message: " + chatMessageEntity);
+        chatMessageEntity = chatMessageRepository.saveAndFlush(chatMessageEntity);
+        log.info("Chat message saved...");
 
         userService.updateLastPostedMessageDateTime(userId, odt);
         return ChatMessageMapper.INSTANCE.toModel(chatMessageEntity);

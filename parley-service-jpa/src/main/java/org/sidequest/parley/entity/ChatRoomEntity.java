@@ -23,6 +23,10 @@ public class ChatRoomEntity {
     @OneToOne
     private UserEntity moderator;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chatmessages_id")
+    private ChatMessageEntity chatMessage;
+
     private String name;
 
     private String iconPath;

@@ -140,7 +140,7 @@ public class ChatRoomService {
         // Update the chat room details
         chatRoomEntity.setName(chatRoom.getName());
         chatRoomEntity.setModerator(userService.getUserEntity(chatRoom.getModerator().getId()));
-        chatRoomRepository.save(chatRoomEntity);
+        chatRoomRepository.saveAndFlush(chatRoomEntity); // Save and flush to persist to the database
 
         // Remove all users from the chat room and add the new users
         enrollmentService.removeUsersFromChatRoom(id);
@@ -192,5 +192,20 @@ public class ChatRoomService {
         log.info("Attempting to delete chat room with id " + id);
         chatRoomRepository.deleteById(id);
         log.info("Successfully deleted chat room with id " + id);
+    }
+
+    public ChatRoomEntity getChatRoomEntity(Long chatRoomId) {
+        log.info("Attempting to retrieve ChatRoomEntity with id " + chatRoomId);
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElse(null);
+
+        if (chatRoomEntity == null) {
+            log.warning("ChatRoomEntity with id " + chatRoomId + " not found");
+            return null;
+        }
+
+        log.info("Successfully retrieved ChatRoomEntity with id " + chatRoomId);
+        return chatRoomEntity;
     }
 }

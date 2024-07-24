@@ -105,6 +105,7 @@ public class UserService {
 
     @Transactional
     public void updateLastPostedMessageDateTime(Long userId, OffsetDateTime odt) {
+        log.info("Updating last posted message date time for user: " + userId);
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userEntity.setLastPostedMessageDateTime(odt);
