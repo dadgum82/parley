@@ -54,7 +54,7 @@ public class ChatRoomService {
             ChatRoom chatRoom = ChatRoomMapper.INSTANCE.toModel(chatRoomEntity);
             // We need to get the enrolled users for the chat room
             // Then we add the users to the chat room
-            enrollmentService.getChatRoomUserIds(chatRoomEntity.getId()).forEach(userId -> {
+            enrollmentService.getChatRoomByUserIds(chatRoomEntity.getId()).forEach(userId -> {
                 chatRoom.addUsersItem(userService.getUser(userId));
             });
 
@@ -76,7 +76,7 @@ public class ChatRoomService {
 
         // We need to get the enrolled users for the chat room
         // Then we add the users to the chat room
-        enrollmentService.getChatRoomUserIds(id).forEach(userId -> {
+        enrollmentService.getChatRoomByUserIds(id).forEach(userId -> {
             chatRoom.addUsersItem(userService.getUser(userId));
         });
 

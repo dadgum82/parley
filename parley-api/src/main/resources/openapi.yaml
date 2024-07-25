@@ -24,6 +24,8 @@ tags:
     description: These are the chat messages by a user in a chat room
   - name: ChatRoom
     description: Operations about chat rooms.
+  - name: Enrollment
+    description: Operations about enrolling users in chat rooms
 paths:
   /streams:
     post:
@@ -82,63 +84,6 @@ paths:
                   description: |
                     Your server should return this HTTP status code if no longer interested
                     in further updates
-  #  /streams/users:
-  #    post:
-  #      description: subscribes a client to receive out-of-band data
-  #      operationId: createUserStream
-  #      parameters:
-  #        - name: callbackUrl
-  #          in: query
-  #          required: true
-  #          description: |
-  #            the location where data will be sent.  Must be network accessible
-  #            by the source server
-  #          schema:
-  #            type: string
-  #            format: uri
-  #            example: https://jesses-server.com
-  #      responses:
-  #        '201':
-  #          description: subscription successfully created
-  #          content:
-  #            application/json:
-  #              schema:
-  #                description: subscription information
-  #                required:
-  #                  - subscriptionId
-  #                properties:
-  #                  subscriptionId:
-  #                    description: this unique identifier allows management of the subscription
-  #                    type: string
-  #                    example: 2531329f-fb09-4ef7-887e-84e648214436
-  #      callbacks:
-  #        # the name `onData` is a convenience locator
-  #        onData:
-  #          # when data is sent, it will be sent to the `callbackUrl` provided
-  #          # when making the subscription PLUS the suffix `/data`
-  #          '{$request.query.callbackUrl}/data':
-  #            post:
-  #              requestBody:
-  #                description: subscription payload
-  #                content:
-  #                  application/json:
-  #                    schema:
-  #                      type: object
-  #                      properties:
-  #                        timestamp:
-  #                          type: string
-  #                          format: date-time
-  #                        userData:
-  #                          type: string
-  #              responses:
-  #                '202':
-  #                  description: |
-  #                    Your server implementation should return this HTTP status code
-  #                    if the data was received successfully
-  #                '204':
-  #                  description: |
-  #                    Your server should return this HTTP status code if no longer interested
-  #                    in further updates
   /chats:
     post:
       tags:
@@ -198,43 +143,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  #  /chatrooms/{chatRoomId}/chats/{chatId}:
-  #    get:
-  #      tags:
-  #        - ChatMessage
-  #        - ChatRoom
-  #      summary: Gets a chat message by ID.
-  #      description: >
-  #        Gets a chat message by ID from a specific chat room.
-  #      operationId: getChatMessagesBychatRoomIdAndChatId
-  #      parameters:
-  #        - name: chatRoomId
-  #          in: path
-  #          description: Chat room ID
-  #          required: true
-  #          schema:
-  #            type: integer
-  #            format: int64
-  #        - name: chatId
-  #          in: path
-  #          description: Chat message ID
-  #          required: true
-  #          schema:
-  #            type: integer
-  #            format: int64
-  #      responses:
-  #        '200':
-  #          description: Successful operation
-  #          content:
-  #            application/json:
-  #              schema:
-  #                $ref: '#/components/schemas/ChatMessage'
-  #        default:
-  #          description: unexpected error
-  #          content:
-  #            application/json:
-  #              schema:
-  #                $ref: '#/components/schemas/Error'
   /chatrooms/{chatRoomId}/chats:
     get:
       tags:
@@ -638,8 +546,158 @@ paths:
           description: Avatar set successfully
         '400':
           description: Bad request
+  /enrollments:
+    post:
+      tags:
+        - Enrollment
+      summary: Add users to a chat room
+      operationId: addUsersToChatRooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/NewEnrollment'
+      responses:
+        '201':
+          description: Users successfully added to chat room
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enrollment'
+        '400':
+          description: Invalid input
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /enrollments/{chatRoomId}:
+    get:
+      tags:
+        - Enrollment
+      summary: Get enrollments in a chat room
+      operationId: getEnrollmentsByChatRoomId
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enrollment'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Enrollment
+      summary: Remove all users from a chat room
+      operationId: removeUsersFromChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Users successfully removed from chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /enrollments/{chatRoomId}/users/{userId}:
+    post:
+      tags:
+        - Enrollment
+      summary: Add a user to a chat room
+      operationId: addUserToChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: User successfully added to chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Enrollment
+      summary: Remove a user from a chat room
+      operationId: removeUserFromChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: User successfully removed from chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
+    NewEnrollment:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: Identifier of the user enrolled in the chat room
+        chatRoomId:
+          type: integer
+          format: int64
+          description: Identifier of the chat room where the user is enrolled
+      required:
+        - userId
+        - chatRoomId
+      xml:
+        name: Enrollment
     Enrollment:
       type: object
       properties:
