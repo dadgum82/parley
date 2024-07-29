@@ -10,6 +10,7 @@ import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,19 +26,28 @@ import java.util.logging.Logger;
 public class ChatRoomService {
     private static final Logger log = Logger.getLogger(ChatRoomService.class.getName());
 
-
     private ChatRoomRepository chatRoomRepository;
+
+    // @Autowired
+    private EnrollmentService enrollmentService;
+    //@Autowired
+    private UserService userService;
+
+    @Autowired
+    private FileSystemHelper fileSystemHelper;
 
     @Value("${chatroom.icon.directory}")
     private String chatroomIconDirectory;
 
     @Autowired
-    private EnrollmentService enrollmentService;
-    @Autowired
-    private UserService userService;
+    public void setEnrollmentService(@Lazy EnrollmentService enrollmentService) {
+        this.enrollmentService = enrollmentService;
+    }
 
     @Autowired
-    private FileSystemHelper fileSystemHelper;
+    public void setUserService(@Lazy UserService userService) {
+        this.userService = userService;
+    }
 
     @Autowired
     public void setChatRoomRepository(ChatRoomRepository chatRoomRepository) {
@@ -208,4 +218,5 @@ public class ChatRoomService {
         log.info("Successfully retrieved ChatRoomEntity with id " + chatRoomId);
         return chatRoomEntity;
     }
+
 }

@@ -124,4 +124,5 @@ public class ChatRoomController implements ChatroomsApi {
             return ResponseEntity.badRequest().build();
         }
     }
+
 }

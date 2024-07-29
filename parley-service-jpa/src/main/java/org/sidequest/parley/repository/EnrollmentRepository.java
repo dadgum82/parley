@@ -16,4 +16,6 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     void deleteByChatroomId(Long chatRoomId);
 
     void deleteByChatroomIdAndChatuserId(Long chatRoomId, Long userId);
+
+    boolean existsByChatroomIdAndChatuserId(Long chatRoomId, Long userId);
 }

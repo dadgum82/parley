@@ -5,6 +5,7 @@ import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.NewChatMessage;
 import org.sidequest.parley.service.ChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +16,12 @@ import java.util.logging.Logger;
 public class ChatMessageController implements ChatsApi {
     private static final Logger log = Logger.getLogger(ChatMessageController.class.getName());
 
-    @Autowired
     ChatMessageService chatMessageService;
+
+    @Autowired
+    public void setChatMessageService(@Lazy ChatMessageService chatMessageService) {
+        this.chatMessageService = chatMessageService;
+    }
 
     @Override
     public ResponseEntity<ChatMessage> getChatMessageById(Long id) {

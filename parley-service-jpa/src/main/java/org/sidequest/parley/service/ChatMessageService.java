@@ -23,27 +23,30 @@ public class ChatMessageService {
 
     private ChatMessageRepository chatMessageRepository;
 
-    @Autowired
-    private UserService userService;
 
-    @Autowired
+    private UserService userService;
     private ChatRoomService chatRoomService;
+    private EnrollmentService enrollmentService;
 
     @Autowired
     public void setChatMessageRepository(ChatMessageRepository chatMessageRepository) {
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    //  @Autowired
-    public void setUserService(@Lazy UserService userService) {
-        this.userService = userService;
+    @Autowired
+    public void setEnrollmentService(EnrollmentService enrollmentService) {
+        this.enrollmentService = enrollmentService;
     }
 
-    // @Autowired
+    @Autowired
     public void setChatRoomService(@Lazy ChatRoomService chatRoomService) {
         this.chatRoomService = chatRoomService;
     }
 
+    @Autowired
+    public void setUserService(@Lazy UserService userService) {
+        this.userService = userService;
+    }
 
     public List<ChatMessage> getChatMessages() {
         return chatMessageRepository.findAll().stream().map(ChatMessageMapper.INSTANCE::toModel).collect(Collectors.toList());
@@ -74,7 +77,7 @@ public class ChatMessageService {
         Long userId = newChatMessage.getUserId();
 
         // Check if the user is a member of the chat room
-        if (chatRoomService.isUserInChatRoom(userId, chatRoomId)) {
+        if (enrollmentService.isUserInChatRoom(userId, chatRoomId)) {
             log.info("User is a member of the chat room");
         } else {
             throw new RuntimeException("Access denied: User is not a member of the chat room");
@@ -105,7 +108,6 @@ public class ChatMessageService {
         userService.updateLastPostedMessageDateTime(userId, odt);
         return ChatMessageMapper.INSTANCE.toModel(chatMessageEntity);
     }
-
 
 
     public List<ChatMessage> getChatMessagesByChatRoomId(Long chatRoomId) {

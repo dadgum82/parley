@@ -13,11 +13,11 @@
 
     <properties>
         <java.version>17</java.version>
-
         <client.base.package.name>org.sidequest.parley</client.base.package.name>
-        <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
-        <jersey-version>2.32</jersey-version>
+        <!--        !!!!! This has to match the parley-api pom file  !!!!! -->
+        <springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
 
+        <jersey-version>2.32</jersey-version>
         <swagger-version>2.2.19</swagger-version>
 
         <jackson-version>2.16.0</jackson-version>

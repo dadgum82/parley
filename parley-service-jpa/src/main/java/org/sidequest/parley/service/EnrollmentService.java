@@ -125,4 +125,8 @@ public class EnrollmentService {
                 .collect(Collectors.toSet());
 
     }
+
+    public boolean isUserInChatRoom(Long userId, Long chatRoomId) {
+        return enrollmentRepository.existsByChatroomIdAndChatuserId(chatRoomId, userId);
+    }
 }
