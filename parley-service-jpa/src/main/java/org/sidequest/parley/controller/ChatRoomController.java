@@ -2,11 +2,13 @@ package org.sidequest.parley.controller;
 
 
 import org.sidequest.parley.api.ChatroomsApi;
+import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.Error;
 import org.sidequest.parley.model.NewChatRoom;
 import org.sidequest.parley.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,8 +31,12 @@ import java.util.logging.Logger;
 public class ChatRoomController implements ChatroomsApi {
     private static final Logger log = Logger.getLogger(ChatRoomController.class.getName());
 
-    @Autowired
     private ChatRoomService chatRoomService;
+
+    @Autowired
+    public void setChatRoomService(@Lazy ChatRoomService chatRoomService) {
+        this.chatRoomService = chatRoomService;
+    }
 
     @Override
     public ResponseEntity<List<ChatRoom>> getChatRooms() {
@@ -122,6 +128,16 @@ public class ChatRoomController implements ChatroomsApi {
                     .body(resource);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<ChatMessage>> getChatroomChatsByChatRoomId(Long chatRoomId) {
+        try {
+            List<ChatMessage> chatMessages = chatRoomService.getChatroomChatsByChatRoomId(chatRoomId);
+            return ResponseEntity.ok(chatMessages);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

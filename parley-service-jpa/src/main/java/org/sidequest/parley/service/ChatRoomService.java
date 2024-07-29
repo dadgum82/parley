@@ -4,6 +4,7 @@ import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.helpers.FileSystemHelper;
 import org.sidequest.parley.mapper.ChatRoomMapper;
+import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewChatRoom;
 import org.sidequest.parley.model.User;
@@ -38,6 +39,8 @@ public class ChatRoomService {
 
     @Value("${chatroom.icon.directory}")
     private String chatroomIconDirectory;
+    @Autowired
+    private ChatMessageService chatMessageService;
 
     @Autowired
     public void setEnrollmentService(@Lazy EnrollmentService enrollmentService) {
@@ -219,4 +222,7 @@ public class ChatRoomService {
         return chatRoomEntity;
     }
 
+    public List<ChatMessage> getChatroomChatsByChatRoomId(Long chatRoomId) {
+        return chatMessageService.getChatMessagesByChatRoomId(chatRoomId);
+    }
 }
