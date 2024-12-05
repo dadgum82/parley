@@ -1,13 +1,17 @@
 package org.sidequest.parley.service;
 
+import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.helpers.FileSystemHelper;
+import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.mapper.UserMapper;
+import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +28,10 @@ public class UserService {
     private static final Logger log = Logger.getLogger(UserService.class.getName());
 
     private UserRepository userRepository;
+
+    @Autowired
+    @Lazy
+    private EnrollmentService enrollmentService;
 
     @Value("${user.avatar.directory}")
     private String userAvatarDirectory;
@@ -101,6 +109,35 @@ public class UserService {
 
         userEntity = userRepository.save(userEntity);
         return UserMapper.INSTANCE.toModel(userEntity);
+    }
+
+
+    public List<ChatRoom> getChatRoomsByUserId(Long userId) {
+        try {
+            if (userId == null) {
+                log.warning("User ID cannot be null");
+                throw new IllegalArgumentException("User ID cannot be null");
+            }
+
+            if (!userRepository.existsById(userId)) {
+                log.warning("User not found with id: " + userId);
+                throw new IllegalArgumentException("User not found with id: " + userId);
+            }
+
+            List<ChatRoom> chatRooms = enrollmentService.getChatRoomsByUserId(userId);
+            log.info("Found " + chatRooms.size() + " chat rooms for user " + userId);
+            return chatRooms;
+        } catch (IllegalArgumentException e) {
+            log.severe("Invalid request for user chatrooms: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.severe("Error getting chat rooms for user " + userId + ": " + e.getMessage());
+            throw new RuntimeException("Error retrieving chat rooms", e);
+        }
+    }
+
+    private ChatRoom mapChatRoomEntityToChatRoom(ChatRoomEntity entity) {
+        return ChatRoomMapper.INSTANCE.toModel(entity);
     }
 
     @Transactional

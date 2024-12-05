@@ -126,6 +126,18 @@ public class EnrollmentService {
 
     }
 
+    public List<ChatRoom> getChatRoomsByUserId(Long userId) {
+        Set<EnrollmentEntity> enrollments = enrollmentRepository.findAllByChatuserId(userId);
+        return enrollments.stream()
+                .map(EnrollmentMapper.INSTANCE::toModel)
+                .map(enrollment -> {
+                    ChatRoom chatRoom = new ChatRoom();
+                    chatRoom.setChatRoomId(enrollment.getChatRoomId());
+                    return chatRoom;
+                })
+                .collect(Collectors.toList());
+    }
+
     public boolean isUserInChatRoom(Long userId, Long chatRoomId) {
         return enrollmentRepository.existsByChatroomIdAndChatuserId(chatRoomId, userId);
     }

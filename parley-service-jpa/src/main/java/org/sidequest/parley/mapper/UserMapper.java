@@ -1,9 +1,7 @@
 package org.sidequest.parley.mapper;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.helpers.TimeHelper;
@@ -48,20 +46,20 @@ public interface UserMapper {
     @Mapping(target = "timezone", source = "timezone")
     User toModel(UserEntity userEntity);
 
-
-    @AfterMapping
-    default void handleTimezone(@MappingTarget UserEntity userEntity, User user) {
-        OffsetDateTime localDateTime = user.getLastPostedMessageDateTime();
-        OffsetDateTime utcTime = TimeHelper.toUtc(localDateTime);
-        userEntity.setLastPostedMessageDateTime(utcTime);
-    }
-
-    @AfterMapping
-    default void handleTimezone(@MappingTarget User user, UserEntity userEntity) {
-        OffsetDateTime utcTime = userEntity.getLastPostedMessageDateTime();
-        OffsetDateTime localDateTime = TimeHelper.fromUtc(utcTime, ZoneId.of(userEntity.getTimezone()));
-        user.setLastPostedMessageDateTime(localDateTime);
-    }
+// JFR 08/23/24 - This is relic code that isn't needed BUT lets leave it commented out for 6 month because I have fears....
+//    @AfterMapping
+//    default void handleTimezone(@MappingTarget UserEntity userEntity, User user) {
+//        OffsetDateTime localDateTime = user.getLastPostedMessageDateTime();
+//        OffsetDateTime utcTime = TimeHelper.toUtc(localDateTime);
+//        userEntity.setLastPostedMessageDateTime(utcTime);
+//    }
+//
+//    @AfterMapping
+//    default void handleTimezone(@MappingTarget User user, UserEntity userEntity) {
+//        OffsetDateTime utcTime = userEntity.getLastPostedMessageDateTime();
+//        OffsetDateTime localDateTime = TimeHelper.fromUtc(utcTime, ZoneId.of(userEntity.getTimezone()));
+//        user.setLastPostedMessageDateTime(localDateTime);
+//    }
 
     default OffsetDateTime convertToUtc(OffsetDateTime localDateTime) {
         return TimeHelper.toUtc(localDateTime);

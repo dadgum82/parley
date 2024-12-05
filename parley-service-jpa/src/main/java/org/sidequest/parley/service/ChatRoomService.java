@@ -107,7 +107,21 @@ public class ChatRoomService {
                 log.warning("Invalid chat room details provided.");
                 throw new IllegalArgumentException("Chat room name cannot be null or empty.");
             }
-            UserEntity moderator = userService.getUserEntity(newChatRoom.getModerator().getId());
+
+            if (newChatRoom.getModerator() == null || newChatRoom.getModerator().getId() == null) {
+                throw new IllegalArgumentException("Moderator ID cannot be null.");
+            }
+
+            UserEntity moderator;
+            try {
+                moderator = userService.getUserEntity(newChatRoom.getModerator().getId());
+                if (moderator == null) {
+                    throw new IllegalArgumentException("Moderator not found with ID: " + newChatRoom.getModerator().getId());
+                }
+            } catch (RuntimeException e) {
+                throw new IllegalArgumentException("Invalid moderator ID: " + newChatRoom.getModerator().getId());
+            }
+
 
             // Create and save the new chat room entity
             ChatRoomEntity chatRoomEntity = new ChatRoomEntity();

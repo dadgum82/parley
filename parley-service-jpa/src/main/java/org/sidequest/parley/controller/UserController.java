@@ -1,6 +1,7 @@
 package org.sidequest.parley.controller;
 
 import org.sidequest.parley.api.UsersApi;
+import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.service.UserService;
@@ -99,6 +100,17 @@ public class UserController implements UsersApi {
                     .body(resource);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<ChatRoom>> getChatRoomsByUserId(Long userId) {
+        try {
+            List<ChatRoom> chatRooms = userService.getChatRoomsByUserId(userId);
+            return ResponseEntity.ok(chatRooms);
+        } catch (Exception e) {
+            log.severe("Error getting chat rooms for user: " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 

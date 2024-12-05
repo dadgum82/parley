@@ -546,6 +546,36 @@ paths:
           description: Avatar set successfully
         '400':
           description: Bad request
+  /users/{userId}/chatrooms:
+    get:
+      tags:
+        - User
+        - ChatRoom
+      summary: Gets all chat rooms for a specific user
+      operationId: getChatRoomsByUserId
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of chat rooms the user is enrolled in
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatRoom'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /enrollments:
     post:
       tags:
