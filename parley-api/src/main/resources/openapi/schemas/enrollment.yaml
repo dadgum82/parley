@@ -1,0 +1,36 @@
+NewEnrollment:
+  type: object
+  properties:
+    userId:
+      type: integer
+      format: int64
+      description: Identifier of the user enrolled in the chat room
+    chatRoomId:
+      type: integer
+      format: int64
+      description: Identifier of the chat room where the user is enrolled
+  required:
+    - userId
+    - chatRoomId
+  xml:
+    name: Enrollment
+Enrollment:
+  type: object
+  properties:
+    userId:
+      type: integer
+      format: int64
+      description: Identifier of the user enrolled in the chat room
+    chatRoomId:
+      type: integer
+      format: int64
+      description: Identifier of the chat room where the user is enrolled
+    enrolledDate:
+      type: string
+      format: date-time
+      description: The date and time when the user was enrolled in the chat room
+  required:
+    - userId
+    - chatRoomId
+  xml:
+    name: Enrollment

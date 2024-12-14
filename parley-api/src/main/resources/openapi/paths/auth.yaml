@@ -1,0 +1,163 @@
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login to get JWT token
+      description: Authenticate user and receive a JWT token for subsequent requests
+      operationId: authenticate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/AuthRequest'
+            example:
+              username: "john_doe"
+              password: "mysecretpassword"
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/auth.yaml#/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh JWT token
+      description: Get a new JWT token using a valid existing token
+      operationId: refreshToken
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Token successfully refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/auth.yaml#/AuthResponse'
+        '401':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout user
+      description: Invalidate the current JWT token
+      operationId: logout
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Successfully logged out
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+
+  /auth/password:
+    put:
+      tags:
+        - Authentication
+      summary: Change password
+      description: Update the user's password
+      operationId: changePassword
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/PasswordChangeRequest'
+      responses:
+        '200':
+          description: Password successfully changed
+        '400':
+          description: Invalid password format
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+        '401':
+          description: Current password is incorrect
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+
+  /auth/password/reset:
+    post:
+      tags:
+        - Authentication
+      summary: Request password reset
+      description: Send a password reset link to user's email
+      operationId: requestPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/PasswordResetRequest'
+      responses:
+        '200':
+          description: Password reset email sent
+        '400':
+          description: Invalid email
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+
+  /auth/password/reset/{token}:
+    post:
+      tags:
+        - Authentication
+      summary: Reset password with token
+      description: Reset password using the token received via email
+      operationId: resetPassword
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/NewPasswordRequest'
+      responses:
+        '200':
+          description: Password successfully reset
+        '400':
+          description: Invalid password format or token
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'

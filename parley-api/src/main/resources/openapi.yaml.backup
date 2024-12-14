@@ -1,0 +1,941 @@
+openapi: 3.0.3
+info:
+  description: |
+    This is the backend APIs for a chat application.
+  version: "1.0.0"
+  title: Parley
+  termsOfService: 'https://swagger.io/terms/'
+  contact:
+    email: jrackliff@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: http://localhost:8080/parley-api
+    description: Local server
+  - url: https://virtserver.swaggerhub.com/JRACKLIFF/Parley2/1.0.0
+    description: SwaggerHub API Auto Mocking
+  - url: https://k0000.company.net/parley-api
+    description: Production server
+tags:
+  - name: User
+    description: Operations about user
+  - name: ChatMessage
+    description: These are the chat messages by a user in a chat room
+  - name: ChatRoom
+    description: Operations about chat rooms.
+  - name: Enrollment
+    description: Operations about enrolling users in chat rooms
+paths:
+  /streams:
+    post:
+      description: subscribes a client to receive out-of-band data
+      operationId: createStream
+      parameters:
+        - name: callbackUrl
+          in: query
+          required: true
+          description: |
+            the location where data will be sent.  Must be network accessible
+            by the source server
+          schema:
+            type: string
+            format: uri
+            example: https://jesses-server.com
+      responses:
+        '201':
+          description: subscription successfully created
+          content:
+            application/json:
+              schema:
+                description: subscription information
+                required:
+                  - subscriptionId
+                properties:
+                  subscriptionId:
+                    description: this unique identifier allows management of the subscription
+                    type: string
+                    example: 2531329f-fb09-4ef7-887e-84e648214436
+      callbacks:
+        # the name `onData` is a convenience locator
+        onData:
+          # when data is sent, it will be sent to the `callbackUrl` provided
+          # when making the subscription PLUS the suffix `/data`
+          '{$request.query.callbackUrl}/data':
+            post:
+              requestBody:
+                description: subscription payload
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        timestamp:
+                          type: string
+                          format: date-time
+                        userData:
+                          type: string
+              responses:
+                '202':
+                  description: |
+                    Your server implementation should return this HTTP status code
+                    if the data was received successfully
+                '204':
+                  description: |
+                    Your server should return this HTTP status code if no longer interested
+                    in further updates
+  /chats:
+    post:
+      tags:
+        - ChatMessage
+      summary: Add a new chat message to the database
+      operationId: createChatMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChatMessage'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewChatMessage'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        '405':
+          description: Invalid input
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /chats/{id}:
+    get:
+      tags:
+        - ChatMessage
+      summary: Gets a chat message by chat Id.
+      description: >
+        This method has **changed** from the previous version of the API. It now retrieves 1 chat message instead of a list of chat messages. Only the chat message with the specified ID is returned.
+        User the *ChatRoom* API to get a list of all chat messages in a chat room.
+      operationId: getChatMessageById
+      parameters:
+        - name: id
+          in: path
+          description: Chat message ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /chatrooms/{chatRoomId}/chats:
+    get:
+      tags:
+        - ChatMessage
+        - ChatRoom
+      summary: Gets a list of all chat messages in a chat room in JSON format
+      description: >
+        Gets a list of all chat messages in a chat room in JSON format
+      operationId: getChatroomChatsByChatRoomId
+      parameters:
+        - name: chatRoomId
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: A JSON array of chat messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessage'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /chatrooms:
+    get:
+      tags:
+        - ChatRoom
+      summary: Gets a list of all chat rooms in JSON format
+      description: >
+        Gets a list of all chat rooms in JSON format
+      operationId: getChatRooms
+      responses:
+        '200':
+          description: A JSON array of chat room names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatRoom'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - ChatRoom
+      summary: Add a new chat room to the database
+      operationId: createChatRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChatRoom'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewChatRoom'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRoom'
+        '405':
+          description: Invalid input
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /chatrooms/{id}:
+    get:
+      tags:
+        - ChatRoom
+      summary: Gets a chat room by ID.
+      description: >
+        A detailed description of the operation.
+        Use markdown for rich text representation,
+        such as **bold**, *italic*, and [links](https://swagger.io).
+      operationId: getChatRoomById
+      parameters:
+        - name: id
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRoom'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - ChatRoom
+      summary: Update an existing chat room
+      operationId: updateChatRoom
+      parameters:
+        - name: id
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRoom'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRoom'
+        '405':
+          description: Invalid input
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - ChatRoom
+      summary: Deletes a chat room
+      operationId: deleteChatRoom
+      parameters:
+        - name: id
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Chat room not found
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /chatrooms/{id}/icon:
+    get:
+      tags:
+        - ChatRoom
+      summary: Get the icon for a chat room. The file format is *PNG.*
+      operationId: getChatRoomIcon
+      parameters:
+        - name: id
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Icon retrieved successfully
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad request
+    post:
+      tags:
+        - ChatRoom
+      summary: Set the icon for a chat room
+      operationId: setChatRoomIcon
+      parameters:
+        - name: id
+          in: path
+          description: Chat room ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Icon set successfully
+        '400':
+          description: Bad request
+  /users:
+    get:
+      tags:
+        - User
+      summary: Gets a list of all users in JSON format
+      description: >
+        A detailed description of the operation.
+        Use markdown for rich text representation,
+        such as **bold**, *italic*, and [links](https://swagger.io).
+      operationId: getUsers
+      responses:
+        '200':
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - User
+      summary: Add a new user to the database
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: The name is null or empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{id}:
+    get:
+      tags:
+        - User
+      summary: Gets a user by ID.
+      description: >
+        A detailed description of the operation.
+        Use markdown for rich text representation,
+        such as **bold**, *italic*, and [links](https://swagger.io).
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - User
+      summary: Update an existing user
+      operationId: updateUserById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '405':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{id}/avatar:
+    get:
+      tags:
+        - User
+      summary: Get the avatar for a user. The file format is *PNG.*
+      operationId: getUserAvatar
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Avatar retrieved successfully
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad request
+    post:
+      tags:
+        - User
+      summary: Set the avatar for a user
+      operationId: setUserAvatar
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Avatar set successfully
+        '400':
+          description: Bad request
+  /users/{userId}/chatrooms:
+    get:
+      tags:
+        - User
+        - ChatRoom
+      summary: Gets all chat rooms for a specific user
+      operationId: getChatRoomsByUserId
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of chat rooms the user is enrolled in
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatRoom'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /enrollments:
+    post:
+      tags:
+        - Enrollment
+      summary: Add users to a chat room
+      operationId: addUsersToChatRooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/NewEnrollment'
+      responses:
+        '201':
+          description: Users successfully added to chat room
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enrollment'
+        '400':
+          description: Invalid input
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /enrollments/{chatRoomId}:
+    get:
+      tags:
+        - Enrollment
+      summary: Get enrollments in a chat room
+      operationId: getEnrollmentsByChatRoomId
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enrollment'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Enrollment
+      summary: Remove all users from a chat room
+      operationId: removeUsersFromChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Users successfully removed from chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /enrollments/{chatRoomId}/users/{userId}:
+    post:
+      tags:
+        - Enrollment
+      summary: Add a user to a chat room
+      operationId: addUserToChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: User successfully added to chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Enrollment
+      summary: Remove a user from a chat room
+      operationId: removeUserFromChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: User successfully removed from chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    NewEnrollment:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: Identifier of the user enrolled in the chat room
+        chatRoomId:
+          type: integer
+          format: int64
+          description: Identifier of the chat room where the user is enrolled
+      required:
+        - userId
+        - chatRoomId
+      xml:
+        name: Enrollment
+    Enrollment:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: Identifier of the user enrolled in the chat room
+        chatRoomId:
+          type: integer
+          format: int64
+          description: Identifier of the chat room where the user is enrolled
+        enrolledDate:
+          type: string
+          format: date-time
+          description: The date and time when the user was enrolled in the chat room
+      required:
+        - userId
+        - chatRoomId
+      xml:
+        name: Enrollment
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        timezone:
+          type: string
+        lastPostedMessageDateTime:
+          type: string
+          format: date-time
+          description: The last posted message date time is stored in UTC in the database but adjusted to the user's timezone for display.
+      required:
+        - id
+        - name
+      xml:
+        name: User
+    NewUser:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        timezone:
+          type: string
+          description: The timezone of the user.  This is a string in the format of "America/New_York". The timezone is stored in UTC in the database but adjusted to the user's timezone for display.
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        chatRoom:
+          $ref: '#/components/schemas/ChatRoom'
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp is stored in UTC in the database but adjusted to the user's timezone for display.
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+        - id
+        - chatRoomId
+        - content
+        - timestamp
+        - user
+      xml:
+        name: ChatMessage
+    NewChatMessage:
+      type: object
+      properties:
+        chatRoomId:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        content:
+          type: string
+        screenEffect:
+          type: string
+        textEffect:
+          type: string
+      required:
+        - chatRoomId
+        - userId
+        - content
+      xml:
+        name: NewChatMessage
+    ChatRoom:
+      type: object
+      properties:
+        chatRoomId:
+          type: integer
+          format: int64
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        name:
+          type: string
+        moderator:
+          $ref: '#/components/schemas/User'
+      required:
+        - chatRoomId
+        - name
+        - moderator
+      xml:
+        name: ChatRoom
+    NewChatRoom:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        name:
+          type: string
+        moderator:
+          $ref: '#/components/schemas/User'
+      required:
+        - name
+        - moderator
+      xml:
+        name: NewChatRoom
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        #    format: int32
+        message:
+          type: string
+        fields:
+          type: string
+  requestBodies:
+    User:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/User'
+      description: A User object from the database
+      required: true
+    NewUser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewUser'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/NewUser'
+      description: User object that needs to be added to the database
+      required: true
+    ChatMessage:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ChatMessage'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ChatMessage'
+      description: Chat message object from the database
+      required: true
+    NewChatMessage:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewChatMessage'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/NewChatMessage'
+      description: Chat message object that needs to be added to the database
+      required: true
+    ChatRoom:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ChatRoom'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ChatRoom'
+      description: Chat room object from the database
+      required: true
+    NewChatRoom:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewChatRoom'
+          examples:
+            chatRoom1:
+              value:
+                chatRoomId: 1
+                userIds: [ 1, 2 ]
+                name: "Dog Poker Night"
+                moderator: { id: 1, name: "Spike" }
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/NewChatRoom'
+      description: Chat room object that needs to be added to the database
+      required: true

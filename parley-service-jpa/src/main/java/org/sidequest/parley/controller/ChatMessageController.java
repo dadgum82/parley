@@ -19,7 +19,7 @@ public class ChatMessageController implements ChatsApi {
     ChatMessageService chatMessageService;
 
     @Autowired
-    public void setChatMessageService(@Lazy ChatMessageService chatMessageService) {
+    public void ChatMessageService(@Lazy ChatMessageService chatMessageService) {
         this.chatMessageService = chatMessageService;
     }
 

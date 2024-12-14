@@ -1,0 +1,8 @@
+bearerAuth:
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: >
+    JWT Authorization header using the Bearer scheme.
+    Enter your token in the format: "Bearer {token}"
+    Example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

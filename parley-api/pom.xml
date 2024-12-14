@@ -121,6 +121,21 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-version}</version>
         </dependency>
+
+        <!-- Add these to your existing dependencies
+             20241214 Add the following two dependencies to allow
+             relative pathing for openapi-->
+        <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser</artifactId>
+            <version>2.1.16</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -142,6 +157,8 @@
                                 ${project.basedir}/src/main/resources/openapi.yaml
                             </inputSpec>
                             <generatorName>spring</generatorName>
+                            <!-- New 20241214 library line-->
+                            <library>spring-boot</library>
                             <apiPackage>${client.base.package.name}.api</apiPackage>
                             <modelPackage>${client.base.package.name}.model</modelPackage>
                             <supportingFilesToGenerate>
@@ -152,7 +169,27 @@
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <interfaceOnly>true</interfaceOnly>
                                 <!-- <delegatePattern>true</delegatePattern>-->
+                                <resolveReferences>true</resolveReferences>
+                                <baseFolder>${project.basedir}/src/main/resources</baseFolder>
                             </configOptions>
+                            <!-- Add support for resolving local references -->
+                            <additionalProperties>
+                                <additionalProperty>resolveLocalReferences=true</additionalProperty>
+                                <additionalProperty>useBeanValidation=true</additionalProperty>
+                                <additionalProperty>openApiNullable=false</additionalProperty>
+                            </additionalProperties>
+                            <!-- Specify the locations of the referenced files -->
+                            <importMappings>
+                                <importMapping>schemas=./openapi/schemas</importMapping>
+                                <importMapping>paths=./openapi/paths</importMapping>
+                                <importMapping>security=./openapi/security</importMapping>
+                            </importMappings>
+                            <!-- Global property settings -->
+                            <globalProperties>
+                                <modelTests>false</modelTests>
+                                <apiTests>false</apiTests>
+                                <skipValidateSpec>false</skipValidateSpec>
+                            </globalProperties>
                         </configuration>
                     </execution>
                 </executions>

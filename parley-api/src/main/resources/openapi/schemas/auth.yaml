@@ -1,0 +1,84 @@
+AuthRequest:
+  type: object
+  required:
+    - username
+    - password
+  properties:
+    username:
+      type: string
+      description: The user's username (matches their name in the system)
+      example: "john_doe"
+      minLength: 1
+    password:
+      type: string
+      description: The user's password (stored as 'magic' in database)
+      example: "mysecretpassword"
+      minLength: 1
+    rememberMe:
+      type: boolean
+      description: Whether to extend the token expiration time
+      default: false
+
+AuthResponse:
+  type: object
+  required:
+    - token
+  properties:
+    token:
+      type: string
+      description: JWT token to be used for subsequent authenticated requests
+      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    expiresIn:
+      type: integer
+      description: Token expiration time in seconds
+      example: 3600
+    tokenType:
+      type: string
+      description: Type of token
+      example: "Bearer"
+      default: "Bearer"
+
+PasswordChangeRequest:
+  type: object
+  required:
+    - currentPassword
+    - newPassword
+    - confirmPassword
+  properties:
+    currentPassword:
+      type: string
+      description: Current password
+      minLength: 1
+    newPassword:
+      type: string
+      description: New password
+      minLength: 8
+    confirmPassword:
+      type: string
+      description: Confirm new password
+      minLength: 8
+
+PasswordResetRequest:
+  type: object
+  required:
+    - email
+  properties:
+    email:
+      type: string
+      format: email
+      description: Email address associated with the account
+
+NewPasswordRequest:
+  type: object
+  required:
+    - password
+    - confirmPassword
+  properties:
+    password:
+      type: string
+      description: New password
+      minLength: 8
+    confirmPassword:
+      type: string
+      description: Confirm new password
+      minLength: 8

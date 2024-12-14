@@ -1,0 +1,135 @@
+paths:
+  /enrollments:
+    post:
+      tags:
+        - Enrollment
+      summary: Add users to a chat room
+      operationId: addUsersToChatRooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/enrollment.yaml#/NewEnrollment'
+      responses:
+        '201':
+          description: Users successfully added to chat room
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/enrollment.yaml#/Enrollment'
+        '400':
+          description: Invalid input
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+  /enrollments/{chatRoomId}:
+    get:
+      tags:
+        - Enrollment
+      summary: Get enrollments in a chat room
+      operationId: getEnrollmentsByChatRoomId
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/enrollment.yaml#/Enrollment'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+    delete:
+      tags:
+        - Enrollment
+      summary: Remove all users from a chat room
+      operationId: removeUsersFromChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Users successfully removed from chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+  /enrollments/{chatRoomId}/users/{userId}:
+    post:
+      tags:
+        - Enrollment
+      summary: Add a user to a chat room
+      operationId: addUserToChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: User successfully added to chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+    delete:
+      tags:
+        - Enrollment
+      summary: Remove a user from a chat room
+      operationId: removeUserFromChatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: User successfully removed from chat room
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'

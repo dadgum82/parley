@@ -1,0 +1,62 @@
+paths:
+  /chats:
+    post:
+      tags:
+        - ChatMessage
+      summary: Add a new chat message to the database
+      operationId: createChatMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/chatmessage.yaml#/NewChatMessage'
+          application/xml:
+            schema:
+              $ref: '../schemas/chatmessage.yaml#/NewChatMessage'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/chatmessage.yaml#/ChatMessage'
+        '405':
+          description: Invalid input
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+  /chats/{id}:
+    get:
+      tags:
+        - ChatMessage
+      summary: Gets a chat message by chat Id.
+      description: >
+        This method has **changed** from the previous version of the API. 
+        It now retrieves 1 chat message instead of a list of chat messages. 
+        Only the chat message with the specified ID is returned.
+        User the *ChatRoom* API to get a list of all chat messages in a chat room.
+      operationId: getChatMessageById
+      parameters:
+        - name: id
+          in: path
+          description: Chat message ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/chatmessage.yaml#/ChatMessage'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'

@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 public class EnrollmentService {
     private static final Logger log = Logger.getLogger(EnrollmentService.class.getName());
 
+    @Autowired
+    private ChatRoomService chatRoomService;
+
     private EnrollmentRepository enrollmentRepository;
 
     @Autowired
@@ -126,15 +129,25 @@ public class EnrollmentService {
 
     }
 
+    //20241206 - This method worked
+//    public List<ChatRoom> getChatRoomsByUserId(Long userId) {
+//        Set<EnrollmentEntity> enrollments = enrollmentRepository.findAllByChatuserId(userId);
+//        return enrollments.stream()
+//                .map(EnrollmentMapper.INSTANCE::toModel)
+//                .map(enrollment -> {
+//                    ChatRoom chatRoom = new ChatRoom();
+//                    chatRoom.setChatRoomId(enrollment.getChatRoomId());
+//                    return chatRoom;
+//                })
+//                .collect(Collectors.toList());
+//    }
+
     public List<ChatRoom> getChatRoomsByUserId(Long userId) {
         Set<EnrollmentEntity> enrollments = enrollmentRepository.findAllByChatuserId(userId);
         return enrollments.stream()
                 .map(EnrollmentMapper.INSTANCE::toModel)
-                .map(enrollment -> {
-                    ChatRoom chatRoom = new ChatRoom();
-                    chatRoom.setChatRoomId(enrollment.getChatRoomId());
-                    return chatRoom;
-                })
+                .map(enrollment -> chatRoomService.getChatRoom(enrollment.getChatRoomId()))
+                .filter(chatRoom -> chatRoom != null)
                 .collect(Collectors.toList());
     }
 

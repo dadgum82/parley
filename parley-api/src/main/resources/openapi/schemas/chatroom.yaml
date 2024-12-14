@@ -1,0 +1,36 @@
+ChatRoom:
+  type: object
+  properties:
+    chatRoomId:
+      type: integer
+      format: int64
+    users:
+      type: array
+      items:
+        $ref: '../schemas/user.yaml#/User'
+    name:
+      type: string
+    moderator:
+      $ref: '../schemas/user.yaml#/User'
+  required:
+    - chatRoomId
+    - name
+    - moderator
+  xml:
+    name: ChatRoom
+NewChatRoom:
+  type: object
+  properties:
+    users:
+      type: array
+      items:
+        $ref: '../schemas/user.yaml#/User'
+    name:
+      type: string
+    moderator:
+      $ref: '../schemas/user.yaml#/User'
+  required:
+    - name
+    - moderator
+  xml:
+    name: NewChatRoom

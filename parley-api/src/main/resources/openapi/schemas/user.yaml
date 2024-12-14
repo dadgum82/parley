@@ -1,0 +1,29 @@
+User:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    name:
+      type: string
+    timezone:
+      type: string
+    lastPostedMessageDateTime:
+      type: string
+      format: date-time
+      description: The last posted message date time is stored in UTC in the database but adjusted to the user's timezone for display.
+  required:
+    - id
+    - name
+  xml:
+    name: User
+NewUser:
+  type: object
+  required:
+    - name
+  properties:
+    name:
+      type: string
+    timezone:
+      type: string
+      description: The timezone of the user.  This is a string in the format of "America/New_York". The timezone is stored in UTC in the database but adjusted to the user's timezone for display.

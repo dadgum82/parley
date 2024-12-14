@@ -1,0 +1,45 @@
+ChatMessage:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    chatRoom:
+      $ref: '../schemas/chatroom.yaml#/ChatRoom'
+    content:
+      type: string
+    timestamp:
+      type: string
+      format: date-time
+      description: The timestamp is stored in UTC in the database but adjusted to the user's timezone for display.
+    user:
+      $ref: '../schemas/user.yaml#/User'
+  required:
+    - id
+    - chatRoomId
+    - content
+    - timestamp
+    - user
+  xml:
+    name: ChatMessage
+NewChatMessage:
+  type: object
+  properties:
+    chatRoomId:
+      type: integer
+      format: int64
+    userId:
+      type: integer
+      format: int64
+    content:
+      type: string
+    screenEffect:
+      type: string
+    textEffect:
+      type: string
+  required:
+    - chatRoomId
+    - userId
+    - content
+  xml:
+    name: NewChatMessage

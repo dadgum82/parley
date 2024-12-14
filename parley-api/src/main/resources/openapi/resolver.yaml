@@ -1,0 +1,22 @@
+#  The resolver.yaml file is a configuration file that controls how the OpenAPI Generator resolves
+#    (finds and processes) referenced files.
+#
+#  The pom.xml plugin uses this file for relative paths so we don't need to use
+#  absolute paths
+#    <plugins>
+#    <plugin>
+#    <groupId>org.openapitools</groupId>
+#    <artifactId>openapi-generator-maven-plugin</artifactId>
+
+resolution:
+  # Base directory for relative references
+  baseDir: src/main/resources
+  # List of directories to search for referenced files
+  searchPaths:
+    - openapi/schemas
+    - openapi/paths
+    - openapi/security
+  # Enable local file resolution
+  resolveLocal: true
+  # Cache resolved references
+  cache: true

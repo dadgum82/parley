@@ -24,6 +24,9 @@ public class UserEntity {
     @Column(name = "name", columnDefinition = "VARCHAR(255)")
     private String name;
 
+    @Column(name = "magic", columnDefinition = "VARCHAR(255)")
+    private String magic;
+
     private String avatarPath;
 
     @Column(name = "timezone", columnDefinition = "VARCHAR(255)")
