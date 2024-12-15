@@ -1,6 +1,7 @@
 paths:
   /auth/login:
     post:
+      security: [ ]  # This overrides the global security requirement
       tags:
         - Authentication
       summary: Login to get JWT token
@@ -117,6 +118,7 @@ paths:
       summary: Request password reset
       description: Send a password reset link to user's email
       operationId: requestPasswordReset
+      security: [ ]  # This overrides the global security requirement
       requestBody:
         required: true
         content:
@@ -135,6 +137,7 @@ paths:
 
   /auth/password/reset/{token}:
     post:
+      security: [ ]  # This overrides the global security requirement
       tags:
         - Authentication
       summary: Reset password with token
@@ -157,6 +160,33 @@ paths:
           description: Password successfully reset
         '400':
           description: Invalid password format or token
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common.yaml#/Error'
+  /auth/signup:
+    post:
+      security: [ ]  # This overrides the global security requirement
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new user account with the provided details
+      operationId: signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/SignupRequest'
+      responses:
+        '201':
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/auth.yaml#/AuthResponse'
+        '400':
+          description: Invalid input | Username already exists
           content:
             application/json:
               schema:

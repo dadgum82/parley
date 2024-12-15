@@ -178,4 +178,39 @@ public class UserService {
     public UserEntity getUserEntity(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    public User getUserByName(String name) {
+        UserEntity userEntity = userRepository.findByName(name).orElse(null);
+        if (userEntity == null) {
+            return null;
+        }
+        return UserMapper.INSTANCE.toModel(userEntity);
+    }
+
+    public String getUserMagic(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userEntity.getMagic();
+    }
+
+    @Transactional
+    public User createUserWithPassword(String name, String password, String timezone) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("User name cannot be null or empty");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+
+        // TODO  In the future, we should hash the password before storing it
+        User user = new User();
+        user.setName(name);
+        user.setTimezone(getZoneId(timezone));
+
+        UserEntity userEntity = UserMapper.INSTANCE.toEntity(user);
+        userEntity.setMagic(password); // Store password in magic field
+
+        userEntity = userRepository.save(userEntity);
+        return UserMapper.INSTANCE.toModel(userEntity);
+    }
 }

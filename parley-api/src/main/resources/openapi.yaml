@@ -27,11 +27,19 @@ tags:
     description: Operations about chat rooms.
   - name: Enrollment
     description: Operations about enrolling users in chat rooms
+  - name: Authentication
+    description: Authentication and user registration operations
+
+# Add global security requirement
+security:
+  - bearerAuth: [ ]  # This makes all endpoints require JWT by default
 
 paths:
   # Authentication
   /auth/login:
     $ref: './openapi/paths/auth.yaml#/paths/~1auth~1login'
+  /auth/signup:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1signup'
 
   # User paths
   ########################################################################################
@@ -88,6 +96,8 @@ components:
       $ref: './openapi/schemas/auth.yaml#/AuthRequest'
     AuthResponse:
       $ref: './openapi/schemas/auth.yaml#/AuthResponse'
+    SignupRequest:
+      $ref: './openapi/schemas/auth.yaml#/SignupRequest'
 
     # User schemas
     User:
