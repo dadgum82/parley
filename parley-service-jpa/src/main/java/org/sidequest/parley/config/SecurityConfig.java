@@ -108,6 +108,7 @@ public class SecurityConfig {
     private static final String[] PARLEY_WHITE_LIST_URL = {
             "/parley/api/auth/login",
             "/parley/api/auth/signup",
+            "/parley/api/auth/signup/**",
             "/parley/api/auth/password/reset",
             "/parley/api/auth/password/reset/**",
             "/auth/signup",
@@ -117,7 +118,10 @@ public class SecurityConfig {
             "/api/auth/signup",
             "/api/auth/login",
             "/api/auth/logout",
-            "/api/auth/password/reset"
+            "/api/auth/password/reset",
+            "/parley/auth/login",
+            "/parley/auth/signup",
+            "/parley/signup"
     };
 
     @Bean

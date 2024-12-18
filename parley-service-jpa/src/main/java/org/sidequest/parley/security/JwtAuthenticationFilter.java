@@ -91,6 +91,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || path.contains("/auth/signup")
                 || path.contains("/auth/login")
                 || path.contains("/auth/logout")
+                || path.contains("/parley/auth/signup")
+                || path.contains("/parley/auth/login")
+                || path.contains("/parley/auth/logout")
                 || path.contains("/auth/password/reset")
         ) {
             log.debug("=== This an unprotected endpoint ===");
