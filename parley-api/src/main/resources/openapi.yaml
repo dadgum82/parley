@@ -29,11 +29,6 @@ tags:
     description: Operations about enrolling users in chat rooms
 
 paths:
-  # Authentication
-  /auth/login:
-    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1login'
-
-  # User paths
   ########################################################################################
   # IMPORTANT
   #  The ~1 is used because forward slashes / can't be used directly in JSON references,
@@ -48,6 +43,23 @@ paths:
   #  /chatrooms/{id}
   ########################################################################################
 
+  # Authentication
+  /auth/login:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1login'
+  /auth/refresh:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1refresh'
+  /auth/logout:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1logout'
+  /auth/signup:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1signup'
+  /auth/password:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1password'
+  /auth/password/reset:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1password~1reset'
+  /auth/password/reset/{token}:
+    $ref: './openapi/paths/auth.yaml#/paths/~1auth~1password~1reset~1{token}'
+
+  # User paths
   /users:
     $ref: './openapi/paths/user.yaml#/paths/~1users'
   /users/{id}:
@@ -88,6 +100,8 @@ components:
       $ref: './openapi/schemas/auth.yaml#/AuthRequest'
     AuthResponse:
       $ref: './openapi/schemas/auth.yaml#/AuthResponse'
+    SignupRequest:
+      $ref: './openapi/schemas/auth.yaml#/SignupRequest'
 
     # User schemas
     User:

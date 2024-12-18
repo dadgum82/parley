@@ -6,12 +6,20 @@ User:
       format: int64
     name:
       type: string
+    email:
+      type: string
+      format: email
     timezone:
       type: string
     lastPostedMessageDateTime:
       type: string
       format: date-time
       description: The last posted message date time is stored in UTC in the database but adjusted to the user's timezone for display.
+    passwordResetToken:
+      type: string
+    passwordResetTokenExpiration:
+      type: string
+      format: date-time
   required:
     - id
     - name
@@ -27,3 +35,6 @@ NewUser:
     timezone:
       type: string
       description: The timezone of the user.  This is a string in the format of "America/New_York". The timezone is stored in UTC in the database but adjusted to the user's timezone for display.
+    email:
+      type: string
+      format: email

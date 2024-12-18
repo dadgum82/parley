@@ -82,3 +82,31 @@ NewPasswordRequest:
       type: string
       description: Confirm new password
       minLength: 8
+
+SignupRequest:
+  type: object
+  required:
+    - username
+    - email
+    - password
+    - confirmPassword
+  properties:
+    username:
+      type: string
+      description: The desired username
+      minLength: 3
+    email:
+      type: string
+      format: email
+      description: User's email address
+    password:
+      type: string
+      description: User's password
+      minLength: 8
+    confirmPassword:
+      type: string
+      description: Confirmation of the password
+      minLength: 8
+    timezone:
+      type: string
+      description: User's timezone (optional)

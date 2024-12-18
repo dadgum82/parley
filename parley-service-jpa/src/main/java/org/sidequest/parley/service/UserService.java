@@ -1,7 +1,10 @@
 package org.sidequest.parley.service;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
+import org.sidequest.parley.helpers.EmailHelper;
 import org.sidequest.parley.helpers.FileSystemHelper;
 import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.mapper.UserMapper;
@@ -12,6 +15,7 @@ import org.sidequest.parley.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +24,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.zone.ZoneRulesException;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -32,6 +37,12 @@ public class UserService {
     @Autowired
     @Lazy
     private EnrollmentService enrollmentService;
+
+    @Autowired
+    private EmailHelper emailHelper; // We'll need this
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Value("${user.avatar.directory}")
     private String userAvatarDirectory;
@@ -177,5 +188,80 @@ public class UserService {
 
     public UserEntity getUserEntity(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Transactional
+    public void requestPasswordReset(String email) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+
+        // Generate a unique password reset token
+        String resetToken = UUID.randomUUID().toString();
+
+        // Set the token and expiration time in the user entity
+        user.setPasswordResetToken(resetToken);
+        user.setPasswordResetTokenExpiration(OffsetDateTime.now().plusHours(24)); // Token valid for 24 hours
+
+        // Save the updated user entity
+        userRepository.save(user);
+
+        // Send the password reset email
+        emailHelper.sendPasswordResetEmail(user.getEmail(), resetToken);
+    }
+
+    @Transactional
+    public boolean validatePasswordResetToken(String token) {
+        UserEntity user = userRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid reset token"));
+
+        if (user.getPasswordResetTokenExpiration().isBefore(OffsetDateTime.now())) {
+            throw new IllegalArgumentException("Reset token has expired");
+        }
+
+        return true;
+    }
+
+    @Transactional
+    public void resetPassword(String token, String newPassword, @NotNull @Size(min = 8) String confirmPassword) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+
+        UserEntity user = userRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid reset token"));
+
+        if (user.getPasswordResetTokenExpiration().isBefore(OffsetDateTime.now())) {
+            throw new IllegalArgumentException("Reset token has expired");
+        }
+
+        // Encode password before saving
+        user.setMagic(passwordEncoder.encode(newPassword));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiration(null);
+        userRepository.save(user);
+
+        log.info("Password successfully reset for user: " + user.getId());
+    }
+
+    @Transactional
+    public void changePassword(Long userId, String currentPassword, String newPassword) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify current password
+        if (!passwordEncoder.matches(currentPassword, user.getMagic())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        // Validate new password
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new IllegalArgumentException("New password must be at least 8 characters long");
+        }
+
+        // Encode and set new password
+        user.setMagic(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        log.info("Password successfully changed for user: " + userId);
     }
 }
