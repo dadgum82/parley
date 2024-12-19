@@ -31,23 +31,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            final String authHeader = request.getHeader("Authorization");
+            // Enhanced request logging at the start
+            log.info("\n");
+            log.info("════════════════════════════════════════");
+            log.info("JWT FILTER - PROCESSING REQUEST");
+            log.info("════════════════════════════════════════");
+            log.info("Request Method: {}", request.getMethod());
+            log.info("Request URL: {}", request.getRequestURL());
+            log.info("Request URI: {}", request.getRequestURI());
+            log.info("Context Path: {}", request.getContextPath());
+            log.info("Servlet Path: {}", request.getServletPath());
+            log.info("Query String: {}", request.getQueryString());
 
-            // If no auth header or not a Bearer token, continue with the filter chain
+            System.err.println("Request URL: " + request.getRequestURL());
+
+            // Log all headers for debugging
+            java.util.Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                log.debug("Header {}: {}", headerName, request.getHeader(headerName));
+            }
+
+            final String authHeader = request.getHeader("Authorization");
+            log.info("Authorization Header: {}",
+                    authHeader != null ? authHeader.substring(0, Math.min(authHeader.length(), 20)) + "..." : "null");
+
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                log.info("No valid Bearer token found - Proceeding with filter chain");
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // Extract token (remove "Bearer " prefix)
             final String jwt = authHeader.substring(7);
             final String username = jwtUtil.getUsernameFromToken(jwt);
+            log.info("Extracted username from token: {}", username);
 
-            // If we have a username and no authentication is set yet
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                log.info("Retrieved user details for: {}", username);
 
-                // If token is valid, set up Spring Security context
                 if (jwtUtil.validateToken(jwt)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -56,35 +78,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    log.debug("Set authentication for user: {}", username);
+                    log.info("Successfully authenticated user: {}", username);
+                } else {
+                    log.warn("Token validation failed for user: {}", username);
                 }
             }
+
             filterChain.doFilter(request, response);
+            log.info("Filter chain completed for request: {}", request.getRequestURI());
+            log.info("════════════════════════════════════════\n");
+
         } catch (Exception e) {
-            log.error("Cannot set user authentication: {}", e.getMessage());
+            log.error("JWT Authentication error for request {}: {}", request.getRequestURI(), e.getMessage());
+            log.debug("Detailed exception: ", e);
             filterChain.doFilter(request, response);
         }
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        boolean result = false;
         String fullPath = request.getRequestURI();
-        String requestURI = request.getRequestURI();
         String contextPath = request.getContextPath();
-
-        // Remove context path if present
         String path = fullPath.replace(contextPath, "");
 
-        log.debug("Original Path: {}", fullPath);
-        log.debug("Processed Path: {}", path);
-        log.debug("ServletPath: {}", path);
-        log.debug("RequestURI: {}", requestURI);
-        log.debug("ContextPath: {}", contextPath);
-        log.debug("=== RESULT ===");
-        log.debug("path: {}", path);
+        log.info("\n");
+        log.info("╔══════════════════════════════════════");
+        log.info("║ JWT FILTER - CHECKING PATH EXCLUSION");
+        log.info("╠══════════════════════════════════════");
+        log.info("║ Full Path: {}", fullPath);
+        log.info("║ Context Path: {}", contextPath);
+        log.info("║ Processed Path: {}", path);
 
-        if (path.contains("/swagger-ui")
+        boolean result = path.contains("/swagger-ui")
                 || path.contains("/api-docs")
                 || path.contains("/auth/")
                 || path.contains("META-INF")
@@ -94,13 +119,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || path.contains("/parley/auth/signup")
                 || path.contains("/parley/auth/login")
                 || path.contains("/parley/auth/logout")
-                || path.contains("/auth/password/reset")
-        ) {
-            log.debug("=== This an unprotected endpoint ===");
-            result = true;
-        } else {
-            log.debug("PROTECTED ENDPOINT");
-        }
+                || path.contains("/auth/password/reset");
+
+        log.info("║ Filter Decision: {} will {} be filtered", path, result ? "NOT" : "");
+        log.info("╚══════════════════════════════════════\n");
 
         return result;
     }

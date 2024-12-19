@@ -43,66 +43,14 @@ public class SecurityConfig {
     };
 
     private static final String[] SWAGGER_WHITE_LIST_URL = {
+            "/api/swagger-ui/index.html",
             "/parley/api/api-docs/swagger-config",
-            "/v3/api-docs/**",
-            "/v3/api-docs",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/api-docs/**",
-            "/api-docs",
-            "/api-docs/swagger-config",
-            "/parley/api-docs/**",
-            "/parley/api-docs",
-            "/parley/api-docs/swagger-config",
-            "/parley/api/api-docs/**",
-            "/parley/api/api-docs",
-            "/parley/api/api-docs/swagger-config",
-            "/configuration/ui",
-            "/configuration/security",
-            "/parley",
-            "/parley/**",
-            "/parley/api",
-            "/parley/api/",
-            "/parley/api/api-docs/**",
-            "/parley/api/auth/**",
-            "/parley/api/api-docs/swagger-config",
-            "/parley/api/api-docs",
-            "/parley/api/api-docs/**",
-            "/parley/parley/api/error",
-            "/parley/api/swagger-ui.html",
             "/parley/api/swagger-ui/**",
-            "/parley/api/test/**",
-            "/parley/api/v1/auth/**",
-            "/parley/api/api-docs/swagger-config",  // for swagger config
-            "/parley/api/swagger-ui/index.html",    // for the main UI page
-            "/parley/api/swagger-ui.html",          // alternative entry point
-            "/parley/api/swagger-initializer.js",
-            "/parley/api/v3/api-docs/swagger-config", // for OpenAPI 3 config
-            "/parley/api/swagger-ui/**",            // for UI resources
-            "/parley/api/v3/api-docs",             // for OpenAPI docs
-            "/parley/api/webjars/**",               // for web resources
-            "/parley/swagger-ui/**",
-            "/v2/api-docs",
-            "/v3/api-docs",
-            "/v3/api-docs/**",
-            "/api/api-docs/swagger-config",
-            "/api/swagger-ui/swagger-initializer.js",
-            "/api/swagger-ui/",
-            "/api/swagger-ui/**",
-            "/api/api-docs/swagger-config",
-            "api/api-docs/**",
-            "/api/error",
-            "/api/v1/auth/**",
-            "/v2/api-docs",
-            "/v2/api-docs/**",
-            "/v3/api-docs",
-            "/v3/api-docs/**",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/swagger-ui.html",
+            "/parley/api/v3/api-docs/**",
+            "/parley/api/swagger-resources/**",
+            "/parley/api/webjars/**",
             "/swagger-ui/**",
-            "/swagger-resources",
-            "/swagger-resources/**"
+            "/v3/api-docs/**"
     };
 
     private static final String[] PARLEY_WHITE_LIST_URL = {
@@ -184,8 +132,14 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/api-docs/**",
                                         "/parley/api-docs/**",
-                                        "/parley/api/api-docs/**"
+                                        "/parley/api/api-docs/**",
+                                        "/parley/api/swagger-ui/**",
+                                        "/parley/api/v3/api-docs/**",
+                                        "/parley/api/swagger-resources/**",
+                                        "/webjars/**"
                                 ).permitAll()
+                                // Public endpoints
+                                .requestMatchers("/parley/api/auth/**").permitAll()
                                 .requestMatchers(TOMCAT_WHITE_LIST_URL).permitAll()
                                 .requestMatchers(SWAGGER_WHITE_LIST_URL).permitAll()
                                 .requestMatchers(PARLEY_WHITE_LIST_URL).permitAll()
