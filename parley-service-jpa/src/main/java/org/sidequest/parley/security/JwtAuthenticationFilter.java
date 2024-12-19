@@ -16,6 +16,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/***
+ SecurityConfig is important here. It is loaded before the filter is applied.
+ ***/
+
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
