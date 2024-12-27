@@ -3,10 +3,10 @@ package org.sidequest.parley.service;
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.mapper.ChatRoomMapper;
+import org.sidequest.parley.model.BasicUser;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewChatRoom;
-import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
 import org.sidequest.parley.util.FileSystemHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,9 +142,9 @@ public class ChatRoomService {
             ChatRoom resultChatroom = ChatRoomMapper.INSTANCE.toModel(resultChatroomEntity);
 
             // Add the users to the chatroom including the moderator
-            Set<User> userSet = new HashSet<>(newChatRoom.getUsers());
+            Set<BasicUser> userSet = new HashSet<>(newChatRoom.getUsers());
             userSet.add(newChatRoom.getModerator());
-            List<User> uniqueUsers = new ArrayList<>(userSet);
+            List<BasicUser> uniqueUsers = new ArrayList<>(userSet);
 
             enrollmentService.addUsersToChatRoom(uniqueUsers, resultChatroom);
 
@@ -185,7 +185,7 @@ public class ChatRoomService {
             return false;
         }
 
-        for (User user : chatRoom.getUsers()) {
+        for (BasicUser user : chatRoom.getUsers()) {
             if (user.getId().equals(userId)) {
                 log.info("User: " + userId + " is in chat room: " + chatRoomId);
                 return true;

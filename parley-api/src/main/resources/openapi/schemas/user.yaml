@@ -6,9 +6,11 @@ User:
       format: int64
     name:
       type: string
+      example: "waffles"
     email:
       type: string
       format: email
+      example: "fake@gmail.com"
     timezone:
       type: string
     lastPostedMessageDateTime:
@@ -38,3 +40,27 @@ NewUser:
     email:
       type: string
       format: email
+BasicUser:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    name:
+      type: string
+      example: "waffles"
+    email:
+      type: string
+      format: email
+      example: "fake@gmail.com"
+    timezone:
+      type: string
+    lastPostedMessageDateTime:
+      type: string
+      format: date-time
+      description: The last posted message date time is stored in UTC in the database but adjusted to the user's timezone for display.
+  required:
+    - id
+    - name
+  xml:
+    name: BasicUser

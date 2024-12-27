@@ -108,6 +108,8 @@ components:
       $ref: './openapi/schemas/user.yaml#/User'
     NewUser:
       $ref: './openapi/schemas/user.yaml#/NewUser'
+    BasicUser:
+      $ref: './openapi/schemas/user.yaml#/BasicUser'
 
     # Chat schemas
     ChatMessage:

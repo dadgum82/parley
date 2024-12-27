@@ -2,10 +2,10 @@ package org.sidequest.parley.service;
 
 import org.sidequest.parley.entity.EnrollmentEntity;
 import org.sidequest.parley.mapper.EnrollmentMapper;
+import org.sidequest.parley.model.BasicUser;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.Enrollment;
 import org.sidequest.parley.model.NewEnrollment;
-import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,10 +33,10 @@ public class EnrollmentService {
     }
 
 
-    public List<Enrollment> addUsersToChatRoom(List<User> users, ChatRoom chatRoom) {
+    public List<Enrollment> addUsersToChatRoom(List<BasicUser> users, ChatRoom chatRoom) {
         List<Enrollment> enrollments = new ArrayList<>();
         log.info("Adding " + users.size() + " users to chat room: " + chatRoom.getName());
-        for (User user : users) {
+        for (BasicUser user : users) {
             Enrollment enrollment = addUserToChatRoom(user, chatRoom);
             enrollments.add(enrollment);
         }
@@ -58,7 +58,7 @@ public class EnrollmentService {
 
 
     @Transactional
-    public Enrollment addUserToChatRoom(User user, ChatRoom chatRoom) {
+    public Enrollment addUserToChatRoom(BasicUser user, ChatRoom chatRoom) {
         Long userId = user.getId();
         Long chatRoomId = chatRoom.getChatRoomId();
 

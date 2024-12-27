@@ -13,7 +13,7 @@ ChatMessage:
       format: date-time
       description: The timestamp is stored in UTC in the database but adjusted to the user's timezone for display.
     user:
-      $ref: '../schemas/user.yaml#/User'
+      $ref: '../schemas/user.yaml#/BasicUser'
   required:
     - id
     - chatRoomId
@@ -28,11 +28,14 @@ NewChatMessage:
     chatRoomId:
       type: integer
       format: int64
+      example: 1
     userId:
       type: integer
       format: int64
+      example: 1
     content:
       type: string
+      example: "Boy the weather sure is weathery today!"
     screenEffect:
       type: string
     textEffect:

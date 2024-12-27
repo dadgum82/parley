@@ -17,7 +17,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '../schemas/user.yaml#/User'
+                  $ref: '../schemas/user.yaml#/BasicUser'
         default:
           description: unexpected error
           content:
@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '../schemas/user.yaml#/User'
+                $ref: '../schemas/user.yaml#/BasicUser'
         '400':
           description: The name is null or empty
           content:
@@ -84,7 +84,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '../schemas/user.yaml#/User'
+                $ref: '../schemas/user.yaml#/BasicUser'
         default:
           description: unexpected error
           content:
@@ -115,7 +115,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '../schemas/user.yaml#/User'
+                $ref: '../schemas/user.yaml#/BasicUser'
         '405':
           description: Invalid input
           content:

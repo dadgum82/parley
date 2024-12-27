@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.sidequest.parley.entity.UserEntity;
+import org.sidequest.parley.model.BasicUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.util.TimeHelper;
 
@@ -36,6 +37,13 @@ public interface UserMapper {
     @Mapping(target = "passwordResetTokenExpiration", source = "passwordResetTokenExpiration")
     UserEntity toEntity(User user);
 
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "lastPostedMessageDateTime", expression = "java(convertToLocalTime(userEntity.getLastPostedMessageDateTime(), userEntity.getTimezone()))")
+    @Mapping(target = "timezone", source = "timezone")
+    @Mapping(target = "email", source = "email")
+    BasicUser toBasicUser(UserEntity userEntity);
+
     /**
      * Maps a UserEntity object to a User model object.
      *
@@ -47,8 +55,8 @@ public interface UserMapper {
     //@Mapping(source = "lastPostedMessageDateTime", target = "lastPostedMessageDateTime")
     @Mapping(target = "lastPostedMessageDateTime", expression = "java(convertToLocalTime(userEntity.getLastPostedMessageDateTime(), userEntity.getTimezone()))")
     @Mapping(target = "timezone", source = "timezone")
-    @Mapping(target = "email", source = "email")                                  // Add this
-    @Mapping(target = "passwordResetToken", source = "passwordResetToken")       // Add this
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "passwordResetToken", source = "passwordResetToken")
     @Mapping(target = "passwordResetTokenExpiration", source = "passwordResetTokenExpiration")
     // Add this
     User toModel(UserEntity userEntity);

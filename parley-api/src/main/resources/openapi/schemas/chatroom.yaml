@@ -7,11 +7,11 @@ ChatRoom:
     users:
       type: array
       items:
-        $ref: '../schemas/user.yaml#/User'
+        $ref: '../schemas/user.yaml#/BasicUser'
     name:
       type: string
     moderator:
-      $ref: '../schemas/user.yaml#/User'
+      $ref: '../schemas/user.yaml#/BasicUser'
   required:
     - chatRoomId
     - name
@@ -24,11 +24,11 @@ NewChatRoom:
     users:
       type: array
       items:
-        $ref: '../schemas/user.yaml#/User'
+        $ref: '../schemas/user.yaml#/BasicUser'
     name:
       type: string
     moderator:
-      $ref: '../schemas/user.yaml#/User'
+      $ref: '../schemas/user.yaml#/BasicUser'
   required:
     - name
     - moderator

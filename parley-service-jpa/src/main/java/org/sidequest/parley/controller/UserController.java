@@ -1,9 +1,9 @@
 package org.sidequest.parley.controller;
 
 import org.sidequest.parley.api.UsersApi;
+import org.sidequest.parley.model.BasicUser;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewUser;
-import org.sidequest.parley.model.User;
 import org.sidequest.parley.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -38,42 +38,43 @@ public class UserController implements UsersApi {
      */
     @Override
 //    public ResponseEntity<List<org.sidequest.parley.model.User>> getUsers() {
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<BasicUser>> getUsers() {
         try {
-            List<User> users = userService.getUsers();
-            return ResponseEntity.ok(users);
+            List<BasicUser> basicUsers = userService.getBasicUsers();
+            return ResponseEntity.ok(basicUsers);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @Override
-    public ResponseEntity<User> getUserById(Long id) {
+    public ResponseEntity<BasicUser> getUserById(Long id) {
         try {
-            User user = userService.getUser(id);
-            return ResponseEntity.ok(user);
+            BasicUser basicUser = userService.getBasicUser(id);
+            return ResponseEntity.ok(basicUser);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @Override
-    public ResponseEntity<User> createUser(NewUser newUser) {
-        try {
-            log.fine("createUser: " + newUser.getName() + " " + newUser.getTimezone());
-            User user = userService.createUser(newUser.getName(), newUser.getTimezone());
-            if (user == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            log.severe("Error creating user:" + e);
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            log.severe("Error creating user:" + e);
-            return ResponseEntity.notFound().build();
-        }
-    }
+    //20241227 - you need to use the new auth methods to create a user.
+//    @Override
+//    public ResponseEntity<User> createUser(NewUser newUser) {
+//        try {
+//            log.fine("createUser: " + newUser.getName() + " " + newUser.getTimezone());
+//            User user = userService.createUser(newUser.getName(), newUser.getTimezone());
+//            if (user == null) {
+//                return ResponseEntity.notFound().build();
+//            }
+//            return new ResponseEntity<>(user, HttpStatus.CREATED);
+//        } catch (IllegalArgumentException e) {
+//            log.severe("Error creating user:" + e);
+//            return ResponseEntity.badRequest().build();
+//        } catch (Exception e) {
+//            log.severe("Error creating user:" + e);
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
     @Override
     public ResponseEntity<Void> setUserAvatar(Long id, MultipartFile file) {
@@ -115,11 +116,11 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> updateUserById(Long id, NewUser newUser) {
+    public ResponseEntity<BasicUser> updateUserById(Long id, NewUser newUser) {
         try {
-            User user = userService.updateUserById(id, newUser);
+            BasicUser basicUser = userService.updateUserById(id, newUser);
             //return ResponseEntity.ok().build();
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
+            return new ResponseEntity<>(basicUser, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

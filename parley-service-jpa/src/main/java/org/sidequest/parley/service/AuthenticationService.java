@@ -9,6 +9,8 @@ import org.sidequest.parley.model.SignupRequest;
 import org.sidequest.parley.repository.UserRepository;
 import org.sidequest.parley.security.JwtTokenUtil;
 import org.sidequest.parley.util.EmailHelper;
+import org.sidequest.parley.util.TimeHelper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,9 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailHelper emailHelper;
+
+    @Value("${default.timezone}")
+    private String defaultTimezone;
 
     public AuthResponse authenticate(AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -108,6 +113,8 @@ public class AuthenticationService {
 
     @Transactional
     public AuthResponse signup(SignupRequest request) {
+        TimeHelper timeHelper = new TimeHelper();
+
         // Validate passwords match
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("Passwords do not match");
@@ -128,7 +135,8 @@ public class AuthenticationService {
         user.setName(request.getUsername());
         user.setEmail(request.getEmail());
         user.setMagic(passwordEncoder.encode(request.getPassword()));
-        user.setTimezone(request.getTimezone() != null ? request.getTimezone() : "America/New_York");
+        user.setTimezone(timeHelper.isTimezone(request.getTimezone()) ? request.getTimezone() : defaultTimezone);
+
 
         userRepository.save(user);
         log.info("Created new user: " + user.getName());

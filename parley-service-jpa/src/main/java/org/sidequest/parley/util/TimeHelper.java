@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.zone.ZoneRulesException;
 import java.util.logging.Logger;
 
 /**
@@ -30,6 +31,16 @@ public class TimeHelper {
     public ZoneId getDefaultZoneId() {
         return ZoneId.of(defaultTimezone);
     }
+
+    public boolean isTimezone(String timezone) {
+        try {
+            ZoneId.of(timezone);
+            return true;
+        } catch (ZoneRulesException e) {
+            return false;
+        }
+    }
+
 
     /**
      * Converts a ZonedDateTime to UTC.

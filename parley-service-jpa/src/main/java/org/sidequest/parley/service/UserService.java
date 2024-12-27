@@ -6,6 +6,7 @@ import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
 import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.mapper.UserMapper;
+import org.sidequest.parley.model.BasicUser;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.zone.ZoneRulesException;
 import java.util.List;
 import java.util.UUID;
@@ -56,13 +56,26 @@ public class UserService {
     @Autowired
     private FileSystemHelper fileSystemHelper;
 
-    public List<User> getUsers() {
-        return userRepository.findAll().stream().map(UserMapper.INSTANCE::toModel).collect(Collectors.toList());
+    public List<BasicUser> getUsers() {
+        return userRepository.findAll().stream().map(UserMapper.INSTANCE::toBasicUser).collect(Collectors.toList());
     }
 
-    public User getUser(Long userId) {
-        return userRepository.findById(userId).map(UserMapper.INSTANCE::toModel).orElse(null);
+    public BasicUser getUser(Long userId) {
+        return userRepository.findById(userId).map(UserMapper.INSTANCE::toBasicUser).orElse(null);
     }
+
+    public List<BasicUser> getBasicUsers() {
+        return userRepository.findAll().stream()
+                .map(UserMapper.INSTANCE::toBasicUser)
+                .collect(Collectors.toList());
+    }
+
+    public BasicUser getBasicUser(Long userId) {
+        return userRepository.findById(userId)
+                .map(UserMapper.INSTANCE::toBasicUser)
+                .orElse(null);
+    }
+
 
     @Transactional
     public User createUser(String name, String timeZone) {
@@ -94,17 +107,10 @@ public class UserService {
         }
     }
 
-    private boolean isTimezone(String timezone) {
-        try {
-            ZoneId.of(timezone);
-            return true;
-        } catch (ZoneRulesException e) {
-            return false;
-        }
-    }
+
 
     @Transactional
-    public User updateUserById(Long id, NewUser user) {
+    public BasicUser updateUserById(Long id, NewUser user) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user.getName() != null && !user.getName().isEmpty()) {
@@ -115,9 +121,8 @@ public class UserService {
             userEntity.setTimezone(timezone);
         }
 
-
         userEntity = userRepository.save(userEntity);
-        return UserMapper.INSTANCE.toModel(userEntity);
+        return UserMapper.INSTANCE.toBasicUser(userEntity);
     }
 
 
