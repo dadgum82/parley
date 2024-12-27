@@ -2,13 +2,13 @@ package org.sidequest.parley.service;
 
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
-import org.sidequest.parley.helpers.FileSystemHelper;
 import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.model.ChatMessage;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewChatRoom;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.ChatRoomRepository;
+import org.sidequest.parley.util.FileSystemHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;

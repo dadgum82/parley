@@ -1,4 +1,4 @@
-package org.sidequest.parley.helpers;
+package org.sidequest.parley.util;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

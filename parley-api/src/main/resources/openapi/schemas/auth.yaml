@@ -95,18 +95,22 @@ SignupRequest:
       type: string
       description: The desired username
       minLength: 3
+      x-message: "Username must be at least 3 characters long"
     email:
       type: string
       format: email
       description: User's email address
+      x-message: "Please provide a valid email address"
     password:
       type: string
       description: User's password
       minLength: 8
+      x-message: "Password must be at least 8 characters long"
     confirmPassword:
       type: string
       description: Confirmation of the password
       minLength: 8
+      x-message: "Confirmation password must be at least 8 characters long"
     timezone:
       type: string
-      description: User's timezone (optional)
+      description: "User's timezone (optional). America/New_York is the default time zone."

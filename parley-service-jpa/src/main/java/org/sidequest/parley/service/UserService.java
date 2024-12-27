@@ -4,14 +4,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.sidequest.parley.entity.ChatRoomEntity;
 import org.sidequest.parley.entity.UserEntity;
-import org.sidequest.parley.helpers.EmailHelper;
-import org.sidequest.parley.helpers.FileSystemHelper;
 import org.sidequest.parley.mapper.ChatRoomMapper;
 import org.sidequest.parley.mapper.UserMapper;
 import org.sidequest.parley.model.ChatRoom;
 import org.sidequest.parley.model.NewUser;
 import org.sidequest.parley.model.User;
 import org.sidequest.parley.repository.UserRepository;
+import org.sidequest.parley.util.EmailHelper;
+import org.sidequest.parley.util.FileSystemHelper;
+import org.sidequest.parley.util.TimeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -82,17 +83,14 @@ public class UserService {
     }
 
     private String getZoneId(String timezone) {
+        TimeHelper timeHelper;
         try {
-            if (timezone == null || timezone.trim().isEmpty()) {
-                ZoneId estZoneId = ZoneId.of("America/New_York");
-                timezone = estZoneId.toString();
-            } else if (!isTimezone(timezone)) {
-                ZoneId estZoneId = ZoneId.of("America/New_York");
-                timezone = estZoneId.toString();
-            }
-            return timezone;
+            timeHelper = new TimeHelper();
+            String result = timeHelper.getZoneId(timezone).toString();
+            return result != null ? result : timeHelper.getDefaultZoneId().toString();
         } catch (ZoneRulesException e) {
-            return ZoneId.of("America/New_York").toString();
+            timeHelper = new TimeHelper();
+            return timeHelper.getDefaultZoneId().toString();
         }
     }
 

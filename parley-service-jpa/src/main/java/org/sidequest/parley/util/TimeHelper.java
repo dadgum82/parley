@@ -1,5 +1,6 @@
-package org.sidequest.parley.helpers;
+package org.sidequest.parley.util;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
@@ -13,6 +14,22 @@ import java.util.logging.Logger;
 @Component
 public class TimeHelper {
     private static final Logger log = Logger.getLogger(TimeHelper.class.getName());
+
+    @Value("${default.timezone}")
+    private String defaultTimezone;
+
+    public ZoneId getZoneId(String timezone) {
+        try {
+            return timezone != null ? ZoneId.of(timezone) : null;
+        } catch (Exception e) {
+            log.warning("Invalid timezone: " + timezone + ". Using default: " + defaultTimezone);
+            return null;
+        }
+    }
+
+    public ZoneId getDefaultZoneId() {
+        return ZoneId.of(defaultTimezone);
+    }
 
     /**
      * Converts a ZonedDateTime to UTC.

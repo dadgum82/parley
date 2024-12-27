@@ -1,4 +1,4 @@
-package org.sidequest.parley.helpers;
+package org.sidequest.parley.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

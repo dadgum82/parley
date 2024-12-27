@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.sidequest.parley.entity.UserEntity;
-import org.sidequest.parley.helpers.TimeHelper;
 import org.sidequest.parley.model.User;
+import org.sidequest.parley.util.TimeHelper;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
