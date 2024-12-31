@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.Arrays;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Slf4j
 @Configuration
@@ -33,137 +33,193 @@ public class SecurityConfig {
         System.out.println("STATIC INIT: SecurityConfig is being loaded");
     }
 
-    private static final String[] TOMCAT_WHITE_LIST_URL = {
-            "/webjars/**",
-            "META-INF/resources/webjars/",
-            "META-INF/resources/webjars/**",
-            "/resources/**",
-            "/static/**",
-            "/public/**"
-    };
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector).servletPath("/api");
+    }
+//
+//    The key differences between MvcRequestMatcher and antMatchers are:
+//
+//    Context Awareness:
+//
+//
+//    MvcRequestMatcher is Spring MVC-aware and understands the servlet context and mappings
+//    AntMatchers only matches URL patterns without understanding the Spring MVC context
+//
+//
+//    Pattern Handling:
+//
+//
+//    MvcRequestMatcher handles patterns relative to the DispatcherServlet's path
+//    AntMatchers treats patterns as absolute paths
+//
+//
+//    Security:
+//
+//
+//    MvcRequestMatcher is more secure as it considers the full request context
+//    AntMatchers can be bypassed in some cases due to differences in path handling
+//
+//
+//    Multiple Servlets:
+//
+//
+//    MvcRequestMatcher works correctly with multiple servlets by using servletPath
+//    AntMatchers can cause ambiguity with multiple servlets
 
-    private static final String[] SWAGGER_WHITE_LIST_URL = {
-            "/api/swagger-ui/index.html",
-            "/parley/api/api-docs/swagger-config",
-            "/parley/api/swagger-ui/**",
-            "/parley/api/v3/api-docs/**",
-            "/parley/api/swagger-resources/**",
-            "/parley/api/webjars/**",
-            "/swagger-ui/**",
-            "/v3/api-docs/**"
-    };
-
-    private static final String[] PARLEY_WHITE_LIST_URL = {
-            "/parley/api/auth/login",
-            "/parley/api/auth/signup",
-            "/parley/api/auth/signup/**",
-            "/parley/api/auth/password/reset",
-            "/parley/api/auth/password/reset/**",
-            "/auth/signup",
-            "/auth/login",
-            "/auth/logout",
-            "/auth/password/reset",
-            "/api/auth/signup",
-            "/api/auth/login",
-            "/api/auth/logout",
-            "/api/auth/password/reset",
-            "/parley/auth/login",
-            "/parley/auth/signup",
-            "/parley/signup"
-    };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        // Multiple logging approaches
-        log.debug("Tomcat Whitelist URLs:");
-        for (String url : TOMCAT_WHITE_LIST_URL) {
-            log.debug("  - {}", url);
-        }
-
-        log.debug("Swagger Whitelist URLs:");
-        for (String url : SWAGGER_WHITE_LIST_URL) {
-            log.debug("  - {}", url);
-        }
-
-        log.debug("Parley Whitelist URLs:");
-        for (String url : PARLEY_WHITE_LIST_URL) {
-            log.debug("  - {}", url);
-        }
-
-        // Log the total number of whitelisted URLs
-        log.debug("Total Whitelisted URLs:");
-        log.debug("  Tomcat URLs: {}", TOMCAT_WHITE_LIST_URL.length);
-        log.debug("  Swagger URLs: {}", SWAGGER_WHITE_LIST_URL.length);
-        log.debug("  Parley URLs: {}", PARLEY_WHITE_LIST_URL.length);
-
-
-        System.out.println("SYSTEM OUT: Configuring SecurityFilterChain");
-        System.err.println("SYSTEM ERR: Configuring SecurityFilterChain");
-
-        log.error("ERROR LEVEL: Configuring SecurityFilterChain");
-        log.warn("WARN LEVEL: Configuring SecurityFilterChain");
-        log.info("INFO LEVEL: Configuring SecurityFilterChain");
-        log.debug("DEBUG LEVEL: Configuring SecurityFilterChain");
-        log.trace("TRACE LEVEL: Configuring SecurityFilterChain");
-
-        log.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        log.debug("~~~Configuring SecurityFilterChain~~~");
-        log.debug("HTTP Security Configuration Details:");
-        log.debug("HTTP Object: {}", http);
-        log.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("~~~Configuring SecurityFilterChain~~~");
-        System.out.println("HTTP Security Configuration Details:");
-        System.out.println("HTTP Object: " + http);
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-        http
-                .csrf(csrf -> {
-                    csrf.disable();
-                    log.debug("CSRF disabled");
-                })
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    try {
-                        auth
-                                .requestMatchers(
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**",
-                                        "/api-docs/**",
-                                        "/parley/api-docs/**",
-                                        "/parley/api/api-docs/**",
-                                        "/parley/api/swagger-ui/**",
-                                        "/parley/api/v3/api-docs/**",
-                                        "/parley/api/swagger-resources/**",
-                                        "/webjars/**"
-                                ).permitAll()
-                                // Public endpoints
-                                .requestMatchers("/parley/api/auth/**").permitAll()
-                                .requestMatchers(TOMCAT_WHITE_LIST_URL).permitAll()
-                                .requestMatchers(SWAGGER_WHITE_LIST_URL).permitAll()
-                                .requestMatchers(PARLEY_WHITE_LIST_URL).permitAll()
-                                .anyRequest()
-                                .authenticated();
-                        // Detailed logging of specific matcher configurations
-                        log.debug("Permitted Tomcat URLs: {}", Arrays.toString(TOMCAT_WHITE_LIST_URL));
-                        log.debug("Permitted Swagger URLs: {}", Arrays.toString(SWAGGER_WHITE_LIST_URL));
-                        log.debug("Permitted Parley URLs: {}", Arrays.toString(PARLEY_WHITE_LIST_URL));
-                    } catch (Exception e) {
-                        log.error("Error configuring request authorization", e);
-                        throw new RuntimeException(e);
-                    }
+                    auth.requestMatchers(mvc.pattern("/v3/api-docs/**"),
+                                    mvc.pattern("/swagger-ui/**"),
+                                    mvc.pattern("/api-docs/**"),
+                                    mvc.pattern("/parley/api-docs/**"),
+                                    mvc.pattern("/parley/api/api-docs/**")).permitAll()
+                            .requestMatchers(mvc.pattern("/auth/login"),
+                                    mvc.pattern("/auth/signup"),
+                                    mvc.pattern("/auth/signup/**"),
+                                    mvc.pattern("/auth/password/reset"),
+                                    mvc.pattern("/auth/password/reset/**")).permitAll()
+                            .anyRequest().authenticated();
                 })
-                .sessionManagement(session -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                    log.debug("Session management set to STATELESS");
-                })
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        log.debug("SecurityFilterChain configuration complete");
         return http.build();
     }
+//
+//    private static final String[] TOMCAT_WHITE_LIST_URL = {
+//            "/webjars/**",
+//            "META-INF/resources/webjars/",
+//            "META-INF/resources/webjars/**",
+//            "/resources/**",
+//            "/static/**",
+//            "/public/**"
+//    };
+//
+//    private static final String[] SWAGGER_WHITE_LIST_URL = {
+//            "/api/swagger-ui/index.html",
+//            "/parley/api/api-docs/swagger-config",
+//            "/parley/api/swagger-ui/**",
+//            "/parley/api/v3/api-docs/**",
+//            "/parley/api/swagger-resources/**",
+//            "/parley/api/webjars/**",
+//            "/swagger-ui/**",
+//            "/v3/api-docs/**"
+//    };
+//
+//    private static final String[] PARLEY_WHITE_LIST_URL = {
+//            "/parley/api/auth/login",
+//            "/parley/api/auth/signup",
+//            "/parley/api/auth/signup/**",
+//            "/parley/api/auth/password/reset",
+//            "/parley/api/auth/password/reset/**",
+//            "/auth/signup",
+//            "/auth/login",
+//            "/auth/logout",
+//            "/auth/password/reset",
+//            "/api/auth/signup",
+//            "/api/auth/login",
+//            "/api/auth/logout",
+//            "/api/auth/password/reset",
+//            "/parley/auth/login",
+//            "/parley/auth/signup",
+//            "/parley/signup"
+//    };
+//
+//
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//
+//        // Multiple logging approaches
+//        log.debug("Tomcat Whitelist URLs:");
+//        for (String url : TOMCAT_WHITE_LIST_URL) {
+//            log.debug("  - {}", url);
+//        }
+//
+//        log.debug("Swagger Whitelist URLs:");
+//        for (String url : SWAGGER_WHITE_LIST_URL) {
+//            log.debug("  - {}", url);
+//        }
+//
+//        log.debug("Parley Whitelist URLs:");
+//        for (String url : PARLEY_WHITE_LIST_URL) {
+//            log.debug("  - {}", url);
+//        }
+//
+//        // Log the total number of whitelisted URLs
+//        log.debug("Total Whitelisted URLs:");
+//        log.debug("  Tomcat URLs: {}", TOMCAT_WHITE_LIST_URL.length);
+//        log.debug("  Swagger URLs: {}", SWAGGER_WHITE_LIST_URL.length);
+//        log.debug("  Parley URLs: {}", PARLEY_WHITE_LIST_URL.length);
+//
+//
+//        System.out.println("SYSTEM OUT: Configuring SecurityFilterChain");
+//        System.err.println("SYSTEM ERR: Configuring SecurityFilterChain");
+//
+//        log.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//        log.debug("~~~Configuring SecurityFilterChain~~~");
+//        log.debug("HTTP Security Configuration Details:");
+//        log.debug("HTTP Object: {}", http);
+//        log.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//
+//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//        System.out.println("~~~Configuring SecurityFilterChain~~~");
+//        System.out.println("HTTP Security Configuration Details:");
+//        System.out.println("HTTP Object: " + http);
+//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//
+//        http
+//                .csrf(csrf -> {
+//                    csrf.disable();
+//                    log.debug("CSRF disabled");
+//                })
+//                .authorizeHttpRequests(auth -> {
+//                    try {
+//                        auth
+//                                .requestMatchers(
+//                                        "/v3/api-docs/**",
+//                                        "/swagger-ui/**",
+//                                        "/api-docs/**",
+//                                        "/parley/api-docs/**",
+//                                        "/parley/api/api-docs/**",
+//                                        "/parley/api/swagger-ui/**",
+//                                        "/parley/api/v3/api-docs/**",
+//                                        "/parley/api/swagger-resources/**",
+//                                        "/webjars/**"
+//                                ).permitAll()
+//                                // Public endpoints
+//                                .requestMatchers("/parley/api/auth/**").permitAll()
+//                                .requestMatchers(TOMCAT_WHITE_LIST_URL).permitAll()
+//                                .requestMatchers(SWAGGER_WHITE_LIST_URL).permitAll()
+//                                .requestMatchers(PARLEY_WHITE_LIST_URL).permitAll()
+//                                .anyRequest()
+//                                .authenticated();
+//                        // Detailed logging of specific matcher configurations
+//                        log.debug("Permitted Tomcat URLs: {}", Arrays.toString(TOMCAT_WHITE_LIST_URL));
+//                        log.debug("Permitted Swagger URLs: {}", Arrays.toString(SWAGGER_WHITE_LIST_URL));
+//                        log.debug("Permitted Parley URLs: {}", Arrays.toString(PARLEY_WHITE_LIST_URL));
+//                    } catch (Exception e) {
+//                        log.error("Error configuring request authorization", e);
+//                        throw new RuntimeException(e);
+//                    }
+//                })
+//                .sessionManagement(session -> {
+//                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                    log.debug("Session management set to STATELESS");
+//                })
+//                .authenticationProvider(authenticationProvider())
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//        log.debug("SecurityFilterChain configuration complete");
+//        return http.build();
+//    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
