@@ -4,6 +4,7 @@ import org.sidequest.parley.api.AuthApi;
 import org.sidequest.parley.exception.ValidationException;
 import org.sidequest.parley.model.AuthRequest;
 import org.sidequest.parley.model.AuthResponse;
+import org.sidequest.parley.model.PasswordResetRequest;
 import org.sidequest.parley.model.SignupRequest;
 import org.sidequest.parley.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,20 @@ public class AuthenticationController implements AuthApi {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             log.severe("Error during signup: " + e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> requestPasswordReset(PasswordResetRequest passwordResetRequest) {
+        try {
+            authenticationService.initiatePasswordReset(passwordResetRequest.getEmail());
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            log.warning("Bad request: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.severe("Error during password reset: " + e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }
