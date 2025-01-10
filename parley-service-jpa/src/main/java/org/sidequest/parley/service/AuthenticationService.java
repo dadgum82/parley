@@ -150,8 +150,15 @@ public class AuthenticationService {
         user.setName(request.getUsername());
         user.setEmail(request.getEmail());
         user.setMagic(passwordEncoder.encode(request.getPassword()));
-        user.setTimezone(timeHelper.isTimezone(request.getTimezone()) ? request.getTimezone() : defaultTimezone);
 
+        // Handle timezone - use provided timezone if valid, otherwise use default
+        String timezone = request.getTimezone();
+        if (timezone != null && timeHelper.isTimezone(timezone)) {
+            user.setTimezone(timezone);
+        } else {
+            user.setTimezone(defaultTimezone);
+            log.info("Using default timezone {} for user {}", defaultTimezone, request.getUsername());
+        }
         userRepository.save(user);
         log.info("Created new user: {}", user.getName());
 

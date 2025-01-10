@@ -33,6 +33,10 @@ public class TimeHelper {
     }
 
     public boolean isTimezone(String timezone) {
+        if (timezone == null) {
+            return false;
+        }
+
         try {
             ZoneId.of(timezone);
             return true;
