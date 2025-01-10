@@ -3,6 +3,8 @@ package org.sidequest.parley.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sidequest.parley.entity.UserEntity;
+import org.sidequest.parley.exception.DuplicateResourceException;
+import org.sidequest.parley.exception.ValidationException;
 import org.sidequest.parley.model.AuthRequest;
 import org.sidequest.parley.model.AuthResponse;
 import org.sidequest.parley.model.SignupRequest;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -114,20 +118,31 @@ public class AuthenticationService {
     @Transactional
     public AuthResponse signup(SignupRequest request) {
         TimeHelper timeHelper = new TimeHelper();
+        Map<String, String> errors = new HashMap<>();
 
         // Validate passwords match
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+            errors.put("password", "Password and confirmation password do not match");
+            throw new ValidationException("Password validation failed", errors);
         }
 
-        // Check if username exists
-        if (userRepository.existsByName(request.getUsername())) {
-            throw new IllegalArgumentException("Username already exists");
+        // Validate username
+        if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+            errors.put("username", "Username is required");
+        } else if (userRepository.existsByName(request.getUsername())) {
+            throw new DuplicateResourceException("Username already exists");
         }
 
-        // Check if email exists
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+        // Validate email
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            errors.put("email", "Email is required");
+        } else if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("Email address already exists");
+        }
+
+        // If we have any validation errors, throw them
+        if (!errors.isEmpty()) {
+            throw new ValidationException("Validation failed", errors);
         }
 
         // Create new user
@@ -137,9 +152,8 @@ public class AuthenticationService {
         user.setMagic(passwordEncoder.encode(request.getPassword()));
         user.setTimezone(timeHelper.isTimezone(request.getTimezone()) ? request.getTimezone() : defaultTimezone);
 
-
         userRepository.save(user);
-        log.info("Created new user: " + user.getName());
+        log.info("Created new user: {}", user.getName());
 
         // Generate JWT token
         String token = jwtTokenUtil.generateToken(user.getUsername(), false);
