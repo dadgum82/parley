@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: parley
+  description: Parley Java application
+  annotations:
+    github.com/project-slug: dadgum82/parley
+spec:
+  type: service
+  owner: group:default/admins
+  lifecycle: experimental
