@@ -1,0 +1,6 @@
+site_name: Parley
+site_description: Parley application documentation
+plugins:
+  - techdocs-core
+nav:
+  - Home: index.md
