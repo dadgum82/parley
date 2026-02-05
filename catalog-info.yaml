@@ -5,6 +5,7 @@ metadata:
   description: Parley Java application
   annotations:
     github.com/project-slug: dadgum82/parley
+    backstage.io/techdocs-ref: dir:.
 spec:
   type: service
   owner: group:default/admins
