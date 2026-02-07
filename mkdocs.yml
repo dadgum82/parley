@@ -4,3 +4,9 @@ plugins:
   - techdocs-core
 nav:
   - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture: architecture.md
+  - API Reference: api-reference.md
+  - Authentication: authentication.md
+  - Configuration: configuration.md
+  - Database: database.md
